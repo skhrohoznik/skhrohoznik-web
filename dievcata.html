@@ -217,7 +217,9 @@
   @media (max-width:760px){ .maps-grid{grid-template-columns:1fr;} }
 
   /* ---- FACEBOOK ---- */
-  .fb-wrap{display:flex; justify-content:center;}
+  .fb-wrap{display:flex; justify-content:center; flex-wrap:wrap; gap:24px;}
+  .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
 
   /* ---- KONTAKT ---- */
   footer{background:var(--blue-dark); color:#DDE4F1; padding:60px 0 30px;}
@@ -454,15 +456,46 @@
       <h2>Sledujte nás</h2>
     </div>
     <div class="fb-wrap">
-      <div class="fb-page"
-        data-href="https://www.facebook.com/skhrohoznik.sk/"
-        data-tabs="timeline"
-        data-width="500"
-        data-height="400"
-        data-small-header="false"
-        data-adapt-container-width="true"
-        data-hide-cover="false"
-        data-show-facepile="true">
+      <div class="fb-item">
+        <span class="fb-label">ŠKH Rohožník</span>
+        <div class="fb-page"
+          data-href="https://www.facebook.com/skhrohoznik.sk/"
+          data-tabs="timeline"
+          data-width="360"
+          data-height="400"
+          data-small-header="false"
+          data-adapt-container-width="true"
+          data-hide-cover="false"
+          data-show-facepile="true">
+        </div>
+      </div>
+
+      <div class="fb-item">
+        <span class="fb-label">HC Záhoráci</span>
+        <div class="fb-page"
+          data-href="https://www.facebook.com/hczahoraci/"
+          data-tabs="timeline"
+          data-width="360"
+          data-height="400"
+          data-small-header="false"
+          data-adapt-container-width="true"
+          data-hide-cover="false"
+          data-show-facepile="true">
+        </div>
+      </div>
+
+      <div class="fb-item">
+        <span class="fb-label">Handball Malacky</span>
+        <div class="fb-page"
+          data-href="https://www.facebook.com/handballmalacky/"
+          data-tabs="timeline"
+          data-width="360"
+          data-height="400"
+          data-small-header="false"
+          data-adapt-container-width="true"
+          data-hide-cover="false"
+          data-show-facepile="true">
+        </div>
       </div>
     </div>
   </div>
