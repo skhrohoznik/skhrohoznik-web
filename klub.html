@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klub — Hádzaná Záhorie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#173B73;
+    --blue-dark:#0E2749;
+    --red:#D6262C;
+    --yellow:#F2B705;
+    --cream:#F7F4EC;
+    --ink:#161A22;
+    --line:#E3DFD2;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Space Grotesk', sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  h1,h2,h3{
+    font-family:'Archivo Black', sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+  .wrap-wide{max-width:1400px; margin:0 auto; padding:0 28px;}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--cream);
+    border-bottom:3px solid var(--ink);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 28px; flex-wrap:wrap; gap:12px;
+  }
+  .brand-group{display:flex; align-items:center; gap:18px;}
+  .brand-group .logo-item{display:flex; align-items:center; gap:8px; text-decoration:none; color:inherit;}
+  .brand-group .logo-item img{
+    width:36px; height:36px; border-radius:50%; object-fit:contain; background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  }
+  .brand-group .logo-item span{font-size:12px; font-weight:700; line-height:1.1; max-width:110px;}
+  @media (max-width:1080px){
+    .brand-group .logo-item span{display:none;}
+  }
+  @media (max-width:760px){
+    .brand-group .logo-item:not(:first-child){display:none;}
+  }
+  nav ul{
+    display:flex; gap:26px; list-style:none;
+    font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  nav a{text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px;}
+  nav a:hover{border-color:var(--red);}
+  @media (max-width:760px){ nav ul{display:none;} }
+
+  .page-head{
+    background:var(--blue); color:#fff; padding:56px 0 64px;
+  }
+  .page-head h1{font-size:clamp(32px,5vw,52px); line-height:1.05;}
+  .page-head p{margin-top:16px; max-width:560px; color:#DDE4F1; font-size:16px;}
+  .back-link{
+    display:inline-block; margin-top:26px; font-size:14px; font-weight:600;
+    text-decoration:none; border-bottom:2px solid var(--yellow); padding-bottom:2px;
+  }
+
+  section{padding:64px 0;}
+  .section-head{
+    display:flex; align-items:baseline; gap:16px; margin-bottom:36px;
+    border-bottom:3px solid var(--ink); padding-bottom:14px;
+  }
+  .section-head .num{
+    font-family:'Archivo Black', sans-serif; font-size:15px; color:var(--red);
+  }
+  .section-head h2{font-size:clamp(26px,4vw,38px);}
+
+  .btn{
+    display:inline-block; padding:13px 26px; font-weight:600;
+    text-decoration:none; font-size:14px; letter-spacing:0.02em;
+    border:2px solid transparent; transition:transform .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--red); color:#fff;}
+
+  /* ---- GALERIA ---- */
+  .gallery{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+  }
+  .gallery div{
+    aspect-ratio:1; background:#fff; border:2px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    color:#6b6455; font-size:13px; font-weight:600; text-align:center; padding:8px;
+  }
+  .gallery-more{margin-top:24px;}
+  @media (max-width:760px){ .gallery{grid-template-columns:repeat(2,1fr);} }
+
+  /* ---- VIDEA ---- */
+  .video-card{
+    border:2px solid var(--ink); padding:20px; text-decoration:none; color:var(--ink);
+    display:flex; align-items:center; gap:14px;
+  }
+  .video-card:hover{background:var(--ink); color:var(--cream);}
+  .play{
+    width:38px; height:38px; border-radius:50%; background:var(--red); color:#fff;
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:14px;
+  }
+  .video-card .vt{font-weight:600; font-size:15px;}
+  .video-card .vs{font-size:13px; opacity:0.7;}
+
+  /* ---- NABOR ---- */
+  .recruit{
+    background:var(--red); color:#fff; padding:52px 40px;
+    display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;
+  }
+  .recruit h2{font-size:clamp(24px,3.5vw,34px); max-width:520px;}
+  .recruit p{margin-top:12px; max-width:480px; color:#FDE3E3; font-size:15px;}
+  .recruit .btn{background:#fff; color:var(--red); flex:0 0 auto;}
+
+  /* ---- MAPA ---- */
+  .map-frame{
+    width:100%; aspect-ratio:4/3; border:2px solid var(--ink); filter:grayscale(0.15);
+  }
+  .maps-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:24px;}
+  .map-item p{margin-bottom:10px; color:#6b6455; font-size:14px; font-weight:600;}
+  @media (max-width:760px){ .maps-grid{grid-template-columns:1fr;} }
+
+  /* ---- FACEBOOK ---- */
+  .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
+  .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
+  .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
+
+  footer{background:var(--blue-dark); color:#DDE4F1; padding:40px 0;}
+  .fine{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:13px;}
+  .fine a{text-decoration:underline; text-underline-offset:3px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="brand-group">
+      <a class="logo-item" href="index.html">
+        <img src="logo.png" alt="Logo ŠKH Rohožník">
+        <span>ŠKH Rohožník</span>
+      </a>
+      <a class="logo-item" href="chlapci.html">
+        <img src="zahoraci.png" alt="Logo HC Záhoráci">
+        <span>HC Záhoráci</span>
+      </a>
+      <a class="logo-item" href="chlapci.html">
+        <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
+        <span>TJ Strojár Malacky</span>
+      </a>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Domov</a></li>
+        <li><a href="dievcata.html">Ženy a dievčatá</a></li>
+        <li><a href="chlapci.html">Muži a chlapci</a></li>
+        <li><a href="gallery.html">Galéria</a></li>
+        <li><a href="kontakty.html">Kontakt</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <h1>Klub</h1>
+    <p>Spoločné informácie pre celý projekt Hádzaná Záhorie — nábor, videá, haly a sociálne siete všetkých troch klubov.</p>
+    <a class="back-link" href="index.html">← Späť na hlavnú stránku</a>
+  </div>
+</section>
+
+<section id="nabor">
+  <div class="wrap">
+    <div class="recruit">
+      <div>
+        <h2>Chceš hrať hádzanú s nami?</h2>
+        <p>Hľadáme chlapcov aj dievčatá všetkých vekových kategórií z regiónu Záhorie. Príď sa pozrieť na tréning, alebo nás kontaktuj priamo.</p>
+      </div>
+      <a href="kontakty.html" class="btn">Kontaktovať trénera</a>
+    </div>
+  </div>
+</section>
+
+<section id="galeria" style="background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="num">01</span>
+      <h2>Galéria</h2>
+    </div>
+    <div class="gallery">
+      <div>Foto zo zápasu</div>
+      <div>Tréning</div>
+      <div>Tím</div>
+      <div>Zápas</div>
+    </div>
+    <div class="gallery-more">
+      <a href="gallery.html" class="btn btn-primary" style="color:#fff;">Zobraziť celú galériu</a>
+    </div>
+  </div>
+</section>
+
+<section id="videa">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="num">02</span>
+      <h2>Videá</h2>
+    </div>
+    <a class="video-card" href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener">
+      <div class="play">▶</div>
+      <div>
+        <div class="vt">YouTube kanál klubu</div>
+        <div class="vs">Zostrihy zápasov, tréningy a ďalšie videá — @SKHRohoznik_StrojarMalacky</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section id="mapa" style="background:#fff; border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="num">03</span>
+      <h2>Naše haly</h2>
+    </div>
+    <div class="maps-grid">
+      <div class="map-item">
+        <p>Vonkajšie ihrisko — Rohožník</p>
+        <iframe class="map-frame" loading="lazy"
+          src="https://www.google.com/maps?q=F548%2BV3%20Roho%C5%BEn%C3%ADk&output=embed">
+        </iframe>
+      </div>
+      <div class="map-item">
+        <p>Športová hala — Rohožník</p>
+        <iframe class="map-frame" loading="lazy"
+          src="https://www.google.com/maps?q=48.457725,17.162437&output=embed">
+        </iframe>
+      </div>
+      <div class="map-item">
+        <p>Šport Aréna Malacky</p>
+        <iframe class="map-frame" loading="lazy"
+          src="https://www.google.com/maps?q=%C5%A0port%20Ar%C3%A9na%20Malacky&output=embed">
+        </iframe>
+      </div>
+      <div class="map-item">
+        <p>Športová hala Malina</p>
+        <iframe class="map-frame" loading="lazy"
+          src="https://www.google.com/maps?q=%C5%A0portov%C3%A1%20hala%20Malina&output=embed">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sledujte-nas">
+  <div class="wrap-wide">
+    <div class="section-head">
+      <span class="num">04</span>
+      <h2>Sledujte nás</h2>
+    </div>
+    <div class="fb-wrap">
+      <div class="fb-item">
+        <span class="fb-label">ŠKH Rohožník</span>
+        <div class="fb-page"
+          data-href="https://www.facebook.com/skhrohoznik.sk/"
+          data-tabs="timeline"
+          data-width="360"
+          data-height="400"
+          data-small-header="false"
+          data-adapt-container-width="true"
+          data-hide-cover="false"
+          data-show-facepile="true">
+        </div>
+      </div>
+
+      <div class="fb-item">
+        <span class="fb-label">HC Záhoráci</span>
+        <div class="fb-page"
+          data-href="https://www.facebook.com/hczahoraci/"
+          data-tabs="timeline"
+          data-width="360"
+          data-height="400"
+          data-small-header="false"
+          data-adapt-container-width="true"
+          data-hide-cover="false"
+          data-show-facepile="true">
+        </div>
+      </div>
+
+      <div class="fb-item">
+        <span class="fb-label">Handball Malacky</span>
+        <div class="fb-page"
+          data-href="https://www.facebook.com/handballmalacky/"
+          data-tabs="timeline"
+          data-width="360"
+          data-height="400"
+          data-small-header="false"
+          data-adapt-container-width="true"
+          data-hide-cover="false"
+          data-show-facepile="true">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous"
+  src="https://connect.facebook.net/sk_SK/sdk.js#xfbml=1&version=v19.0">
+</script>
+
+<footer>
+  <div class="wrap fine">
+    <span>© 2026 Hádzaná Záhorie</span>
+    <a href="dievcata.html#kontakt">Všeobecný kontakt klubu</a>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -43,9 +43,19 @@
     display:flex; align-items:center; justify-content:space-between;
     padding:14px 28px;
   }
-  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
-  .brand img{width:44px; height:44px;}
-  .brand span{font-size:15px; line-height:1.15; max-width:190px; color:var(--ink);}
+  .brand-group{display:flex; align-items:center; gap:18px;}
+  .brand-group .logo-item{display:flex; align-items:center; gap:8px; text-decoration:none; color:inherit;}
+  .brand-group .logo-item img{
+    width:36px; height:36px; border-radius:50%; object-fit:contain; background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  }
+  .brand-group .logo-item span{font-size:12px; font-weight:700; line-height:1.1; max-width:110px;}
+  @media (max-width:1080px){
+    .brand-group .logo-item span{display:none;}
+  }
+  @media (max-width:760px){
+    .brand-group .logo-item:not(:first-child){display:none;}
+  }
   nav ul{
     display:flex; gap:26px; list-style:none;
     font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;
@@ -142,10 +152,20 @@
 
 <header>
   <div class="nav-inner">
-    <a class="brand" href="index.html">
-      <img src="zahoraci.png" alt="Logo Strojár Malacky - Záhoráci">
-      <span>TJ Strojár Malacky<br>Záhoráci</span>
-    </a>
+    <div class="brand-group">
+      <a class="logo-item" href="index.html">
+        <img src="logo.png" alt="Logo ŠKH Rohožník">
+        <span>ŠKH Rohožník</span>
+      </a>
+      <a class="logo-item" href="chlapci.html">
+        <img src="zahoraci.png" alt="Logo HC Záhoráci">
+        <span>HC Záhoráci</span>
+      </a>
+      <a class="logo-item" href="chlapci.html">
+        <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
+        <span>TJ Strojár Malacky</span>
+      </a>
+    </div>
     <nav>
       <ul>
         <li><a href="index.html">Domov</a></li>
@@ -153,6 +173,7 @@
         <li><a href="dievcata.html#kategorie">Dievčatá</a></li>
         <li><a href="chlapci.html">Chlapci</a></li>
         <li><a href="gallery.html">Galéria</a></li>
+        <li><a href="klub.html">Klub</a></li>
         <li><a href="kontakty.html">Kontakt</a></li>
       </ul>
     </nav>
