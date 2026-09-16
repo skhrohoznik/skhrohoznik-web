@@ -82,6 +82,21 @@
     border-bottom:3px solid var(--ink); padding-bottom:14px;
   }
   .section-head h2{font-size:clamp(24px,3.5vw,34px);}
+  .section-head .num{
+    font-family:'Archivo Black', sans-serif; font-size:15px; color:var(--accent);
+  }
+  .about-grid{max-width:900px; display:flex; gap:40px; align-items:flex-start;}
+  .about-grid .about-text{flex:1;}
+  .about-grid p{margin-bottom:16px; font-size:16px; color:var(--ink);}
+  .about-logo{
+    flex:0 0 auto; width:150px; height:150px; border-radius:50%; background:#fff;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+    box-shadow:0 10px 24px rgba(0,0,0,0.18);
+  }
+  .about-logo img{width:82%; height:82%; object-fit:contain;}
+  @media (max-width:640px){
+    .about-grid{flex-direction:column; align-items:center; text-align:center;}
+  }
 
   .wrap-wide{max-width:1400px; margin:0 auto; padding:0 28px;}
   .group-label{
@@ -138,7 +153,7 @@
     <nav>
       <ul>
         <li><a href="index.html">Domov</a></li>
-        <li><a href="dievcata.html#o-klube">O klube</a></li>
+        <li><a href="#o-klube">O klube</a></li>
         <li><a href="dievcata.html#kategorie">Dievčatá</a></li>
         <li><a href="chlapci.html">Chlapci</a></li>
         <li><a href="gallery.html">Galéria</a></li>
@@ -160,6 +175,24 @@
       <div class="hero-badge">
         <img src="zahoraci.png" alt="Logo Strojár Malacky - Záhoráci">
       </div>
+    </div>
+  </div>
+</section>
+
+<section id="o-klube">
+  <div class="wrap about-grid">
+    <div class="about-text">
+      <div class="section-head" style="border:none; padding:0; margin-bottom:22px;">
+        <span class="num">01</span>
+        <h2>O klube</h2>
+      </div>
+      <p>Hádzaná má v Malackách a na Záhorí dlhú tradíciu. Materský klub TJ Strojár Malacky (IČO: 17642639) je základom, na ktorom stojí celý dnešný projekt.</p>
+      <p>Pôvodne pôsobiac pod názvom HC Záhoráci Malacky Stupava, od sezóny 2024/2025 vystupujeme pod skráteným názvom HC Záhoráci s ambíciou pokryť celý región Záhoria.</p>
+      <p>Riaditeľ klubu Rastislav Tesár zdôrazňuje regionálny charakter klubu s cieľom vybudovať silnú značku na celom Záhorí a zapájať ďalšie mestá a obce do klubových procesov.</p>
+      <p>Dnes pod spoločnou značkou Handball Záhorie združujeme tri kluby - HC Záhoráci pre mužskú hádzanú, Handball Malacky pre mládež a TJ Strojár Malacky/ŠKH Rohožník pre ženskú hádzanú.</p>
+    </div>
+    <div class="about-logo">
+      <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
     </div>
   </div>
 </section>
