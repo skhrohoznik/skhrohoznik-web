@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontakty na kategórie — ŠK Hádzanej Rohožník</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#173B73;
+    --blue-dark:#0E2749;
+    --red:#D6262C;
+    --yellow:#F2B705;
+    --cream:#F7F4EC;
+    --ink:#161A22;
+    --line:#E3DFD2;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Space Grotesk', sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  h1,h2,h3{
+    font-family:'Archivo Black', sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--cream);
+    border-bottom:3px solid var(--ink);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 28px;
+  }
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{width:44px; height:44px;}
+  .brand span{font-size:15px; line-height:1.15; max-width:170px; color:var(--ink);}
+  nav ul{
+    display:flex; gap:26px; list-style:none;
+    font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  nav a{text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px;}
+  nav a:hover{border-color:var(--red);}
+  @media (max-width:760px){ nav ul{display:none;} }
+
+  .page-head{
+    background:var(--blue); color:#fff; padding:56px 0 64px;
+  }
+  .page-head .eyebrow{font-size:14px; font-weight:600; letter-spacing:0.08em; color:var(--yellow); margin-bottom:14px;}
+  .page-head h1{font-size:clamp(32px,5vw,52px); line-height:1.05;}
+  .page-head p{margin-top:16px; max-width:520px; color:#DDE4F1; font-size:16px;}
+  .back-link{
+    display:inline-block; margin-top:26px; font-size:14px; font-weight:600;
+    text-decoration:none; border-bottom:2px solid var(--yellow); padding-bottom:2px;
+  }
+
+  section{padding:64px 0;}
+  .cards{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+  }
+  .contact-card{
+    background:#fff; border:2px solid var(--ink); padding:26px;
+  }
+  .contact-card h2{font-size:19px; margin-bottom:20px;}
+  .role{margin-bottom:18px;}
+  .role:last-child{margin-bottom:0;}
+  .role-label{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;
+    color:var(--red); margin-bottom:4px;
+  }
+  .role-name{font-size:16px; font-weight:600;}
+  .role-phone{font-size:14px; margin-top:2px;}
+  .role-phone a{text-decoration:underline; text-underline-offset:3px;}
+  .role-phone.tba{color:#6b6455; font-style:italic;}
+
+  @media (max-width:820px){
+    .cards{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="Logo Športový klub hádzanej Rohožník">
+      <span>Športový klub hádzanej<br>Rohožník</span>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html#o-klube">O klube</a></li>
+        <li><a href="index.html#kategorie">Kategórie</a></li>
+        <li><a href="gallery.html">Galéria</a></li>
+        <li><a href="index.html#videa">Videá</a></li>
+        <li><a href="kontakty.html">Kontakt</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <div class="eyebrow">Rohožník</div>
+    <h1>Kontakty na kategórie</h1>
+    <p>Tréneri a vedúci družstiev pre jednotlivé kategórie klubu — pre otázky ohľadom tréningov, zápasov a organizácie.</p>
+    <a class="back-link" href="index.html">← Späť na hlavnú stránku</a>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cards">
+      <div class="contact-card">
+        <h2>Mladšie žiačky A</h2>
+        <div class="role">
+          <div class="role-label">Tréner</div>
+          <div class="role-name">Ľuboš Hurban</div>
+          <div class="role-phone"><a href="tel:+421903822217">+421 903 822 217</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Vedúci družstva</div>
+          <div class="role-name">Martin Šraga</div>
+          <div class="role-phone"><a href="tel:+421907655169">+421 907 655 169</a></div>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <h2>Mladšie žiačky B</h2>
+        <div class="role">
+          <div class="role-label">Tréner</div>
+          <div class="role-name">Robo Baláž</div>
+          <div class="role-phone tba">Telefón bude doplnený</div>
+        </div>
+        <div class="role">
+          <div class="role-label">Vedúci družstva</div>
+          <div class="role-name">Vojto Planka</div>
+          <div class="role-phone tba">Telefón bude doplnený</div>
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <h2>Staršie žiačky</h2>
+        <div class="role">
+          <div class="role-label">Tréner</div>
+          <div class="role-name">Ladislav Topolčány</div>
+          <div class="role-phone"><a href="tel:+421902576937">+421 902 576 937</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Vedúci družstva</div>
+          <div class="role-name">Jozef Majerský</div>
+          <div class="role-phone"><a href="tel:+421907707978">+421 907 707 978</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="background:var(--blue-dark); color:#DDE4F1; padding:40px 0;">
+  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:13px;">
+    <span>© 2026 Športový klub hádzanej Rohožník</span>
+    <a href="index.html#kontakt" style="text-decoration:underline; text-underline-offset:3px;">Všeobecný kontakt klubu</a>
+  </div>
+</footer>
+
+</body>
+</html>
