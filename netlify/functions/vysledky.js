@@ -1,17 +1,22 @@
 // Netlify Function: vysledky
-// Stiahne zápasy klubu ŠK Hádzanej Rohožník priamo zo stránky Slovenského zväzu hádzanej
-// (www.slovakhandball.sk) pre 3 kategórie a vráti ich ako JSON.
+// Stiahne zápasy klubu ŠK Hádzanej Rohožník / Strojár Malacky priamo zo stránky
+// Slovenského zväzu hádzanej (www.slovakhandball.sk) a vráti ich ako JSON.
 //
 // Volanie: /.netlify/functions/vysledky
-// Vráti: { mza: {results:[...], upcoming:[...]}, mzb: {...}, sz: {...}, zeny: {...},
-//          dorast_ml: {...}, dorast_st: {...}, ziaci_ml: {...}, ziaci_st: {...} }
+// Vráti: { mza, mzb, sz, zeny, dorast_ml, dorast_st,           <- dievčatá/ženy
+//          ziaci_ml, ziaci_st, dorast_ml_ch, dorast_st_ch,     <- chlapci žiactvo/dorast
+//          muzi_a, muzi_b }                                    <- chlapci muži
+// každý kľúč: {results:[...], upcoming:[...]}
 
 // Dievčenský/ženský tím sa v systéme zväzu objavuje v mierne rôznych tvaroch
 // ("Strojár Malacky/ŠKH Rohožník", "TJ Strojár Malacky / ŠKH Rohožník" ...),
 // preto jeden spoločný regex pre všetky dievčenské/ženské kategórie.
 const GIRLS_TEAM = /^(TJ\s+)?Strojár Malacky\s*\/\s*ŠKH Rohožník$/i;
-// Chlapčenský tím (žiaci, dorast) hrá len pod menom Strojár Malacky (bez Rohožníka).
+// Chlapčenský tím v kategórii žiactva hrá pod menom Strojár Malacky.
 const BOYS_TEAM = /^Strojár Malacky$/i;
+// V doraste a mužoch používa chlapčenský tím meno Záhoráci (A-tím), prípadne s "B".
+const ZAHORACI_A = /^HC Záhoráci$/i;
+const ZAHORACI_B = /^HC Záhoráci B$/i;
 
 const COMPETITIONS = {
   // --- dievčatá / ženy ---
@@ -39,7 +44,7 @@ const COMPETITIONS = {
     url: "https://www.slovakhandball.sk/competition?id=154399",
     teamMatch: GIRLS_TEAM,
   },
-  // --- chlapci ---
+  // --- chlapci: žiactvo ---
   ziaci_ml: {
     url: "https://www.slovakhandball.sk/competition?id=158788&part=366264",
     teamMatch: BOYS_TEAM,
@@ -47,6 +52,24 @@ const COMPETITIONS = {
   ziaci_st: {
     url: "https://www.slovakhandball.sk/competition?id=158787&part=366588",
     teamMatch: BOYS_TEAM,
+  },
+  // --- chlapci: dorast ---
+  dorast_ml_ch: {
+    url: "https://www.slovakhandball.sk/competition?id=154355",
+    teamMatch: ZAHORACI_A,
+  },
+  dorast_st_ch: {
+    url: "https://www.slovakhandball.sk/competition?id=154350",
+    teamMatch: ZAHORACI_A,
+  },
+  // --- chlapci: muži ---
+  muzi_a: {
+    url: "https://www.slovakhandball.sk/competition?id=154264",
+    teamMatch: ZAHORACI_A,
+  },
+  muzi_b: {
+    url: "https://www.slovakhandball.sk/competition?id=154349",
+    teamMatch: ZAHORACI_B,
   },
 };
 
