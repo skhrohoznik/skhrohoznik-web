@@ -134,6 +134,11 @@
   .tabs{
     display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px;
   }
+  .tab-group{margin-bottom:28px;}
+  .tab-group-label{
+    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
+    color:#6b6455; margin-bottom:10px;
+  }
   .tab-btn{
     font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:14px;
     background:transparent; border:2px solid var(--ink); color:var(--ink);
@@ -252,6 +257,7 @@
       <ul>
         <li><a href="#o-klube">O klube</a></li>
         <li><a href="#kategorie">Kategórie</a></li>
+        <li><a href="chlapci.html">Chlapci</a></li>
         <li><a href="gallery.html">Galéria</a></li>
         <li><a href="#videa">Videá</a></li>
         <li><a href="kontakty.html">Kontakt</a></li>
@@ -268,7 +274,7 @@
       <div class="hero-text">
         <div class="eyebrow">Rohožník</div>
         <h1>Hádzaná, ktorá<br>drží spolu</h1>
-        <p>Športový klub hádzanej Rohožník vychováva mladé hráčky od mini až po staršie žiačky.</p>
+        <p>Športový klub hádzanej Rohožník vychováva mladé hráčky od mini až po staršie žiačky. Sledujte výsledky, fotky a videá z ihriska.</p>
         <p>Táto stránka je miesto, kde nájdete aktuálne výsledky, tabuľky, fotky z tréningov a zápasov aj odkazy na videá z ihriska.</p>
         <div class="hero-actions">
           <a href="#kategorie" class="btn btn-primary">Výsledky kategórií</a>
@@ -304,13 +310,25 @@
       <h2>Kategórie a výsledky</h2>
     </div>
 
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="mza">Mladšie žiačky A</button>
-      <button class="tab-btn" data-tab="mzb">Mladšie žiačky B</button>
-      <button class="tab-btn" data-tab="sz">Staršie žiačky</button>
+    <div class="tab-group">
+      <div class="tab-group-label">Ženy a dorastenky</div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="zeny">Ženy</button>
+        <button class="tab-btn" data-tab="dorast_st">Staršie dorastenky</button>
+        <button class="tab-btn" data-tab="dorast_ml">Mladšie dorastenky</button>
+      </div>
     </div>
 
-    <div class="tab-panel active" id="mza">
+    <div class="tab-group">
+      <div class="tab-group-label">Žiactvo</div>
+      <div class="tabs">
+        <button class="tab-btn" data-tab="sz">Staršie žiačky</button>
+        <button class="tab-btn" data-tab="mza">Mladšie žiačky A</button>
+        <button class="tab-btn" data-tab="mzb">Mladšie žiačky B</button>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="mza">
       <div class="upcoming" id="upcoming-mza"></div>
       <p class="standing-note" data-note="mza">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
       <table class="results">
@@ -334,6 +352,33 @@
       <table class="results">
         <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
         <tbody id="tbody-sz"></tbody>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="dorast_ml">
+      <div class="upcoming" id="upcoming-dorast_ml"></div>
+      <p class="standing-note" data-note="dorast_ml">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-dorast_ml"></tbody>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="dorast_st">
+      <div class="upcoming" id="upcoming-dorast_st"></div>
+      <p class="standing-note" data-note="dorast_st">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-dorast_st"></tbody>
+      </table>
+    </div>
+
+    <div class="tab-panel active" id="zeny">
+      <div class="upcoming" id="upcoming-zeny"></div>
+      <p class="standing-note" data-note="zeny">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-zeny"></tbody>
       </table>
     </div>
   </div>
@@ -393,9 +438,9 @@
     </div>
     <div class="maps-grid">
       <div class="map-item">
-        <p>Vonkajšie ihrisko</p>
+        <p>Vonkajšie ihrisko — F548+V3 Rohožník</p>
         <iframe class="map-frame" loading="lazy"
-          src="https://www.google.com/maps?q=48.457234,17.165151&output=embed">
+          src="https://www.google.com/maps?q=F548%2BV3%20Roho%C5%BEn%C3%ADk&output=embed">
         </iframe>
       </div>
       <div class="map-item">
@@ -516,7 +561,7 @@
       return r.json();
     })
     .then(data => {
-      ['mza', 'mzb', 'sz'].forEach(key => {
+      ['mza', 'mzb', 'sz', 'dorast_ml', 'dorast_st', 'zeny'].forEach(key => {
         if (data[key] && data[key].error) {
           document.querySelector('.standing-note[data-note="' + key + '"]').textContent =
             'Výsledky sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.';
@@ -527,7 +572,7 @@
       });
     })
     .catch(() => {
-      ['mza', 'mzb', 'sz'].forEach(key => {
+      ['mza', 'mzb', 'sz', 'dorast_ml', 'dorast_st', 'zeny'].forEach(key => {
         const note = document.querySelector('.standing-note[data-note="' + key + '"]');
         if (note) note.textContent = 'Automatické výsledky sa nepodarilo načítať. Sledujte priamo na slovakhandball.sk.';
       });

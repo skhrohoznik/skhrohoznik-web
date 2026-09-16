@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chlapci — Strojár Malacky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#173B73;
+    --blue-dark:#0B2547;
+    --accent:#3D7BFF;
+    --cream:#F5F7FA;
+    --ink:#12161F;
+    --line:#DCE2EA;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Space Grotesk', sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  h1,h2,h3{
+    font-family:'Archivo Black', sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--cream);
+    border-bottom:3px solid var(--ink);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 28px;
+  }
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+  .brand img{width:44px; height:44px;}
+  .brand span{font-size:15px; line-height:1.15; max-width:190px; color:var(--ink);}
+  nav ul{
+    display:flex; gap:26px; list-style:none;
+    font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  nav a{text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px;}
+  nav a:hover{border-color:var(--accent);}
+  @media (max-width:760px){ nav ul{display:none;} }
+
+  .hero{
+    background:var(--blue); color:#fff; padding:64px 0 72px; position:relative; overflow:hidden;
+  }
+  .hero .eyebrow{font-size:14px; font-weight:600; letter-spacing:0.08em; color:var(--accent); margin-bottom:14px;}
+  .hero h1{font-size:clamp(34px,5vw,54px); line-height:1.05; max-width:640px;}
+  .hero p{margin-top:16px; max-width:480px; color:#C9D6EE; font-size:16px;}
+  .hero-grid{display:flex; align-items:center; gap:48px; justify-content:space-between;}
+  .hero-badge{
+    flex:0 0 auto; width:200px; height:200px; border-radius:50%;
+    background:#fff; box-shadow:0 18px 40px rgba(0,0,0,0.28);
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .hero-badge img{width:78%; height:78%; object-fit:contain;}
+  @media (max-width:760px){
+    .hero-grid{flex-direction:column; align-items:flex-start; gap:28px;}
+    .hero-badge{width:140px; height:140px;}
+  }
+  .back-link{
+    display:inline-block; margin-top:26px; font-size:14px; font-weight:600;
+    text-decoration:none; border-bottom:2px solid var(--accent); padding-bottom:2px;
+  }
+
+  section{padding:64px 0;}
+  .section-head{
+    display:flex; align-items:baseline; gap:16px; margin-bottom:32px;
+    border-bottom:3px solid var(--ink); padding-bottom:14px;
+  }
+  .section-head h2{font-size:clamp(24px,3.5vw,34px);}
+
+  .tabs{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px;}
+  .tab-group{margin-bottom:28px;}
+  .tab-group-label{
+    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
+    color:#6b7482; margin-bottom:10px;
+  }
+  .tab-placeholder{
+    border:2px dashed var(--line); padding:20px; font-size:14px; color:#6b7482;
+  }
+  .tab-btn{
+    font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:14px;
+    background:transparent; border:2px solid var(--ink); color:var(--ink);
+    padding:10px 18px; cursor:pointer;
+  }
+  .tab-btn.active{background:var(--ink); color:#fff;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  .upcoming{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:22px;}
+  .upcoming-card{
+    border:2px solid var(--ink); padding:12px 16px; font-size:13px;
+    display:flex; flex-direction:column; gap:2px; min-width:200px;
+  }
+  .upcoming-card .uc-date{font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:11px; color:var(--accent);}
+  .upcoming-card .uc-match{font-size:14px;}
+  .upcoming-card .uc-time{color:#6b7482; font-size:12px;}
+
+  .standing-note{font-size:13px; color:#6b7482; margin-bottom:18px;}
+
+  table.results{width:100%; border-collapse:collapse; font-size:14px; margin-bottom:8px;}
+  table.results th{
+    text-align:left; text-transform:uppercase; font-size:11px; letter-spacing:0.05em;
+    color:#6b7482; padding:8px 10px; border-bottom:2px solid var(--ink);
+  }
+  table.results td{padding:12px 10px; border-bottom:1px solid var(--line);}
+  table.results tr:last-child td{border-bottom:none;}
+  .score{font-weight:700;}
+  .win{color:#166534;}
+  .loss{color:#B91C1C;}
+
+  footer{background:var(--blue-dark); color:#C9D6EE; padding:40px 0;}
+  .fine{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-size:13px;}
+  .fine a{text-decoration:underline; text-underline-offset:3px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="logo.png" alt="Logo Športový klub hádzanej Rohožník">
+      <span>Športový klub hádzanej<br>Rohožník</span>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html#o-klube">O klube</a></li>
+        <li><a href="index.html#kategorie">Dievčatá</a></li>
+        <li><a href="chlapci.html">Chlapci</a></li>
+        <li><a href="gallery.html">Galéria</a></li>
+        <li><a href="kontakty.html">Kontakt</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Strojár Malacky</div>
+        <h1>Chlapčenská hádzaná</h1>
+        <p>Starší a mladší žiaci hrajúci pod hlavičkou TJ Strojár Malacky — výsledky a najbližšie zápasy priamo zo Slovenského zväzu hádzanej.</p>
+        <a class="back-link" href="index.html">← Späť na hlavnú stránku</a>
+      </div>
+      <div class="hero-badge">
+        <img src="zahoraci.png" alt="Logo Strojár Malacky - Záhoráci">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kategorie">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Kategórie a výsledky</h2>
+    </div>
+
+    <div class="tab-group">
+      <div class="tab-group-label">Dorast</div>
+      <div class="tab-placeholder">Výsledky dorastu budú doplnené čoskoro.</div>
+    </div>
+
+    <div class="tab-group">
+      <div class="tab-group-label">Žiactvo</div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="ziaci_ml">Mladší žiaci</button>
+        <button class="tab-btn" data-tab="ziaci_st">Starší žiaci</button>
+      </div>
+    </div>
+
+    <div class="tab-panel active" id="ziaci_ml">
+      <div class="upcoming" id="upcoming-ziaci_ml"></div>
+      <p class="standing-note" data-note="ziaci_ml">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-ziaci_ml"></tbody>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="ziaci_st">
+      <div class="upcoming" id="upcoming-ziaci_st"></div>
+      <p class="standing-note" data-note="ziaci_st">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-ziaci_st"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap fine">
+    <span>© 2026 Športový klub hádzanej Rohožník</span>
+    <a href="kontakty.html">Kontakty na kategórie</a>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  function renderResults(key, matches) {
+    const tbody = document.getElementById('tbody-' + key);
+    const note = document.querySelector('.standing-note[data-note="' + key + '"]');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (!matches || !Array.isArray(matches) || matches.length === 0) {
+      note.textContent = 'Zatiaľ žiadne odohrané zápasy v tejto sezóne.';
+      return;
+    }
+
+    note.textContent = 'Zdroj: Slovenský zväz hádzanej (slovakhandball.sk), automaticky aktualizované.';
+
+    matches.forEach(m => {
+      const tr = document.createElement('tr');
+      const opponentLabel = m.home ? ('Malacky – ' + m.opponent) : (m.opponent + ' – Malacky');
+      const resultClass = m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '');
+      tr.innerHTML =
+        '<td>' + m.date + '</td>' +
+        '<td>' + opponentLabel + '</td>' +
+        '<td class="score">' + m.score + '</td>' +
+        '<td class="' + resultClass + '">' + m.result + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderUpcoming(key, upcoming) {
+    const box = document.getElementById('upcoming-' + key);
+    if (!box) return;
+    box.innerHTML = '';
+    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) return;
+
+    upcoming.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'upcoming-card';
+      const matchLabel = m.home ? ('Malacky – ' + m.opponent) : (m.opponent + ' – Malacky');
+      const timeLabel = m.time ? m.time : 'čas bude upresnený';
+      card.innerHTML =
+        '<span class="uc-date">' + m.date + '</span>' +
+        '<span class="uc-match">' + matchLabel + '</span>' +
+        '<span class="uc-time">' + timeLabel + '</span>';
+      box.appendChild(card);
+    });
+  }
+
+  fetch('/.netlify/functions/vysledky')
+    .then(r => {
+      if (!r.ok) throw new Error('Function error ' + r.status);
+      return r.json();
+    })
+    .then(data => {
+      ['ziaci_ml', 'ziaci_st'].forEach(key => {
+        if (data[key] && data[key].error) {
+          document.querySelector('.standing-note[data-note="' + key + '"]').textContent =
+            'Výsledky sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.';
+        } else {
+          renderResults(key, data[key] && data[key].results);
+          renderUpcoming(key, data[key] && data[key].upcoming);
+        }
+      });
+    })
+    .catch(() => {
+      ['ziaci_ml', 'ziaci_st'].forEach(key => {
+        const note = document.querySelector('.standing-note[data-note="' + key + '"]');
+        if (note) note.textContent = 'Automatické výsledky sa nepodarilo načítať. Sledujte priamo na slovakhandball.sk.';
+      });
+    });
+</script>
+
+</body>
+</html>
