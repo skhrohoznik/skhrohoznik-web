@@ -3,13 +3,21 @@
 // (www.slovakhandball.sk) pre 3 kategórie a vráti ich ako JSON.
 //
 // Volanie: /.netlify/functions/vysledky
-// Vráti: { mza: {results:[...], upcoming:[...]}, mzb: {...}, sz: {...} }
+// Vráti: { mza: {results:[...], upcoming:[...]}, mzb: {...}, sz: {...}, zeny: {...},
+//          dorast_ml: {...}, dorast_st: {...}, ziaci_ml: {...}, ziaci_st: {...} }
+
+// Dievčenský/ženský tím sa v systéme zväzu objavuje v mierne rôznych tvaroch
+// ("Strojár Malacky/ŠKH Rohožník", "TJ Strojár Malacky / ŠKH Rohožník" ...),
+// preto jeden spoločný regex pre všetky dievčenské/ženské kategórie.
+const GIRLS_TEAM = /^(TJ\s+)?Strojár Malacky\s*\/\s*ŠKH Rohožník$/i;
+// Chlapčenský tím (žiaci, dorast) hrá len pod menom Strojár Malacky (bez Rohožníka).
+const BOYS_TEAM = /^Strojár Malacky$/i;
 
 const COMPETITIONS = {
+  // --- dievčatá / ženy ---
   sz: {
     url: "https://www.slovakhandball.sk/competition?id=158786&part=366691",
-    // presný názov tímu v tejto kategórii
-    teamMatch: /^Strojár Malacky\/ŠKH Rohožník$/i,
+    teamMatch: GIRLS_TEAM,
   },
   mza: {
     url: "https://www.slovakhandball.sk/competition?id=158785&part=366361",
@@ -18,6 +26,27 @@ const COMPETITIONS = {
   mzb: {
     url: "https://www.slovakhandball.sk/competition?id=158785&part=366256",
     teamMatch: /^Malacky\s*\/\s*Rohožník B$/i,
+  },
+  zeny: {
+    url: "https://www.slovakhandball.sk/competition?id=154381",
+    teamMatch: GIRLS_TEAM,
+  },
+  dorast_ml: {
+    url: "https://www.slovakhandball.sk/competition?id=154400",
+    teamMatch: GIRLS_TEAM,
+  },
+  dorast_st: {
+    url: "https://www.slovakhandball.sk/competition?id=154399",
+    teamMatch: GIRLS_TEAM,
+  },
+  // --- chlapci ---
+  ziaci_ml: {
+    url: "https://www.slovakhandball.sk/competition?id=158788&part=366264",
+    teamMatch: BOYS_TEAM,
+  },
+  ziaci_st: {
+    url: "https://www.slovakhandball.sk/competition?id=158787&part=366588",
+    teamMatch: BOYS_TEAM,
   },
 };
 
