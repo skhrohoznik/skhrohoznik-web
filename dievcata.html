@@ -212,13 +212,13 @@
   .map-frame{
     width:100%; aspect-ratio:4/3; border:2px solid var(--ink); filter:grayscale(0.15);
   }
-  .maps-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  .maps-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:24px;}
   .map-item p{margin-bottom:10px; color:#6b6455; font-size:14px; font-weight:600;}
   @media (max-width:760px){ .maps-grid{grid-template-columns:1fr;} }
 
   /* ---- FACEBOOK ---- */
-  .fb-wrap{display:flex; justify-content:center; flex-wrap:wrap; gap:24px;}
-  .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
+  .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
   .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
 
   /* ---- KONTAKT ---- */
@@ -430,7 +430,7 @@
   <div class="wrap">
     <div class="section-head">
       <span class="num">05</span>
-      <h2>Kde nás nájdete</h2>
+      <h2>Naše haly</h2>
     </div>
     <div class="maps-grid">
       <div class="map-item">
@@ -445,12 +445,18 @@
           src="https://www.google.com/maps?q=48.457725,17.162437&output=embed">
         </iframe>
       </div>
+      <div class="map-item">
+        <p>Šport Aréna Malacky</p>
+        <iframe class="map-frame" loading="lazy"
+          src="https://www.google.com/maps?q=%C5%A0port%20Ar%C3%A9na%20Malacky&output=embed">
+        </iframe>
+      </div>
     </div>
   </div>
 </section>
 
 <section>
-  <div class="wrap">
+  <div class="wrap-wide">
     <div class="section-head">
       <span class="num">06</span>
       <h2>Sledujte nás</h2>
