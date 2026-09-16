@@ -112,6 +112,13 @@
     overflow:hidden; box-shadow:0 8px 18px rgba(0,0,0,0.15);
   }
   .split-badge img{width:80%; height:80%; object-fit:contain;}
+  .split-badge-dual{display:flex; align-items:center; justify-content:center; gap:8px;}
+  .split-badge-dual .mini-badge{
+    width:64px; height:64px; border-radius:50%; background:#fff;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+    box-shadow:0 6px 14px rgba(0,0,0,0.15);
+  }
+  .split-badge-dual .mini-badge img{width:82%; height:82%; object-fit:contain;}
   .split-card h2{font-size:22px;}
   .split-card p{font-size:14px; color:#5c5648; max-width:32ch;}
   .split-card .go{
@@ -169,11 +176,16 @@
       </a>
 
       <a class="split-card" href="chlapci.html">
-        <div class="split-badge" style="background:#fff;">
-          <img src="zahoraci.png" alt="Logo Strojár Malacky - Záhoráci">
+        <div class="split-badge-dual">
+          <div class="mini-badge">
+            <img src="zahoraci.png" alt="Logo HC Záhoráci">
+          </div>
+          <div class="mini-badge">
+            <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
+          </div>
         </div>
         <h2>Muži a chlapci</h2>
-        <p>Muži, dorastenci a žiaci — TJ Strojár Malacky</p>
+        <p>HC Záhoráci / TJ Strojár Malacky</p>
         <span class="go">Vstúpiť →</span>
       </a>
     </div>
