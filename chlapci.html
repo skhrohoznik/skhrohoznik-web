@@ -172,24 +172,62 @@
     </div>
 
     <div class="tab-group">
+      <div class="tab-group-label">Muži</div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="muzi_a">Muži A (Extraliga)</button>
+        <button class="tab-btn" data-tab="muzi_b">Muži B (1. liga)</button>
+      </div>
+    </div>
+
+    <div class="tab-group">
       <div class="tab-group-label">Dorast</div>
-      <div class="tab-placeholder">Výsledky dorastu budú doplnené čoskoro.</div>
+      <div class="tabs">
+        <button class="tab-btn" data-tab="dorast_st_ch">Starší dorastenci</button>
+        <button class="tab-btn" data-tab="dorast_ml_ch">Mladší dorastenci</button>
+      </div>
     </div>
 
     <div class="tab-group">
       <div class="tab-group-label">Žiactvo</div>
       <div class="tabs">
-        <button class="tab-btn active" data-tab="ziaci_ml">Mladší žiaci</button>
         <button class="tab-btn" data-tab="ziaci_st">Starší žiaci</button>
+        <button class="tab-btn" data-tab="ziaci_ml">Mladší žiaci</button>
       </div>
     </div>
 
-    <div class="tab-panel active" id="ziaci_ml">
-      <div class="upcoming" id="upcoming-ziaci_ml"></div>
-      <p class="standing-note" data-note="ziaci_ml">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+    <div class="tab-panel active" id="muzi_a">
+      <div class="upcoming" id="upcoming-muzi_a"></div>
+      <p class="standing-note" data-note="muzi_a">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
       <table class="results">
         <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
-        <tbody id="tbody-ziaci_ml"></tbody>
+        <tbody id="tbody-muzi_a"></tbody>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="muzi_b">
+      <div class="upcoming" id="upcoming-muzi_b"></div>
+      <p class="standing-note" data-note="muzi_b">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-muzi_b"></tbody>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="dorast_st_ch">
+      <div class="upcoming" id="upcoming-dorast_st_ch"></div>
+      <p class="standing-note" data-note="dorast_st_ch">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-dorast_st_ch"></tbody>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="dorast_ml_ch">
+      <div class="upcoming" id="upcoming-dorast_ml_ch"></div>
+      <p class="standing-note" data-note="dorast_ml_ch">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-dorast_ml_ch"></tbody>
       </table>
     </div>
 
@@ -199,6 +237,15 @@
       <table class="results">
         <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
         <tbody id="tbody-ziaci_st"></tbody>
+      </table>
+    </div>
+
+    <div class="tab-panel" id="ziaci_ml">
+      <div class="upcoming" id="upcoming-ziaci_ml"></div>
+      <p class="standing-note" data-note="ziaci_ml">Načítavam výsledky zo Slovenského zväzu hádzanej…</p>
+      <table class="results">
+        <thead><tr><th>Dátum</th><th>Zápas</th><th>Skóre</th><th>Výsledok</th></tr></thead>
+        <tbody id="tbody-ziaci_ml"></tbody>
       </table>
     </div>
   </div>
@@ -272,7 +319,7 @@
       return r.json();
     })
     .then(data => {
-      ['ziaci_ml', 'ziaci_st'].forEach(key => {
+      ['muzi_a', 'muzi_b', 'dorast_st_ch', 'dorast_ml_ch', 'ziaci_st', 'ziaci_ml'].forEach(key => {
         if (data[key] && data[key].error) {
           document.querySelector('.standing-note[data-note="' + key + '"]').textContent =
             'Výsledky sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.';
@@ -283,7 +330,7 @@
       });
     })
     .catch(() => {
-      ['ziaci_ml', 'ziaci_st'].forEach(key => {
+      ['muzi_a', 'muzi_b', 'dorast_st_ch', 'dorast_ml_ch', 'ziaci_st', 'ziaci_ml'].forEach(key => {
         const note = document.querySelector('.standing-note[data-note="' + key + '"]');
         if (note) note.textContent = 'Automatické výsledky sa nepodarilo načítať. Sledujte priamo na slovakhandball.sk.';
       });
