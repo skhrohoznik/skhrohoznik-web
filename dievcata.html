@@ -182,16 +182,22 @@
       display: flex;
       align-items: center;
       gap: 48px;
-      justify-content: space-between;
+    }
+
+    .hero-text {
+      max-width: 640px;
     }
 
     .hero-badge {
-      flex: 0 0 auto;
-      margin-left: auto;
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 14px;
+      z-index: 3;
     }
 
     .hero-badge .mini-badge {
@@ -217,6 +223,11 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 28px;
+      }
+
+      .hero-badge {
+        position: static;
+        transform: none;
       }
 
       .hero-badge .mini-badge {
