@@ -147,7 +147,9 @@
     .hero {
       position: relative;
       overflow: hidden;
-      background: var(--blue);
+      background: linear-gradient(rgba(23,59,115,0.86), rgba(14,39,73,0.92)), url('skok.jpg');
+      background-size: cover;
+      background-position: center 20%;
       color: #fff;
       padding: 76px 0 96px;
     }
@@ -363,6 +365,10 @@
       margin-bottom: 14px;
       padding-bottom: 10px;
       border-bottom: 2px solid var(--ink);
+    }
+
+    .team-photo{
+      width:100%; aspect-ratio:16/10; object-fit:cover; margin-bottom:14px; border:1px solid var(--line);
     }
 
     table.results {
@@ -767,6 +773,7 @@
         </div>
         <div class="category-card" id="dorast_st">
           <h3>Staršie dorastenky</h3>
+          <img class="team-photo" src="tim-dorast-st-d.jpg" alt="Tím Staršie dorastenky">
           <div class="upcoming" id="upcoming-dorast_st"></div>
           <p class="standing-note" data-note="dorast_st">Načítavam výsledky…</p>
           <table class="results">
@@ -783,6 +790,7 @@
         </div>
         <div class="category-card" id="dorast_ml">
           <h3>Mladšie dorastenky</h3>
+          <img class="team-photo" src="tim-dorast-ml-d.jpg" alt="Tím Mladšie dorastenky">
           <div class="upcoming" id="upcoming-dorast_ml"></div>
           <p class="standing-note" data-note="dorast_ml">Načítavam výsledky…</p>
           <table class="results">
@@ -802,6 +810,7 @@
       <div class="category-grid">
         <div class="category-card" id="sz">
           <h3>Staršie žiačky</h3>
+          <img class="team-photo" src="tim-sz.jpg" alt="Tím Staršie žiačky">
           <div class="upcoming" id="upcoming-sz"></div>
           <p class="standing-note" data-note="sz">Načítavam výsledky…</p>
           <table class="results">
@@ -834,6 +843,7 @@
         </div>
         <div class="category-card" id="mzb">
           <h3>Mladšie žiačky B</h3>
+          <img class="team-photo" src="tim-mzb.jpg" alt="Tím Mladšie žiačky B">
           <div class="upcoming" id="upcoming-mzb"></div>
           <p class="standing-note" data-note="mzb">Načítavam výsledky…</p>
           <table class="results">
