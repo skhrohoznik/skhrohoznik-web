@@ -1,0 +1,8 @@
+.git
+.gitignore
+.wrangler
+wrangler.jsonc
+worker.js
+netlify.toml
+netlify
+skhrohoznik-web.zip
