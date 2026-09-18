@@ -410,7 +410,7 @@
 
   const PAGE_CATEGORY_KEYS = ["zeny", "dorast_st", "dorast_ml"];
 
-  fetch('/.netlify/functions/vysledky')
+  fetch('/vysledky')
     .then(r => { if (!r.ok) throw new Error('Function error ' + r.status); return r.json(); })
     .then(data => {
       PAGE_CATEGORY_KEYS.forEach(key => {

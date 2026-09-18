@@ -207,7 +207,7 @@
     return new Date(year, month - 1, day);
   }
 
-  fetch('/.netlify/functions/vysledky')
+  fetch('/vysledky')
     .then(r => r.json())
     .then(data => {
       let soonest = null;

@@ -437,7 +437,7 @@
 
   const PAGE_CATEGORY_KEYS = ["sz", "mza", "mzb"];
 
-  fetch('/.netlify/functions/vysledky')
+  fetch('/vysledky')
     .then(r => { if (!r.ok) throw new Error('Function error ' + r.status); return r.json(); })
     .then(data => {
       PAGE_CATEGORY_KEYS.forEach(key => {
