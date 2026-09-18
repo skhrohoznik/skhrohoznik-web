@@ -107,6 +107,12 @@
   .team-photo{
       width:100%; aspect-ratio:16/10; object-fit:cover; margin-bottom:14px; border:1px solid var(--line);
     }
+  .poster-grid{
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;
+    }
+  .poster-grid img{
+      width:100%; height:auto; display:block; border:1px solid var(--line);
+    }
   .upcoming {
       display: flex;
       flex-wrap: wrap;
@@ -313,15 +319,9 @@
 
     <section class="block">
       <div class="section-head"><h2>Rozvrh tréningov</h2></div>
-      <div class="category-grid">
-        <div class="category-card">
-          <h3>Dievčatá — SŠ Rohožník</h3>
-          <img class="team-photo" src="nabor-dievcata.jpg" alt="Nábor dievčatá — rozvrh tréningov, SŠ Rohožník">
-        </div>
-        <div class="category-card">
-          <h3>Chlapci — ZŠ Štúrova / ZŠ J. Dérera, Malacky</h3>
-          <img class="team-photo" src="nabor-chlapci.jpg" alt="Nábor chlapci — rozvrh tréningov, Malacky">
-        </div>
+      <div class="poster-grid">
+        <img src="nabor-dievcata.jpg" alt="Nábor dievčatá — rozvrh tréningov, SŠ Rohožník">
+        <img src="nabor-chlapci.jpg" alt="Nábor chlapci — rozvrh tréningov, Malacky">
       </div>
     </section>
 
