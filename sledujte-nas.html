@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galéria — Hádzaná Záhorie</title>
+<title>Sledujte nás — Hádzaná Záhorie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -255,7 +255,7 @@
   main{max-width:1200px;}
   .page-title{font-size:clamp(26px,4vw,38px); margin-bottom:12px;}
   .page-intro{color:#5c5648; font-size:15px; max-width:640px; margin-bottom:8px;}
-  .block{margin-top:32px;}
+  .block{margin-top:44px;}
 </style>
 </head>
 <body>
@@ -288,29 +288,75 @@
         <li><a href="ziaci.html">Žiaci</a></li>
         <li><a href="nabor.html">Nábor</a></li>
         <li><a href="klub.html">Klub</a></li>
-        <li><a href="sledujte-nas.html">Sledujte nás</a></li>
+        <li><a href="gallery.html">Galéria</a></li>
       </ul>
     </nav>
   </aside>
 
   <main>
-    <h1 class="page-title">Galéria</h1>
-    <p class="page-intro">Fotky z tréningov, zápasov a turnajov všetkých klubov.</p>
+    <h1 class="page-title">Sledujte nás</h1>
+    <p class="page-intro">Zostrihy zápasov, tréningy a novinky zo všetkých troch klubov na jednom mieste.</p>
+
     <section class="block">
-      <div class="gallery-grid">
-        <div>Foto zo zápasu</div>
-        <div>Tréning</div>
-        <div>Tím</div>
-        <div>Zápas</div>
-        <div>Oslava výhry</div>
-        <div>Prípravka</div>
-        <div>Turnaj</div>
-        <div>Ihrisko</div>
+      <div class="section-head"><h2>YouTube</h2></div>
+      <a class="video-card" href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener">
+        <div class="play">▶</div>
+        <div>
+          <div class="vt">YouTube kanál klubu</div>
+          <div class="vs">Zostrihy zápasov, tréningy a ďalšie videá — @SKHRohoznik_StrojarMalacky</div>
+        </div>
+      </a>
+    </section>
+
+    <section class="block">
+      <div class="section-head"><h2>Instagram</h2></div>
+      <a class="video-card" href="#" target="_blank" rel="noopener">
+        <div class="play" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);">IG</div>
+        <div>
+          <div class="vt">Instagram klubu</div>
+          <div class="vs">Odkaz zatiaľ chýba — pošli mi ho a doplním priamo sem.</div>
+        </div>
+      </a>
+    </section>
+
+    <section class="block">
+      <div class="section-head"><h2>Facebook</h2></div>
+      <div class="fb-wrap">
+        <div class="fb-item">
+          <span class="fb-label">ŠKH Rohožník</span>
+          <div class="fb-page"
+            data-href="https://www.facebook.com/skhrohoznik.sk/"
+            data-tabs="timeline" data-width="360" data-height="400"
+            data-small-header="false" data-adapt-container-width="true"
+            data-hide-cover="false" data-show-facepile="true">
+          </div>
+        </div>
+        <div class="fb-item">
+          <span class="fb-label">HC Záhoráci</span>
+          <div class="fb-page"
+            data-href="https://www.facebook.com/hczahoraci/"
+            data-tabs="timeline" data-width="360" data-height="400"
+            data-small-header="false" data-adapt-container-width="true"
+            data-hide-cover="false" data-show-facepile="true">
+          </div>
+        </div>
+        <div class="fb-item">
+          <span class="fb-label">Handball Malacky</span>
+          <div class="fb-page"
+            data-href="https://www.facebook.com/handballmalacky/"
+            data-tabs="timeline" data-width="360" data-height="400"
+            data-small-header="false" data-adapt-container-width="true"
+            data-hide-cover="false" data-show-facepile="true">
+          </div>
+        </div>
       </div>
     </section>
+    <div id="fb-root"></div>
 
   </main>
 </div>
-
+<script async defer crossorigin="anonymous"
+  src="https://connect.facebook.net/sk_SK/sdk.js#xfbml=1&version=v19.0">
+</script>
 </body>
 </html>

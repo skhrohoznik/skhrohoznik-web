@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galéria — Hádzaná Záhorie</title>
+<title>Ženy a dorastenky — Hádzaná Záhorie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -255,7 +255,7 @@
   main{max-width:1200px;}
   .page-title{font-size:clamp(26px,4vw,38px); margin-bottom:12px;}
   .page-intro{color:#5c5648; font-size:15px; max-width:640px; margin-bottom:8px;}
-  .block{margin-top:32px;}
+  .block{margin-top:44px;}
 </style>
 </head>
 <body>
@@ -282,35 +282,153 @@
     <nav>
       <ul>
         <li><a href="index.html">Domov</a></li>
-        <li><a href="zeny-dorastenky.html">Ženy a dorastenky</a></li>
         <li><a href="ziacky.html">Žiačky</a></li>
         <li><a href="muzi-dorastenci.html">Muži a dorastenci</a></li>
         <li><a href="ziaci.html">Žiaci</a></li>
         <li><a href="nabor.html">Nábor</a></li>
         <li><a href="klub.html">Klub</a></li>
         <li><a href="sledujte-nas.html">Sledujte nás</a></li>
+        <li><a href="gallery.html">Galéria</a></li>
       </ul>
     </nav>
   </aside>
 
   <main>
-    <h1 class="page-title">Galéria</h1>
-    <p class="page-intro">Fotky z tréningov, zápasov a turnajov všetkých klubov.</p>
+    <h1 class="page-title">Ženy a dorastenky</h1>
+    <p class="page-intro">Ženy, staršie a mladšie dorastenky — Športový klub hádzanej Rohožník.</p>
+
     <section class="block">
-      <div class="gallery-grid">
-        <div>Foto zo zápasu</div>
-        <div>Tréning</div>
-        <div>Tím</div>
-        <div>Zápas</div>
-        <div>Oslava výhry</div>
-        <div>Prípravka</div>
-        <div>Turnaj</div>
-        <div>Ihrisko</div>
+      <div class="section-head"><h2>Výsledky a najbližšie zápasy</h2></div>
+      <div class="category-grid">
+<div class="category-card" id="zeny">
+          <h3>Ženy</h3>
+          <div class="upcoming" id="upcoming-zeny"></div>
+          <p class="standing-note" data-note="zeny">Načítavam výsledky…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Skóre</th>
+                <th>Výsledok</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-zeny"></tbody>
+          </table>
+        </div>
+<div class="category-card" id="dorast_st">
+          <h3>Staršie dorastenky</h3>
+          <img class="team-photo" src="tim-dorast-st-d.jpg" alt="Tím Staršie dorastenky">
+          <div class="upcoming" id="upcoming-dorast_st"></div>
+          <p class="standing-note" data-note="dorast_st">Načítavam výsledky…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Skóre</th>
+                <th>Výsledok</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-dorast_st"></tbody>
+          </table>
+        </div>
+<div class="category-card" id="dorast_ml">
+          <h3>Mladšie dorastenky</h3>
+          <img class="team-photo" src="tim-dorast-ml-d.jpg" alt="Tím Mladšie dorastenky">
+          <div class="upcoming" id="upcoming-dorast_ml"></div>
+          <p class="standing-note" data-note="dorast_ml">Načítavam výsledky…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Skóre</th>
+                <th>Výsledok</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-dorast_ml"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="section-head"><h2>Kontakty</h2></div>
+      <div class="cards">
+<div class="contact-card">
+        <h2>Ženy</h2>
+        <p class="pending">Kontakt bude doplnený.</p>
+      </div>
+<div class="contact-card">
+        <h2>Staršie dorastenky</h2>
+        <p class="pending">Kontakt bude doplnený.</p>
+      </div>
+<div class="contact-card">
+        <h2>Mladšie dorastenky</h2>
+        <p class="pending">Kontakt bude doplnený.</p>
+      </div>
       </div>
     </section>
 
   </main>
 </div>
+<script>
+  function renderResults(key, matches) {
+    const tbody = document.getElementById('tbody-' + key);
+    const note = document.querySelector('.standing-note[data-note="' + key + '"]');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (!matches || !Array.isArray(matches) || matches.length === 0) {
+      note.textContent = 'Zatiaľ žiadne odohrané zápasy v tejto sezóne.';
+      return;
+    }
+    note.textContent = 'Zdroj: Slovenský zväz hádzanej (slovakhandball.sk), automaticky aktualizované.';
+    matches.forEach(m => {
+      const tr = document.createElement('tr');
+      const opponentLabel = m.home ? ('Naši – ' + m.opponent) : (m.opponent + ' – Naši');
+      const resultClass = m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '');
+      tr.innerHTML = '<td>' + m.date + '</td>' + '<td>' + opponentLabel + '</td>' + '<td class="score">' + m.score + '</td>' + '<td class="' + resultClass + '">' + m.result + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
 
+  function renderUpcoming(key, upcoming) {
+    const box = document.getElementById('upcoming-' + key);
+    if (!box) return;
+    box.innerHTML = '';
+    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) return;
+    upcoming.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'upcoming-card';
+      const matchLabel = m.home ? ('Naši – ' + m.opponent) : (m.opponent + ' – Naši');
+      const timeLabel = m.time ? m.time : 'čas bude upresnený';
+      card.innerHTML = '<span class="uc-date">' + m.date + '</span>' + '<span class="uc-match">' + matchLabel + '</span>' + '<span class="uc-time">' + timeLabel + '</span>';
+      box.appendChild(card);
+    });
+  }
+
+  const PAGE_CATEGORY_KEYS = ["zeny", "dorast_st", "dorast_ml"];
+
+  fetch('/.netlify/functions/vysledky')
+    .then(r => { if (!r.ok) throw new Error('Function error ' + r.status); return r.json(); })
+    .then(data => {
+      PAGE_CATEGORY_KEYS.forEach(key => {
+        if (data[key] && data[key].error) {
+          document.querySelector('.standing-note[data-note="' + key + '"]').textContent =
+            'Výsledky sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.';
+        } else {
+          renderResults(key, data[key] && data[key].results);
+          renderUpcoming(key, data[key] && data[key].upcoming);
+        }
+      });
+    })
+    .catch(() => {
+      PAGE_CATEGORY_KEYS.forEach(key => {
+        const note = document.querySelector('.standing-note[data-note="' + key + '"]');
+        if (note) note.textContent = 'Automatické výsledky sa nepodarilo načítať. Sledujte priamo na slovakhandball.sk.';
+      });
+    });
+</script>
 </body>
 </html>
