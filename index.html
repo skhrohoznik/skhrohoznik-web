@@ -87,8 +87,7 @@
   .intro{
     background: linear-gradient(rgba(23,59,115,0.72), rgba(14,39,73,0.8)), url('hero-akcia.jpg');
     background-size: cover;
-    background-position: center 5%;
-    min-height: 340px;
+    background-position: center 25%;
     padding: 48px 40px;
     border: 2px solid var(--ink);
     color: #fff;
@@ -168,18 +167,7 @@
       <div class="section-head">
         <h2>Aktuality</h2>
       </div>
-      <div class="news-grid">
-        <div class="news-card">
-          <div class="news-date">Sezóna 2026/2027</div>
-          <h3>Nový ročník sa začal</h3>
-          <p>Všetky kategórie odohrali prvé kolá — výsledky nájdete na kartách jednotlivých kategórií v menu.</p>
-        </div>
-        <div class="news-card">
-          <div class="news-date">Nábor</div>
-          <h3>Hľadáme nové hráčky a hráčov</h3>
-          <p>Príď sa pozrieť na tréning — viac informácií nájdeš na karte Nábor.</p>
-        </div>
-      </div>
+      <div class="news-grid" id="news-grid"></div>
     </section>
 
     <section class="block">
@@ -197,6 +185,25 @@
 </div>
 
 <script>
+  fetch('/aktuality.json')
+    .then(r => r.json())
+    .then(items => {
+      const grid = document.getElementById('news-grid');
+      grid.innerHTML = '';
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'news-card';
+        card.innerHTML =
+          '<div class="news-date">' + item.datum + '</div>' +
+          '<h3>' + item.nadpis + '</h3>' +
+          '<p>' + item.text + '</p>';
+        grid.appendChild(card);
+      });
+    })
+    .catch(() => {
+      document.getElementById('news-grid').innerHTML =
+        '<p style="color:#5c5648;">Aktuality sa nepodarilo načítať.</p>';
+    });
   const CATEGORY_LABELS = {
     zeny: "Ženy",
     dorast_st: "Staršie dorastenky",
