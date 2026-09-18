@@ -287,6 +287,7 @@
         <li><a href="ziaci.html">Žiaci</a></li>
         <li><a href="nabor.html">Nábor</a></li>
         <li><a href="klub.html">Klub</a></li>
+        <li><a href="kontakty.html">Kontakty</a></li>
         <li><a href="sledujte-nas.html">Sledujte nás</a></li>
         <li><a href="gallery.html">Galéria</a></li>
       </ul>
@@ -408,7 +409,7 @@
     note.textContent = 'Zdroj: Slovenský zväz hádzanej (slovakhandball.sk), automaticky aktualizované.';
     matches.forEach(m => {
       const tr = document.createElement('tr');
-      const opponentLabel = m.home ? ('Naši – ' + m.opponent) : (m.opponent + ' – Naši');
+      const opponentLabel = m.home ? ('Malacky – ' + m.opponent) : (m.opponent + ' – Malacky');
       const resultClass = m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '');
       tr.innerHTML = '<td>' + m.date + '</td>' + '<td>' + opponentLabel + '</td>' + '<td class="score">' + m.score + '</td>' + '<td class="' + resultClass + '">' + m.result + '</td>';
       tbody.appendChild(tr);
@@ -423,7 +424,7 @@
     upcoming.forEach(m => {
       const card = document.createElement('div');
       card.className = 'upcoming-card';
-      const matchLabel = m.home ? ('Naši – ' + m.opponent) : (m.opponent + ' – Naši');
+      const matchLabel = m.home ? ('Malacky – ' + m.opponent) : (m.opponent + ' – Malacky');
       const timeLabel = m.time ? m.time : 'čas bude upresnený';
       card.innerHTML = '<span class="uc-date">' + m.date + '</span>' + '<span class="uc-match">' + matchLabel + '</span>' + '<span class="uc-time">' + timeLabel + '</span>';
       box.appendChild(card);

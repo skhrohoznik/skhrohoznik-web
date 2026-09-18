@@ -142,6 +142,7 @@
         <li><a href="ziaci.html">Žiaci</a></li>
         <li><a href="nabor.html">Nábor</a></li>
         <li><a href="klub.html">Klub</a></li>
+        <li><a href="kontakty.html">Kontakty</a></li>
         <li><a href="sledujte-nas.html">Sledujte nás</a></li>
         <li><a href="gallery.html">Galéria</a></li>
       </ul>
@@ -202,6 +203,14 @@
     ziaci_ml: "Mladší žiaci",
   };
 
+  const CATEGORY_CLUB = {
+    zeny: "Rohožník", dorast_st: "Rohožník", dorast_ml: "Rohožník",
+    sz: "Rohožník", mza: "Rohožník", mzb: "Rohožník",
+    muzi_a: "Malacky", muzi_b: "Malacky",
+    dorast_st_ch: "Malacky", dorast_ml_ch: "Malacky",
+    ziaci_st: "Malacky", ziaci_ml: "Malacky",
+  };
+
   function dateToObj(d) {
     const [day, month, year] = d.split(".").map(Number);
     return new Date(year, month - 1, day);
@@ -227,9 +236,10 @@
         return;
       }
 
+      const clubName = CATEGORY_CLUB[soonest.category] || 'Naši';
       const teams = soonest.home
-        ? 'Naši – ' + soonest.opponent
-        : soonest.opponent + ' – Naši';
+        ? clubName + ' – ' + soonest.opponent
+        : soonest.opponent + ' – ' + clubName;
       const timeLabel = soonest.time ? (' · ' + soonest.time) : '';
       const catLabel = CATEGORY_LABELS[soonest.category] || soonest.category;
 
