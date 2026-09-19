@@ -104,7 +104,9 @@
   .section-head h2{font-size:clamp(22px,3vw,30px);}
 
   .news-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px;}
-  .news-card{background:#fff; border:2px solid var(--ink); padding:22px;}
+  .news-card{background:#fff; border:2px solid var(--ink); overflow:hidden;}
+  .news-card .news-photo{width:100%; aspect-ratio:16/10; object-fit:cover; display:block; border-bottom:2px solid var(--ink);}
+  .news-card .news-body{padding:22px;}
   .news-date{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--red); margin-bottom:8px;}
   .news-card h3{font-size:16px; margin-bottom:8px;}
   .news-card p{font-size:14px; color:#5c5648;}
@@ -196,9 +198,12 @@
         const card = document.createElement('div');
         card.className = 'news-card';
         card.innerHTML =
+          (item.foto ? '<img class="news-photo" src="' + item.foto + '" alt="' + item.nadpis + '">' : '') +
+          '<div class="news-body">' +
           '<div class="news-date">' + item.datum + '</div>' +
           '<h3>' + item.nadpis + '</h3>' +
-          '<p>' + item.text + '</p>';
+          '<p>' + item.text + '</p>' +
+          '</div>';
         grid.appendChild(card);
       });
     })
