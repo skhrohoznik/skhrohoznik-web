@@ -105,7 +105,9 @@
 
   .news-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px;}
   .news-card{background:#fff; border:2px solid var(--ink); overflow:hidden;}
-  .news-card .news-photo{width:100%; height:220px; object-fit:contain; background:#f0ede3; display:block; border-bottom:2px solid var(--ink); cursor:zoom-in;}
+  .news-card .news-photos{display:flex; border-bottom:2px solid var(--ink);}
+  .news-card .news-photo{flex:1 1 0; width:100%; height:220px; object-fit:contain; background:#f0ede3; display:block; cursor:zoom-in; min-width:0;}
+  .news-card .news-photo + .news-photo{border-left:2px solid var(--ink);}
   .lightbox{
     display:none; position:fixed; inset:0; background:rgba(14,39,73,0.92);
     align-items:center; justify-content:center; z-index:1000; padding:30px; cursor:zoom-out;
@@ -207,8 +209,19 @@
       items.forEach(item => {
         const card = document.createElement('div');
         card.className = 'news-card';
+        let photos = [];
+        if (Array.isArray(item.fotky)) {
+          photos = item.fotky;
+        } else if (item.foto) {
+          photos = String(item.foto).split(',').map(s => s.trim()).filter(Boolean);
+        }
+        const photosHtml = photos.length
+          ? '<div class="news-photos">' +
+            photos.map(f => '<img class="news-photo" src="' + f + '" alt="' + item.nadpis + '">').join('') +
+            '</div>'
+          : '';
         card.innerHTML =
-          (item.foto ? '<img class="news-photo" src="' + item.foto + '" alt="' + item.nadpis + '">' : '') +
+          photosHtml +
           '<div class="news-body">' +
           '<div class="news-date">' + item.datum + '</div>' +
           '<h3>' + item.nadpis + '</h3>' +
