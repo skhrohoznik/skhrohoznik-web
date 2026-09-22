@@ -1,6 +1,10 @@
 [
-  { "subor": "skok.jpg", "popis": "Akcia zo zápasu" },
-  { "subor": "muzi.jpg", "popis": "Muži v akcii" },
-  { "subor": "tim-sz.jpg", "popis": "Staršie žiačky" },
-  { "subor": "tim-mzb.jpg", "popis": "Mladšie žiačky B" }
+  { "foto": "hero-akcia.jpg", "popis": "Zo zápasu" },
+  { "foto": "skok.jpg", "popis": "Skok na bránu" },
+  { "foto": "muzi.jpg", "popis": "Muži v akcii" },
+  { "foto": "akcia2.jpg", "popis": "Z tréningu" },
+  { "foto": "oslava.jpg", "popis": "Oslava výhry" },
+  { "foto": "akcia3.jpg", "popis": "Zo zápasu" },
+  { "foto": "akcia4.jpg", "popis": "Zo zápasu" },
+  { "foto": "akcia5.jpg", "popis": "Z turnaja" }
 ]
