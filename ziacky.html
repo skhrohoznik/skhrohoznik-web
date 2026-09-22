@@ -44,18 +44,19 @@
   }
   .navbar-inner{
     max-width:1200px; margin:0 auto;
-    display:flex; align-items:center; justify-content:space-between;
-    padding:14px 40px; gap:20px; flex-wrap:wrap;
+    display:flex; align-items:center; justify-content:flex-start;
+    padding:14px 40px; gap:16px; flex-wrap:wrap;
   }
-  .navbar .logos{display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
-  .navbar .logo-item{display:flex; align-items:center; gap:8px; text-decoration:none; color:inherit;}
+  .navbar .logos{display:flex; align-items:center; gap:12px; flex-wrap:wrap; flex-shrink:0;}
+  .navbar .logo-item{display:flex; align-items:center; gap:6px; text-decoration:none; color:inherit;}
   .navbar .logo-item img{
-    width:40px; height:40px; border-radius:50%; object-fit:contain; background:#fff;
+    width:36px; height:36px; border-radius:50%; object-fit:contain; background:#fff;
     box-shadow:0 2px 6px rgba(0,0,0,0.18);
   }
-  .navbar .logo-item span{font-size:12px; font-weight:700; line-height:1.15; max-width:110px;}
+  .navbar .logo-item span{font-size:12px; font-weight:700; line-height:1.15; max-width:100px;}
 
-  .navbar nav > ul{list-style:none; display:flex; align-items:center; gap:2px; flex-wrap:wrap;}
+  .navbar nav{margin-left:auto;}
+  .navbar nav > ul{list-style:none; display:flex; align-items:center; gap:2px; flex-wrap:wrap; justify-content:flex-end;}
   .navbar nav > ul > li{position:relative;}
   .navbar nav > ul > li > a, .navbar nav > ul > li > button.dd-btn{
     display:flex; align-items:center; gap:4px;
