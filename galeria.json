@@ -9,10 +9,10 @@
   },
   {
     "nazov": "Muži a dorastenci",
-    "fotky": ["muzi.jpg", "akcia3.jpg"]
+    "fotky": ["muzi.jpg", "akcia3.jpg", "akcia2.jpg"]
   },
   {
     "nazov": "Oslavy a tréningy",
-    "fotky": ["oslava.jpg", "akcia2.jpg"]
+    "fotky": ["oslava.jpg"]
   }
 ]
