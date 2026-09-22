@@ -131,8 +131,10 @@
   /* ---- HOMEPAGE CONTENT ---- */
   .intro{
     position:relative; overflow:hidden;
-    min-height: 340px;
-    border: 2px solid var(--ink);
+    width:100%;
+    min-height: 460px;
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
     color: #fff;
   }
   .intro .slide{
@@ -145,18 +147,23 @@
     background:linear-gradient(rgba(23,59,115,0.72), rgba(14,39,73,0.8));
   }
   .intro .slide.active{opacity:1;}
-  .intro-content{position:relative; z-index:2; padding:48px 40px;}
-  .intro h1{font-size:clamp(28px,4vw,44px); line-height:1.1; margin-bottom:16px; color:#fff;}
-  .intro p{max-width:640px; font-size:16px; color:#EAEEF7;}
-  .intro-dots{position:relative; z-index:2; display:flex; gap:8px; padding:0 40px 24px;}
+  .intro-content{
+    position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:80px 40px;
+  }
+  .intro h1{font-size:clamp(30px,5vw,52px); line-height:1.1; margin-bottom:18px; color:#fff;}
+  .intro p{max-width:640px; font-size:17px; color:#EAEEF7;}
+  .intro-dots{
+    position:relative; z-index:2; max-width:1200px; margin:0 auto; display:flex; gap:8px; padding:0 40px 28px;
+  }
   .intro-dots button{
     width:10px; height:10px; border-radius:50%; border:2px solid #fff; background:transparent;
     padding:0; cursor:pointer; opacity:0.6;
   }
   .intro-dots button.active{background:#fff; opacity:1;}
   @media (max-width:640px){
-    .intro-content{padding:32px 20px;}
-    .intro-dots{padding:0 20px 18px;}
+    .intro{min-height:380px;}
+    .intro-content{padding:48px 20px;}
+    .intro-dots{padding:0 20px 20px;}
   }
 
   section.block{margin-top:56px;}
@@ -268,19 +275,19 @@
   </div>
 </header>
 
-<main class="page">
-    <div class="intro" id="hero">
-      <div class="slide active" style="background-image:url('hero-akcia.jpg')"></div>
-      <div class="slide" style="background-image:url('roh.jpg')"></div>
-      <div class="slide" style="background-image:url('skok.jpg')"></div>
-      <div class="slide" style="background-image:url('muzi.jpg')"></div>
-      <div class="intro-content">
-        <h1>Hádzaná Záhorie</h1>
-        <p>Spoločný projekt troch hádzanárskych klubov z regiónu Záhorie — ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky. Spolupracujeme na rozvoji hádzanej od najmladších kategórií až po najvyššiu súťaž.</p>
-      </div>
-      <div class="intro-dots" id="hero-dots"></div>
-    </div>
+<div class="intro" id="hero">
+  <div class="slide active" style="background-image:url('hero-akcia.jpg')"></div>
+  <div class="slide" style="background-image:url('roh.jpg')"></div>
+  <div class="slide" style="background-image:url('skok.jpg')"></div>
+  <div class="slide" style="background-image:url('muzi.jpg')"></div>
+  <div class="intro-content">
+    <h1>Hádzaná Záhorie</h1>
+    <p>Spoločný projekt troch hádzanárskych klubov z regiónu Záhorie — ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky. Spolupracujeme na rozvoji hádzanej od najmladších kategórií až po najvyššiu súťaž.</p>
+  </div>
+  <div class="intro-dots" id="hero-dots"></div>
+</div>
 
+<main class="page">
     <section class="block">
       <div class="section-head">
         <h2>Výsledky a zápasy</h2>
