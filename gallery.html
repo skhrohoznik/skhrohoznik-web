@@ -36,51 +36,96 @@
   img{max-width:100%; display:block;}
   a{color:inherit;}
 
-  /* ---- TOP BAR: logos only, centered ---- */
-  .topbar{
+  /* ---- NAVBAR (top, horizontal) ---- */
+  .navbar{
     border-bottom:3px solid var(--ink);
     background:var(--cream);
+    position:sticky; top:0; z-index:100;
   }
-  .topbar-inner{
-    display:flex; align-items:center; justify-content:center; gap:40px;
-    padding:20px 28px; flex-wrap:wrap;
+  .navbar-inner{
+    max-width:1200px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 40px; gap:20px; flex-wrap:wrap;
   }
-  .topbar .logo-item{display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit;}
-  .topbar .logo-item img{
-    width:48px; height:48px; border-radius:50%; object-fit:contain; background:#fff;
-    box-shadow:0 3px 8px rgba(0,0,0,0.18);
+  .navbar .logos{display:flex; align-items:center; gap:18px; flex-wrap:wrap;}
+  .navbar .logo-item{display:flex; align-items:center; gap:8px; text-decoration:none; color:inherit;}
+  .navbar .logo-item img{
+    width:40px; height:40px; border-radius:50%; object-fit:contain; background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.18);
   }
-  .topbar .logo-item span{font-size:14px; font-weight:700; line-height:1.15; max-width:140px;}
-  @media (max-width:640px){
-    .topbar .logo-item span{display:none;}
-    .topbar-inner{gap:20px;}
-  }
+  .navbar .logo-item span{font-size:12px; font-weight:700; line-height:1.15; max-width:110px;}
 
-  /* ---- SHELL: sidebar + main ---- */
-  .shell{display:flex; flex:1; align-items:stretch;}
-  .sidebar{
-    flex:0 0 250px; width:250px;
-    background:#fff; border-right:3px solid var(--ink);
-    padding:32px 22px;
+  .navbar nav > ul{list-style:none; display:flex; align-items:center; gap:2px; flex-wrap:wrap;}
+  .navbar nav > ul > li{position:relative;}
+  .navbar nav > ul > li > a, .navbar nav > ul > li > button.dd-btn{
+    display:flex; align-items:center; gap:4px;
+    padding:10px 13px; text-decoration:none; color:var(--ink); background:none; border:none;
+    font-family:inherit; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.03em;
+    cursor:pointer; border-bottom:3px solid transparent;
   }
-  .sidebar nav ul{list-style:none; display:flex; flex-direction:column; gap:2px;}
-  .sidebar nav a{
-    display:block; padding:11px 12px; text-decoration:none; color:var(--ink);
-    font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.03em;
-    border-left:3px solid transparent;
+  .navbar nav > ul > li > a:hover, .navbar nav > ul > li.open > button.dd-btn, .navbar nav > ul > li:hover > button.dd-btn{
+    border-bottom-color:var(--red); background:rgba(214,38,44,0.05);
   }
-  .sidebar nav a:hover{border-left-color:var(--red); background:rgba(214,38,44,0.05);}
-  main{flex:1; min-width:0; padding:48px 40px;}
+  .navbar .dd-btn .car{font-size:10px; margin-left:2px;}
+  .navbar .dropdown-menu{
+    display:none; position:absolute; top:100%; left:0; min-width:220px;
+    background:#fff; border:2px solid var(--ink); box-shadow:0 8px 20px rgba(0,0,0,0.14);
+    list-style:none; padding:6px 0; z-index:200;
+  }
+  .navbar li:hover > .dropdown-menu, .navbar li.open > .dropdown-menu{display:block;}
+  .navbar .dropdown-menu li a{
+    display:block; padding:10px 16px; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.02em;
+    text-decoration:none; color:var(--ink);
+  }
+  .navbar .dropdown-menu li a:hover{background:rgba(214,38,44,0.06); color:var(--red);}
+  .navbar .nav-toggle{display:none;}
+
+  main.page{max-width:1200px; margin:0 auto; width:100%; padding:48px 40px; flex:1;}
 
   @media (max-width:900px){
-    .shell{flex-direction:column;}
-    .sidebar{
-      width:100%; flex:0 0 auto; border-right:none; border-bottom:3px solid var(--ink);
-      padding:18px 20px;
+    .navbar-inner{padding:14px 20px;}
+    .navbar .logo-item span{display:none;}
+    .navbar nav{width:100%; display:none;}
+    .navbar nav.open{display:block;}
+    .navbar nav > ul{flex-direction:column; align-items:stretch; width:100%;}
+    .navbar nav > ul > li{width:100%;}
+    .navbar .dropdown-menu{position:static; border:none; box-shadow:none; display:none; padding-left:16px;}
+    .navbar li.open > .dropdown-menu{display:block;}
+    .navbar .nav-toggle{
+      display:block; background:var(--ink); color:#fff; border:none; padding:10px 16px;
+      font-family:inherit; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:13px; cursor:pointer;
     }
-    .sidebar nav ul{flex-direction:row; flex-wrap:wrap; gap:6px;}
-    .sidebar nav a{padding:8px 12px; font-size:13px;}
-    main{padding:32px 20px;}
+    main.page{padding:32px 20px;}
+  }
+
+  /* ---- FOOTER ---- */
+  footer{
+    background:var(--blue-dark); color:#DDE4F1; border-top:3px solid var(--ink); margin-top:64px;
+  }
+  .footer-inner{
+    max-width:1200px; margin:0 auto; padding:48px 40px 28px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:36px;
+  }
+  .footer-col h4{
+    font-family:'Archivo Black', sans-serif; font-weight:400; text-transform:uppercase;
+    font-size:14px; letter-spacing:0.04em; color:#fff; margin-bottom:16px;
+  }
+  .footer-col p, .footer-col a{font-size:14px; color:#C3CBDD; line-height:1.8;}
+  .footer-col a{text-decoration:none; display:block;}
+  .footer-col a:hover{color:#fff;}
+  .footer-social{display:flex; gap:12px; margin-top:8px;}
+  .footer-social a{
+    width:36px; height:36px; border:2px solid #3A4E70; display:flex; align-items:center; justify-content:center;
+    border-radius:50%; font-size:13px; font-weight:700;
+  }
+  .footer-social a:hover{border-color:var(--red); color:#fff;}
+  .footer-bottom{
+    border-top:1px solid #2A3B5A; padding:18px 40px; max-width:1200px; margin:0 auto;
+    font-size:12px; color:#8E9BB8; text-align:center;
+  }
+  @media (max-width:900px){
+    .footer-inner{grid-template-columns:1fr; padding:36px 20px 20px;}
+    .footer-bottom{padding:16px 20px;}
   }
 
   
@@ -260,42 +305,46 @@
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="logo-item" href="index.html">
-      <img src="logo.png" alt="Logo ŠKH Rohožník">
-      <span>ŠKH Rohožník</span>
-    </a>
-    <a class="logo-item" href="muzi-dorastenci.html">
-      <img src="zahoraci.png" alt="Logo HC Záhoráci">
-      <span>HC Záhoráci</span>
-    </a>
-    <a class="logo-item" href="muzi-dorastenci.html">
-      <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
-      <span>TJ Strojár Malacky</span>
-    </a>
-  </div>
-</header>
-
-<div class="shell">
-  <aside class="sidebar">
-    <nav>
+<header class="navbar">
+  <div class="navbar-inner">
+    <div class="logos">
+      <a class="logo-item" href="index.html">
+        <img src="logo.png" alt="Logo ŠKH Rohožník">
+        <span>ŠKH Rohožník</span>
+      </a>
+      <a class="logo-item" href="muzi-dorastenci.html">
+        <img src="zahoraci.png" alt="Logo HC Záhoráci">
+        <span>HC Záhoráci</span>
+      </a>
+      <a class="logo-item" href="muzi-dorastenci.html">
+        <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
+        <span>TJ Strojár Malacky</span>
+      </a>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" type="button">MENU</button>
+    <nav id="nav-menu">
       <ul>
         <li><a href="index.html">Domov</a></li>
-        <li><a href="zeny-dorastenky.html">Ženy a dorastenky</a></li>
-        <li><a href="ziacky.html">Žiačky</a></li>
-        <li><a href="muzi-dorastenci.html">Muži a dorastenci</a></li>
-        <li><a href="ziaci.html">Žiaci</a></li>
+        <li class="has-dd">
+          <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
+          <ul class="dropdown-menu">
+            <li><a href="zeny-dorastenky.html">Ženy a dorastenky</a></li>
+            <li><a href="ziacky.html">Žiačky</a></li>
+            <li><a href="muzi-dorastenci.html">Muži a dorastenci</a></li>
+            <li><a href="ziaci.html">Žiaci</a></li>
+          </ul>
+        </li>
         <li><a href="nabor.html">Nábor</a></li>
         <li><a href="klub.html">Klub</a></li>
         <li><a href="kontakty.html">Kontakty</a></li>
         <li><a href="sledujte-nas.html">Sledujte nás</a></li>
-              <li><a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a></li>
+        <li><a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a></li>
       </ul>
     </nav>
-  </aside>
+  </div>
+</header>
 
-  <main>
+<main class="page">
     <h1 class="page-title">Galéria</h1>
     <p class="page-intro">Fotky z tréningov, zápasov a turnajov všetkých klubov.</p>
     <section class="block">
@@ -312,7 +361,57 @@
     </section>
 
   </main>
-</div>
 
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>Kluby</h4>
+      <p>ŠKH Rohožník<br><a href="mailto:skhrohoznik@gmail.com">skhrohoznik@gmail.com</a></p>
+      <p style="margin-top:10px;">HC Záhoráci<br><a href="mailto:info@hczahoraci.sk">info@hczahoraci.sk</a></p>
+      <p style="margin-top:10px;">TJ Strojár Malacky<br><a href="mailto:info@handballmalacky.sk">info@handballmalacky.sk</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Menu</h4>
+      <a href="index.html">Domov</a>
+      <a href="zeny-dorastenky.html">Ženy a dorastenky</a>
+      <a href="ziacky.html">Žiačky</a>
+      <a href="muzi-dorastenci.html">Muži a dorastenci</a>
+      <a href="ziaci.html">Žiaci</a>
+      <a href="nabor.html">Nábor</a>
+      <a href="klub.html">Klub</a>
+      <a href="kontakty.html">Kontakty</a>
+    </div>
+    <div class="footer-col">
+      <h4>Sledujte nás</h4>
+      <a href="sledujte-nas.html">Facebook, YouTube, Instagram</a>
+      <a href="gallery.html">Galéria</a>
+      <a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
+        <a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+        <a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener" aria-label="YouTube">YT</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</div>
+</footer>
+
+
+<script>
+  (function(){
+    var toggle = document.getElementById('nav-toggle');
+    var menu = document.getElementById('nav-menu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', function(){ menu.classList.toggle('open'); });
+    }
+    document.querySelectorAll('.navbar .dd-btn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        var li = btn.closest('li');
+        li.classList.toggle('open');
+      });
+    });
+  })();
+</script>
 </body>
 </html>
