@@ -166,6 +166,38 @@
   }
   .section-head h2{font-size:clamp(22px,3vw,30px);}
 
+  /* ---- HOME: category tabs with results/upcoming ---- */
+  .cat-tabs{display:flex; gap:2px; flex-wrap:wrap; margin-bottom:24px;}
+  .cat-tab{
+    padding:12px 20px; border:2px solid var(--ink); background:#fff; cursor:pointer;
+    font-family:'Archivo Black', sans-serif; font-weight:400; font-size:13px;
+    text-transform:uppercase; letter-spacing:0.02em; color:var(--ink);
+  }
+  .cat-tab.active{background:var(--ink); color:#fff;}
+  .cat-panel{display:none;}
+  .cat-panel.active{display:block;}
+  .cat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px;}
+  .cat-card{border:2px solid var(--ink); background:#fff; padding:20px;}
+  .cat-card h4{
+    font-family:'Archivo Black', sans-serif; font-weight:400; font-size:15px; text-transform:uppercase;
+    margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--ink);
+  }
+  .cat-card .cat-empty{font-size:13px; color:#6b6455;}
+  .cat-more{
+    margin-top:14px; display:inline-block; font-size:12px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.03em; color:var(--red); text-decoration:underline; text-underline-offset:3px;
+  }
+  .upcoming{display:flex; flex-wrap:wrap; gap:10px;}
+  .upcoming-card{
+    border:2px solid var(--ink); padding:12px 16px; font-size:13px;
+    display:flex; flex-direction:column; gap:2px; min-width:190px;
+  }
+  .upcoming-card .uc-date{
+    font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:11px; color:var(--red);
+  }
+  .upcoming-card .uc-match{font-size:14px;}
+  .upcoming-card .uc-time{color:#6b6455; font-size:12px;}
+
   .news-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px;}
   .news-card{background:#fff; border:2px solid var(--ink); overflow:hidden;}
   .news-card .news-photos{display:flex; border-bottom:2px solid var(--ink);}
@@ -251,6 +283,90 @@
 
     <section class="block">
       <div class="section-head">
+        <h2>Výsledky a zápasy</h2>
+      </div>
+      <div class="cat-tabs" id="cat-tabs">
+        <button type="button" class="cat-tab active" data-panel="panel-zeny">Ženy a dorastenky</button>
+        <button type="button" class="cat-tab" data-panel="panel-ziacky">Žiačky</button>
+        <button type="button" class="cat-tab" data-panel="panel-muzi">Muži a dorastenci</button>
+        <button type="button" class="cat-tab" data-panel="panel-ziaci">Žiaci</button>
+      </div>
+
+      <div class="cat-panel active" id="panel-zeny">
+        <div class="cat-grid">
+          <div class="cat-card">
+            <h4>Ženy</h4>
+            <div class="upcoming" id="home-upcoming-zeny"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+          <div class="cat-card">
+            <h4>Staršie dorastenky</h4>
+            <div class="upcoming" id="home-upcoming-dorast_st"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+          <div class="cat-card">
+            <h4>Mladšie dorastenky</h4>
+            <div class="upcoming" id="home-upcoming-dorast_ml"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+        </div>
+        <a class="cat-more" href="zeny-dorastenky.html">Všetky výsledky →</a>
+      </div>
+
+      <div class="cat-panel" id="panel-ziacky">
+        <div class="cat-grid">
+          <div class="cat-card">
+            <h4>Staršie žiačky</h4>
+            <div class="upcoming" id="home-upcoming-sz"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+          <div class="cat-card">
+            <h4>Mladšie žiačky A</h4>
+            <div class="upcoming" id="home-upcoming-mza"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+          <div class="cat-card">
+            <h4>Mladšie žiačky B</h4>
+            <div class="upcoming" id="home-upcoming-mzb"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+        </div>
+        <a class="cat-more" href="ziacky.html">Všetky výsledky →</a>
+      </div>
+
+      <div class="cat-panel" id="panel-muzi">
+        <div class="cat-grid">
+          <div class="cat-card">
+            <h4>Muži A</h4>
+            <div class="upcoming" id="home-upcoming-muzi_a"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+          <div class="cat-card">
+            <h4>Muži B</h4>
+            <div class="upcoming" id="home-upcoming-muzi_b"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+          <div class="cat-card">
+            <h4>Starší dorastenci</h4>
+            <div class="upcoming" id="home-upcoming-dorast_st_ch"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+          <div class="cat-card">
+            <h4>Mladší dorastenci</h4>
+            <div class="upcoming" id="home-upcoming-dorast_ml_ch"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+        </div>
+        <a class="cat-more" href="muzi-dorastenci.html">Všetky výsledky →</a>
+      </div>
+
+      <div class="cat-panel" id="panel-ziaci">
+        <div class="cat-grid">
+          <div class="cat-card">
+            <h4>Mladší žiaci</h4>
+            <div class="upcoming" id="home-upcoming-ziaci_ml"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+          <div class="cat-card">
+            <h4>Starší žiaci</h4>
+            <div class="upcoming" id="home-upcoming-ziaci_st"><div class="cat-empty">Načítavam…</div></div>
+          </div>
+        </div>
+        <a class="cat-more" href="ziaci.html">Všetky výsledky →</a>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="section-head">
         <h2>Aktuality</h2>
       </div>
       <div class="news-grid" id="news-grid"></div>
@@ -329,6 +445,18 @@
     setInterval(() => show((current + 1) % slides.length), 5000);
   })();
 
+  (function(){
+    const tabs = document.querySelectorAll('.cat-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.panel).classList.add('active');
+      });
+    });
+  })();
+
   fetch('/aktuality.json')
     .then(r => r.json())
     .then(items => {
@@ -403,9 +531,32 @@
     return new Date(year, month - 1, day);
   }
 
+  function renderHomeUpcoming(key, upcoming) {
+    const box = document.getElementById('home-upcoming-' + key);
+    if (!box) return;
+    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) {
+      box.innerHTML = '<div class="cat-empty">Zatiaľ žiadny naplánovaný zápas.</div>';
+      return;
+    }
+    const clubName = CATEGORY_CLUB[key] || 'Naši';
+    box.innerHTML = '';
+    upcoming.slice(0, 2).forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'upcoming-card';
+      const matchLabel = m.home ? (clubName + ' – ' + m.opponent) : (m.opponent + ' – ' + clubName);
+      const timeLabel = m.time ? m.time : 'čas bude upresnený';
+      card.innerHTML = '<span class="uc-date">' + m.date + '</span>' + '<span class="uc-match">' + matchLabel + '</span>' + '<span class="uc-time">' + timeLabel + '</span>';
+      box.appendChild(card);
+    });
+  }
+
   fetch('/vysledky')
     .then(r => r.json())
     .then(data => {
+      Object.keys(CATEGORY_LABELS).forEach(key => {
+        renderHomeUpcoming(key, data[key] && data[key].upcoming);
+      });
+
       let soonest = null;
       Object.entries(data).forEach(([key, val]) => {
         if (!val || !Array.isArray(val.upcoming)) return;
@@ -441,6 +592,10 @@
     .catch(() => {
       const box = document.getElementById('next-match');
       box.innerHTML = '<div><div class="nm-label">Najbližší zápas</div><div class="nm-teams">Nepodarilo sa načítať</div></div>';
+      Object.keys(CATEGORY_LABELS).forEach(key => {
+        const b = document.getElementById('home-upcoming-' + key);
+        if (b) b.innerHTML = '<div class="cat-empty">Výsledky sa nepodarilo načítať.</div>';
+      });
     });
 </script>
 
