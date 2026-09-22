@@ -270,6 +270,14 @@
   .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
   .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
   .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
+  .albums{display:flex; flex-direction:column; gap:28px;}
+  .album{
+      background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10);
+      padding:22px;
+    }
+  .album h3{
+      font-size:17px; margin-bottom:16px; padding-bottom:10px; border-bottom:2px solid var(--ink);
+    }
   .gallery-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -277,9 +285,8 @@
     }
   .gallery-grid .g-item {
       aspect-ratio: 1;
-      background: #fff;
+      background: #f0ede3;
       border: 1px solid var(--line);
-      box-shadow:0 4px 16px rgba(22,26,34,0.10);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -287,7 +294,6 @@
       font-size: 13px;
       font-weight: 600;
       text-align: center;
-      padding: 8px;
       overflow: hidden;
     }
   .gallery-grid .g-item img{
@@ -301,6 +307,7 @@
   .lightbox img{max-width:100%; max-height:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4);}
   @media (max-width:900px){
     .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    .album{padding:16px;}
   }
   .video-card{
       background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); padding:20px; text-decoration:none; color:var(--ink);
@@ -364,8 +371,8 @@
     <h1 class="page-title">Galéria</h1>
     <p class="page-intro">Fotky z tréningov, zápasov a turnajov všetkých klubov.</p>
     <section class="block">
-      <div class="gallery-grid" id="gallery-grid">
-        <div class="g-item">Galéria sa načítava…</div>
+      <div class="albums" id="albums">
+        <p style="color:#5c5648;">Galéria sa načítava…</p>
       </div>
     </section>
 
@@ -378,21 +385,32 @@
 <script>
   fetch('/galeria.json')
     .then(r => r.json())
-    .then(items => {
-      const grid = document.getElementById('gallery-grid');
-      grid.innerHTML = '';
-      items.forEach(item => {
-        const cell = document.createElement('div');
-        cell.className = 'g-item';
-        const img = document.createElement('img');
-        img.src = item.foto;
-        img.alt = item.popis || '';
-        cell.appendChild(img);
-        grid.appendChild(cell);
+    .then(albums => {
+      const wrap = document.getElementById('albums');
+      wrap.innerHTML = '';
+      albums.forEach(album => {
+        const card = document.createElement('div');
+        card.className = 'album';
+        const title = document.createElement('h3');
+        title.textContent = album.nazov || '';
+        card.appendChild(title);
+        const grid = document.createElement('div');
+        grid.className = 'gallery-grid';
+        (album.fotky || []).forEach(foto => {
+          const cell = document.createElement('div');
+          cell.className = 'g-item';
+          const img = document.createElement('img');
+          img.src = foto;
+          img.alt = album.nazov || '';
+          cell.appendChild(img);
+          grid.appendChild(cell);
+        });
+        card.appendChild(grid);
+        wrap.appendChild(card);
       });
       const lightbox = document.getElementById('lightbox');
       const lightboxImg = document.getElementById('lightbox-img');
-      grid.querySelectorAll('img').forEach(img => {
+      wrap.querySelectorAll('.gallery-grid img').forEach(img => {
         img.addEventListener('click', () => {
           lightboxImg.src = img.src;
           lightboxImg.alt = img.alt;
@@ -405,7 +423,7 @@
       });
     })
     .catch(() => {
-      document.getElementById('gallery-grid').innerHTML =
+      document.getElementById('albums').innerHTML =
         '<p style="color:#5c5648;">Galériu sa nepodarilo načítať.</p>';
     });
 </script>

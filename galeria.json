@@ -1,10 +1,18 @@
 [
-  { "foto": "hero-akcia.jpg", "popis": "Zo zápasu" },
-  { "foto": "skok.jpg", "popis": "Skok na bránu" },
-  { "foto": "muzi.jpg", "popis": "Muži v akcii" },
-  { "foto": "akcia2.jpg", "popis": "Z tréningu" },
-  { "foto": "oslava.jpg", "popis": "Oslava výhry" },
-  { "foto": "akcia3.jpg", "popis": "Zo zápasu" },
-  { "foto": "akcia4.jpg", "popis": "Zo zápasu" },
-  { "foto": "akcia5.jpg", "popis": "Z turnaja" }
+  {
+    "nazov": "Turnaj starších žiačok",
+    "fotky": ["turnaj-ziacky.png"]
+  },
+  {
+    "nazov": "Zo zápasov žien",
+    "fotky": ["hero-akcia.jpg", "skok.jpg", "akcia3.jpg", "akcia5.jpg"]
+  },
+  {
+    "nazov": "Muži a dorastenci",
+    "fotky": ["muzi.jpg", "akcia4.jpg"]
+  },
+  {
+    "nazov": "Oslavy a tréningy",
+    "fotky": ["oslava.jpg", "akcia2.jpg"]
+  }
 ]
