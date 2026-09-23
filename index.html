@@ -221,6 +221,23 @@
   .upcoming-card .uc-match{font-size:14px;}
   .upcoming-card .uc-time{color:#6b6455; font-size:12px;}
 
+  .cat-subhead{
+    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    color:#6b6455; margin:14px 0 8px;
+  }
+  .cat-subhead:first-of-type{margin-top:0;}
+  .last-result{
+    border:2px solid var(--ink); padding:12px 16px; font-size:13px;
+    display:flex; flex-direction:column; gap:2px; min-width:190px; margin-bottom:4px;
+  }
+  .last-result .lr-date{
+    font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:11px; color:#6b6455;
+  }
+  .last-result .lr-match{font-size:14px; display:flex; justify-content:space-between; gap:8px; align-items:baseline;}
+  .last-result .lr-score{font-weight:700;}
+  .last-result.win .lr-score{color:#166534;}
+  .last-result.loss .lr-score{color:var(--red);}
+
   .news-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px;}
   .news-card{background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); overflow:hidden;}
   .news-card .news-photos{display:flex; border-bottom:2px solid var(--ink);}
@@ -323,14 +340,17 @@
       <div class="cat-grid">
         <div class="cat-card">
           <h4>Ženy</h4>
+          <div id="home-result-zeny"></div>
           <div class="upcoming" id="home-upcoming-zeny"><div class="cat-empty">Načítavam…</div></div>
         </div>
         <div class="cat-card">
           <h4>Staršie dorastenky</h4>
+          <div id="home-result-dorast_st"></div>
           <div class="upcoming" id="home-upcoming-dorast_st"><div class="cat-empty">Načítavam…</div></div>
         </div>
         <div class="cat-card">
           <h4>Mladšie dorastenky</h4>
+          <div id="home-result-dorast_ml"></div>
           <div class="upcoming" id="home-upcoming-dorast_ml"><div class="cat-empty">Načítavam…</div></div>
         </div>
       </div>
@@ -341,14 +361,17 @@
       <div class="cat-grid">
         <div class="cat-card">
           <h4>Staršie žiačky</h4>
+          <div id="home-result-sz"></div>
           <div class="upcoming" id="home-upcoming-sz"><div class="cat-empty">Načítavam…</div></div>
         </div>
         <div class="cat-card">
           <h4>Mladšie žiačky A</h4>
+          <div id="home-result-mza"></div>
           <div class="upcoming" id="home-upcoming-mza"><div class="cat-empty">Načítavam…</div></div>
         </div>
         <div class="cat-card">
           <h4>Mladšie žiačky B</h4>
+          <div id="home-result-mzb"></div>
           <div class="upcoming" id="home-upcoming-mzb"><div class="cat-empty">Načítavam…</div></div>
         </div>
       </div>
@@ -359,18 +382,22 @@
       <div class="cat-grid">
         <div class="cat-card">
           <h4>Muži A</h4>
+          <div id="home-result-muzi_a"></div>
           <div class="upcoming" id="home-upcoming-muzi_a"><div class="cat-empty">Načítavam…</div></div>
         </div>
         <div class="cat-card">
           <h4>Muži B</h4>
+          <div id="home-result-muzi_b"></div>
           <div class="upcoming" id="home-upcoming-muzi_b"><div class="cat-empty">Načítavam…</div></div>
         </div>
         <div class="cat-card">
           <h4>Starší dorastenci</h4>
+          <div id="home-result-dorast_st_ch"></div>
           <div class="upcoming" id="home-upcoming-dorast_st_ch"><div class="cat-empty">Načítavam…</div></div>
         </div>
         <div class="cat-card">
           <h4>Mladší dorastenci</h4>
+          <div id="home-result-dorast_ml_ch"></div>
           <div class="upcoming" id="home-upcoming-dorast_ml_ch"><div class="cat-empty">Načítavam…</div></div>
         </div>
       </div>
@@ -381,10 +408,12 @@
       <div class="cat-grid">
         <div class="cat-card">
           <h4>Mladší žiaci</h4>
+          <div id="home-result-ziaci_ml"></div>
           <div class="upcoming" id="home-upcoming-ziaci_ml"><div class="cat-empty">Načítavam…</div></div>
         </div>
         <div class="cat-card">
           <h4>Starší žiaci</h4>
+          <div id="home-result-ziaci_st"></div>
           <div class="upcoming" id="home-upcoming-ziaci_st"><div class="cat-empty">Načítavam…</div></div>
         </div>
       </div>
@@ -568,7 +597,7 @@
       return;
     }
     const clubName = CATEGORY_CLUB[key] || 'Naši';
-    box.innerHTML = '';
+    box.innerHTML = '<div class="cat-subhead">Najbližšie zápasy</div>';
     upcoming.slice(0, 2).forEach(m => {
       const card = document.createElement('div');
       card.className = 'upcoming-card';
@@ -579,10 +608,30 @@
     });
   }
 
+  function renderHomeResult(key, results) {
+    const box = document.getElementById('home-result-' + key);
+    if (!box) return;
+    if (!results || !Array.isArray(results) || results.length === 0) {
+      box.innerHTML = '';
+      return;
+    }
+    const clubName = CATEGORY_CLUB[key] || 'Naši';
+    const m = results[results.length - 1];
+    const opponentLabel = m.home ? (clubName + ' – ' + m.opponent) : (m.opponent + ' – ' + clubName);
+    const resultClass = m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '');
+    box.innerHTML =
+      '<div class="cat-subhead">Posledný výsledok</div>' +
+      '<div class="last-result ' + resultClass + '">' +
+        '<span class="lr-date">' + m.date + '</span>' +
+        '<span class="lr-match"><span>' + opponentLabel + '</span><span class="lr-score">' + m.score + '</span></span>' +
+      '</div>';
+  }
+
   fetch('/vysledky')
     .then(r => r.json())
     .then(data => {
       Object.keys(CATEGORY_LABELS).forEach(key => {
+        renderHomeResult(key, data[key] && data[key].results);
         renderHomeUpcoming(key, data[key] && data[key].upcoming);
       });
 
