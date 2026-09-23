@@ -47,21 +47,21 @@
     display:flex; align-items:center; justify-content:flex-start;
     padding:14px 40px; gap:16px; flex-wrap:wrap;
   }
-  .navbar .logos{display:flex; align-items:center; gap:12px; flex-wrap:wrap; flex-shrink:0;}
-  .navbar .logo-item{display:flex; align-items:center; gap:6px; text-decoration:none; color:inherit;}
+  .navbar .logos{display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex-shrink:0;}
+  .navbar .logo-item{display:flex; align-items:center; gap:5px; text-decoration:none; color:inherit;}
   .navbar .logo-item img{
-    width:36px; height:36px; border-radius:50%; object-fit:contain; background:#fff;
+    width:32px; height:32px; border-radius:50%; object-fit:contain; background:#fff;
     box-shadow:0 2px 6px rgba(0,0,0,0.18);
   }
-  .navbar .logo-item span{font-size:12px; font-weight:700; line-height:1.15; max-width:100px;}
+  .navbar .logo-item span{font-size:11px; font-weight:700; line-height:1.15; max-width:90px;}
 
   .navbar nav{margin-left:auto;}
-  .navbar nav > ul{list-style:none; display:flex; align-items:center; gap:2px; flex-wrap:wrap; justify-content:flex-end;}
+  .navbar nav > ul{list-style:none; display:flex; align-items:center; gap:0; flex-wrap:wrap; justify-content:flex-end;}
   .navbar nav > ul > li{position:relative;}
   .navbar nav > ul > li > a, .navbar nav > ul > li > button.dd-btn{
-    display:flex; align-items:center; gap:4px;
-    padding:10px 13px; text-decoration:none; color:var(--ink); background:none; border:none;
-    font-family:inherit; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.03em;
+    display:flex; align-items:center; gap:3px;
+    padding:10px 9px; text-decoration:none; color:var(--ink); background:none; border:none;
+    font-family:inherit; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.01em;
     cursor:pointer; border-bottom:3px solid transparent;
   }
   .navbar nav > ul > li > a:hover, .navbar nav > ul > li.open > button.dd-btn, .navbar nav > ul > li:hover > button.dd-btn{
@@ -127,6 +127,7 @@
   @media (max-width:900px){
     .footer-inner{grid-template-columns:1fr; padding:36px 20px 20px;}
     .footer-bottom{padding:16px 20px;}
+    .cards{grid-template-columns:1fr;}
   }
 
   
@@ -364,12 +365,26 @@
 
     <section class="block">
       <div class="section-head"><h2>Instagram</h2></div>
-      <a class="video-card" href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener">
-        <div class="play" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);">IG</div>
-        <div>
-          <div class="vt">Instagram klubu</div>          
-        </div>
-      </a>
+      <div class="cards">
+        <a class="video-card" href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener">
+          <div class="play" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);">IG</div>
+          <div>
+            <div class="vt">ŠKH Rohožník</div>
+          </div>
+        </a>
+        <a class="video-card" href="https://www.instagram.com/hc_zahoraci/" target="_blank" rel="noopener">
+          <div class="play" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);">IG</div>
+          <div>
+            <div class="vt">HC Záhoráci</div>
+          </div>
+        </a>
+        <a class="video-card" href="https://www.instagram.com/handballmalacky/" target="_blank" rel="noopener">
+          <div class="play" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);">IG</div>
+          <div>
+            <div class="vt">TJ Strojár Malacky</div>
+          </div>
+        </a>
+      </div>
     </section>
 
     <section class="block">
