@@ -226,9 +226,10 @@
     color:#6b6455; margin:14px 0 8px;
   }
   .cat-subhead:first-of-type{margin-top:0;}
+  .results-row{display:flex; flex-wrap:wrap; gap:10px;}
   .last-result{
     border:2px solid var(--ink); padding:12px 16px; font-size:13px;
-    display:flex; flex-direction:column; gap:2px; min-width:190px; margin-bottom:4px;
+    display:flex; flex-direction:column; gap:2px; min-width:190px;
   }
   .last-result .lr-date{
     font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:11px; color:#6b6455;
@@ -636,15 +637,20 @@
       return;
     }
     const clubName = CATEGORY_CLUB[key] || 'Naši';
-    const m = results[results.length - 1];
-    const opponentLabel = m.home ? (clubName + ' – ' + m.opponent) : (m.opponent + ' – ' + clubName);
-    const resultClass = m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '');
-    box.innerHTML =
-      '<div class="cat-subhead">Posledný výsledok</div>' +
-      '<div class="last-result ' + resultClass + '">' +
-        '<span class="lr-date">' + m.date + '</span>' +
-        '<span class="lr-match"><span>' + opponentLabel + '</span><span class="lr-score">' + m.score + '</span></span>' +
-      '</div>';
+    const recent = results.slice(-2).reverse();
+    const label = recent.length > 1 ? 'Posledné výsledky' : 'Posledný výsledok';
+    let html = '<div class="cat-subhead">' + label + '</div><div class="results-row">';
+    recent.forEach(m => {
+      const opponentLabel = m.home ? (clubName + ' – ' + m.opponent) : (m.opponent + ' – ' + clubName);
+      const resultClass = m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '');
+      html +=
+        '<div class="last-result ' + resultClass + '">' +
+          '<span class="lr-date">' + m.date + '</span>' +
+          '<span class="lr-match"><span>' + opponentLabel + '</span><span class="lr-score">' + m.score + '</span></span>' +
+        '</div>';
+    });
+    html += '</div>';
+    box.innerHTML = html;
   }
 
   fetch('/vysledky')
