@@ -178,36 +178,34 @@
 
   /* ---- HOME: category tabs with results/upcoming ---- */
   .results-band{width:100%; background:#fff; border-bottom:3px solid var(--ink);}
-  .results-inner{width:100%; padding:0 40px 40px;}
-  .cat-tabs{display:flex; flex-wrap:wrap;}
+  .results-inner{width:100%; padding:24px 40px 40px;}
+  .cat-tabs{display:flex; flex-wrap:wrap; gap:8px; padding-bottom:22px; border-bottom:2px solid var(--line);}
   .cat-tab{
-    flex:1 1 0; min-width:150px;
-    padding:18px 20px; border:none; border-right:1px solid var(--line); background:#fff; cursor:pointer;
-    font-family:'Archivo Black', sans-serif; font-weight:400; font-size:13px;
+    flex:0 0 auto;
+    padding:9px 16px; border:2px solid var(--ink); border-radius:999px; background:#fff; cursor:pointer;
+    font-family:'Archivo Black', sans-serif; font-weight:400; font-size:11px;
     text-transform:uppercase; letter-spacing:0.02em; color:var(--ink); text-align:center;
-    border-bottom:3px solid transparent;
   }
-  .cat-tab:last-child{border-right:none;}
-  .cat-tab.active{border-bottom-color:var(--red); background:rgba(214,38,44,0.05);}
+  .cat-tab.active{background:var(--ink); color:#fff;}
   .results-label{
     font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
-    color:#6b6455; margin:22px 0 18px;
+    color:#6b6455; margin:22px 0 4px;
   }
   @media (max-width:640px){
-    .cat-tab{flex:1 1 45%; border-bottom:1px solid var(--line);}
-    .results-inner{padding:0 20px 28px;}
+    .cat-tab{padding:8px 13px; font-size:10px;}
+    .results-inner{padding:20px 20px 28px;}
   }
   .cat-panel{display:none;}
   .cat-panel.active{display:block;}
-  .cat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px;}
-  .cat-card{border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); background:#fff; padding:20px;}
-  .cat-card h4{
-    font-family:'Archivo Black', sans-serif; font-weight:400; font-size:15px; text-transform:uppercase;
-    margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid var(--ink);
+  .cat-single h3{
+    font-family:'Archivo Black', sans-serif; font-weight:400; font-size:18px; text-transform:uppercase;
+    margin-bottom:16px;
   }
-  .cat-card .cat-empty{font-size:13px; color:#6b6455;}
+  .cat-cols{display:flex; flex-wrap:wrap; gap:28px;}
+  .cat-cols > div{flex:1 1 260px;}
+  .cat-empty{font-size:13px; color:#6b6455;}
   .cat-more{
-    margin-top:14px; display:inline-block; font-size:12px; font-weight:700; text-transform:uppercase;
+    margin-top:18px; display:inline-block; font-size:12px; font-weight:700; text-transform:uppercase;
     letter-spacing:0.03em; color:var(--red); text-decoration:underline; text-underline-offset:3px;
   }
   .upcoming{display:flex; flex-wrap:wrap; gap:10px;}
@@ -329,93 +327,125 @@
 <div class="results-band">
   <div class="results-inner">
     <div class="cat-tabs" id="cat-tabs">
-      <button type="button" class="cat-tab active" data-panel="panel-zeny">Ženy a dorastenky</button>
-      <button type="button" class="cat-tab" data-panel="panel-ziacky">Žiačky</button>
-      <button type="button" class="cat-tab" data-panel="panel-muzi">Muži a dorastenci</button>
-      <button type="button" class="cat-tab" data-panel="panel-ziaci">Žiaci</button>
+      <button type="button" class="cat-tab active" data-panel="panel-zeny">Ženy</button>
+      <button type="button" class="cat-tab" data-panel="panel-dorast_st">Staršie dorastenky</button>
+      <button type="button" class="cat-tab" data-panel="panel-dorast_ml">Mladšie dorastenky</button>
+      <button type="button" class="cat-tab" data-panel="panel-sz">Staršie žiačky</button>
+      <button type="button" class="cat-tab" data-panel="panel-mza">Mladšie žiačky A</button>
+      <button type="button" class="cat-tab" data-panel="panel-mzb">Mladšie žiačky B</button>
+      <button type="button" class="cat-tab" data-panel="panel-muzi_a">Muži A</button>
+      <button type="button" class="cat-tab" data-panel="panel-muzi_b">Muži B</button>
+      <button type="button" class="cat-tab" data-panel="panel-dorast_st_ch">Starší dorastenci</button>
+      <button type="button" class="cat-tab" data-panel="panel-dorast_ml_ch">Mladší dorastenci</button>
+      <button type="button" class="cat-tab" data-panel="panel-ziaci_ml">Mladší žiaci</button>
+      <button type="button" class="cat-tab" data-panel="panel-ziaci_st">Starší žiaci</button>
     </div>
     <div class="results-label">Výsledky</div>
 
     <div class="cat-panel active" id="panel-zeny">
-      <div class="cat-grid">
-        <div class="cat-card">
-          <h4>Ženy</h4>
-          <div id="home-result-zeny"></div>
-          <div class="upcoming" id="home-upcoming-zeny"><div class="cat-empty">Načítavam…</div></div>
-        </div>
-        <div class="cat-card">
-          <h4>Staršie dorastenky</h4>
-          <div id="home-result-dorast_st"></div>
-          <div class="upcoming" id="home-upcoming-dorast_st"><div class="cat-empty">Načítavam…</div></div>
-        </div>
-        <div class="cat-card">
-          <h4>Mladšie dorastenky</h4>
-          <div id="home-result-dorast_ml"></div>
-          <div class="upcoming" id="home-upcoming-dorast_ml"><div class="cat-empty">Načítavam…</div></div>
-        </div>
+      <h3>Ženy</h3>
+      <div class="cat-cols">
+        <div id="home-result-zeny"></div>
+        <div class="upcoming" id="home-upcoming-zeny"><div class="cat-empty">Načítavam…</div></div>
       </div>
       <a class="cat-more" href="zeny-dorastenky.html">Všetky výsledky →</a>
     </div>
 
-    <div class="cat-panel" id="panel-ziacky">
-      <div class="cat-grid">
-        <div class="cat-card">
-          <h4>Staršie žiačky</h4>
-          <div id="home-result-sz"></div>
-          <div class="upcoming" id="home-upcoming-sz"><div class="cat-empty">Načítavam…</div></div>
-        </div>
-        <div class="cat-card">
-          <h4>Mladšie žiačky A</h4>
-          <div id="home-result-mza"></div>
-          <div class="upcoming" id="home-upcoming-mza"><div class="cat-empty">Načítavam…</div></div>
-        </div>
-        <div class="cat-card">
-          <h4>Mladšie žiačky B</h4>
-          <div id="home-result-mzb"></div>
-          <div class="upcoming" id="home-upcoming-mzb"><div class="cat-empty">Načítavam…</div></div>
-        </div>
+    <div class="cat-panel" id="panel-dorast_st">
+      <h3>Staršie dorastenky</h3>
+      <div class="cat-cols">
+        <div id="home-result-dorast_st"></div>
+        <div class="upcoming" id="home-upcoming-dorast_st"><div class="cat-empty">Načítavam…</div></div>
+      </div>
+      <a class="cat-more" href="zeny-dorastenky.html">Všetky výsledky →</a>
+    </div>
+
+    <div class="cat-panel" id="panel-dorast_ml">
+      <h3>Mladšie dorastenky</h3>
+      <div class="cat-cols">
+        <div id="home-result-dorast_ml"></div>
+        <div class="upcoming" id="home-upcoming-dorast_ml"><div class="cat-empty">Načítavam…</div></div>
+      </div>
+      <a class="cat-more" href="zeny-dorastenky.html">Všetky výsledky →</a>
+    </div>
+
+    <div class="cat-panel" id="panel-sz">
+      <h3>Staršie žiačky</h3>
+      <div class="cat-cols">
+        <div id="home-result-sz"></div>
+        <div class="upcoming" id="home-upcoming-sz"><div class="cat-empty">Načítavam…</div></div>
       </div>
       <a class="cat-more" href="ziacky.html">Všetky výsledky →</a>
     </div>
 
-    <div class="cat-panel" id="panel-muzi">
-      <div class="cat-grid">
-        <div class="cat-card">
-          <h4>Muži A</h4>
-          <div id="home-result-muzi_a"></div>
-          <div class="upcoming" id="home-upcoming-muzi_a"><div class="cat-empty">Načítavam…</div></div>
-        </div>
-        <div class="cat-card">
-          <h4>Muži B</h4>
-          <div id="home-result-muzi_b"></div>
-          <div class="upcoming" id="home-upcoming-muzi_b"><div class="cat-empty">Načítavam…</div></div>
-        </div>
-        <div class="cat-card">
-          <h4>Starší dorastenci</h4>
-          <div id="home-result-dorast_st_ch"></div>
-          <div class="upcoming" id="home-upcoming-dorast_st_ch"><div class="cat-empty">Načítavam…</div></div>
-        </div>
-        <div class="cat-card">
-          <h4>Mladší dorastenci</h4>
-          <div id="home-result-dorast_ml_ch"></div>
-          <div class="upcoming" id="home-upcoming-dorast_ml_ch"><div class="cat-empty">Načítavam…</div></div>
-        </div>
+    <div class="cat-panel" id="panel-mza">
+      <h3>Mladšie žiačky A</h3>
+      <div class="cat-cols">
+        <div id="home-result-mza"></div>
+        <div class="upcoming" id="home-upcoming-mza"><div class="cat-empty">Načítavam…</div></div>
+      </div>
+      <a class="cat-more" href="ziacky.html">Všetky výsledky →</a>
+    </div>
+
+    <div class="cat-panel" id="panel-mzb">
+      <h3>Mladšie žiačky B</h3>
+      <div class="cat-cols">
+        <div id="home-result-mzb"></div>
+        <div class="upcoming" id="home-upcoming-mzb"><div class="cat-empty">Načítavam…</div></div>
+      </div>
+      <a class="cat-more" href="ziacky.html">Všetky výsledky →</a>
+    </div>
+
+    <div class="cat-panel" id="panel-muzi_a">
+      <h3>Muži A</h3>
+      <div class="cat-cols">
+        <div id="home-result-muzi_a"></div>
+        <div class="upcoming" id="home-upcoming-muzi_a"><div class="cat-empty">Načítavam…</div></div>
       </div>
       <a class="cat-more" href="muzi-dorastenci.html">Všetky výsledky →</a>
     </div>
 
-    <div class="cat-panel" id="panel-ziaci">
-      <div class="cat-grid">
-        <div class="cat-card">
-          <h4>Mladší žiaci</h4>
-          <div id="home-result-ziaci_ml"></div>
-          <div class="upcoming" id="home-upcoming-ziaci_ml"><div class="cat-empty">Načítavam…</div></div>
-        </div>
-        <div class="cat-card">
-          <h4>Starší žiaci</h4>
-          <div id="home-result-ziaci_st"></div>
-          <div class="upcoming" id="home-upcoming-ziaci_st"><div class="cat-empty">Načítavam…</div></div>
-        </div>
+    <div class="cat-panel" id="panel-muzi_b">
+      <h3>Muži B</h3>
+      <div class="cat-cols">
+        <div id="home-result-muzi_b"></div>
+        <div class="upcoming" id="home-upcoming-muzi_b"><div class="cat-empty">Načítavam…</div></div>
+      </div>
+      <a class="cat-more" href="muzi-dorastenci.html">Všetky výsledky →</a>
+    </div>
+
+    <div class="cat-panel" id="panel-dorast_st_ch">
+      <h3>Starší dorastenci</h3>
+      <div class="cat-cols">
+        <div id="home-result-dorast_st_ch"></div>
+        <div class="upcoming" id="home-upcoming-dorast_st_ch"><div class="cat-empty">Načítavam…</div></div>
+      </div>
+      <a class="cat-more" href="muzi-dorastenci.html">Všetky výsledky →</a>
+    </div>
+
+    <div class="cat-panel" id="panel-dorast_ml_ch">
+      <h3>Mladší dorastenci</h3>
+      <div class="cat-cols">
+        <div id="home-result-dorast_ml_ch"></div>
+        <div class="upcoming" id="home-upcoming-dorast_ml_ch"><div class="cat-empty">Načítavam…</div></div>
+      </div>
+      <a class="cat-more" href="muzi-dorastenci.html">Všetky výsledky →</a>
+    </div>
+
+    <div class="cat-panel" id="panel-ziaci_ml">
+      <h3>Mladší žiaci</h3>
+      <div class="cat-cols">
+        <div id="home-result-ziaci_ml"></div>
+        <div class="upcoming" id="home-upcoming-ziaci_ml"><div class="cat-empty">Načítavam…</div></div>
+      </div>
+      <a class="cat-more" href="ziaci.html">Všetky výsledky →</a>
+    </div>
+
+    <div class="cat-panel" id="panel-ziaci_st">
+      <h3>Starší žiaci</h3>
+      <div class="cat-cols">
+        <div id="home-result-ziaci_st"></div>
+        <div class="upcoming" id="home-upcoming-ziaci_st"><div class="cat-empty">Načítavam…</div></div>
       </div>
       <a class="cat-more" href="ziaci.html">Všetky výsledky →</a>
     </div>
