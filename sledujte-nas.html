@@ -117,9 +117,10 @@
   .footer-social{display:flex; gap:12px; margin-top:8px;}
   .footer-social a{
     width:36px; height:36px; border:2px solid #3A4E70; display:flex; align-items:center; justify-content:center;
-    border-radius:50%; font-size:13px; font-weight:700;
+    border-radius:50%; font-size:13px; font-weight:700; overflow:hidden; transition:border-color .15s ease;
   }
-  .footer-social a:hover{border-color:var(--red); color:#fff;}
+  .footer-social a img{width:100%; height:100%; object-fit:cover;}
+  .footer-social a:hover{border-color:var(--red);}
   .footer-bottom{
     border-top:1px solid #2A3B5A; padding:18px 40px; max-width:1200px; margin:0 auto;
     font-size:12px; color:#8E9BB8; text-align:center;
@@ -296,11 +297,11 @@
     }
   .video-card:hover{background:var(--ink); color:var(--cream);}
   .play{
-      width:38px; height:38px; border-radius:50%; background:var(--red); color:#fff;
+      width:46px; height:46px; border-radius:50%; background:#fff; color:#fff;
       flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:14px;
       overflow:hidden;
     }
-  .play img{width:22px; height:22px; object-fit:contain;}
+  .play img{width:100%; height:100%; object-fit:cover;}
   .video-card .vt{font-weight:600; font-size:15px;}
   .video-card .vs{font-size:13px; opacity:0.7;}
   main{max-width:1200px;}
@@ -356,32 +357,45 @@
 
     <section class="block">
       <div class="section-head"><h2>YouTube</h2></div>
-      <a class="video-card" href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener">
-        <div class="play">▶</div>
-        <div>
-          <div class="vt">YouTube kanál klubu</div>
-          <div class="vs">Zostrihy zápasov, tréningy a ďalšie videá — @SKHRohoznik_StrojarMalacky</div>
-        </div>
-      </a>
+      <div class="cards">
+        <a class="video-card" href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener">
+          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
+          <div>
+            <div class="vt">ŠKH Rohožník</div>
+          </div>
+        </a>
+        <a class="video-card" href="https://www.youtube.com/@hczahoraci9848" target="_blank" rel="noopener">
+          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
+          <div>
+            <div class="vt">HC Záhoráci</div>
+          </div>
+        </a>
+        <a class="video-card" href="https://www.youtube.com/@handballmalacky1975" target="_blank" rel="noopener">
+          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
+          <div>
+            <div class="vt">TJ Strojár Malacky</div>
+          </div>
+        </a>
+      </div>
     </section>
 
     <section class="block">
       <div class="section-head"><h2>Instagram</h2></div>
       <div class="cards">
         <a class="video-card" href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener">
-          <div class="play" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);"><img src="insta.png" alt="Instagram"></div>
+          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
           <div>
             <div class="vt">ŠKH Rohožník</div>
           </div>
         </a>
         <a class="video-card" href="https://www.instagram.com/hc_zahoraci/" target="_blank" rel="noopener">
-          <div class="play" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);"><img src="insta.png" alt="Instagram"></div>
+          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
           <div>
             <div class="vt">HC Záhoráci</div>
           </div>
         </a>
         <a class="video-card" href="https://www.instagram.com/handballmalacky/" target="_blank" rel="noopener">
-          <div class="play" style="background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af,#515bd4);"><img src="insta.png" alt="Instagram"></div>
+          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
           <div>
             <div class="vt">TJ Strojár Malacky</div>
           </div>
@@ -450,9 +464,9 @@
       <a href="gallery.html">Galéria</a>
       <a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a>
       <div class="footer-social">
-        <a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
-        <a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
-        <a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener" aria-label="YouTube">YT</a>
+        <a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener" aria-label="Facebook"><img src="facebook-logo.png" alt="Facebook"></a>
+        <a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener" aria-label="Instagram"><img src="instagram-logo.png" alt="Instagram"></a>
+        <a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener" aria-label="YouTube"><img src="youtube-logo.png" alt="YouTube"></a>
       </div>
     </div>
   </div>
