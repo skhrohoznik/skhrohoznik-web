@@ -117,10 +117,9 @@
   .footer-social{display:flex; gap:12px; margin-top:8px;}
   .footer-social a{
     width:36px; height:36px; border:2px solid #3A4E70; display:flex; align-items:center; justify-content:center;
-    border-radius:50%; font-size:13px; font-weight:700; overflow:hidden; transition:border-color .15s ease;
+    border-radius:50%; font-size:13px; font-weight:700;
   }
-  .footer-social a img{width:100%; height:100%; object-fit:cover;}
-  .footer-social a:hover{border-color:var(--red);}
+  .footer-social a:hover{border-color:var(--red); color:#fff;}
   .footer-bottom{
     border-top:1px solid #2A3B5A; padding:18px 40px; max-width:1200px; margin:0 auto;
     font-size:12px; color:#8E9BB8; text-align:center;
@@ -271,14 +270,31 @@
   .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
   .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
   .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
-  .albums{display:flex; flex-direction:column; gap:28px;}
+  .albums{display:flex; flex-direction:column; gap:16px;}
   .album{
       background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10);
-      padding:22px;
     }
-  .album h3{
-      font-size:17px; margin-bottom:16px; padding-bottom:10px; border-bottom:2px solid var(--ink);
+  .album-toggle{
+      width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
+      background:none; border:none; cursor:pointer; padding:20px 22px; text-align:left;
+      font-family:inherit; color:var(--ink);
     }
+  .album-toggle h3{
+      font-size:17px;
+    }
+  .album-toggle .album-count{
+      font-size:12px; font-weight:700; color:#6b6455; text-transform:none; letter-spacing:0; white-space:nowrap;
+    }
+  .album-toggle .album-right{display:flex; align-items:center; gap:14px; flex:0 0 auto;}
+  .album-toggle .album-arrow{
+      width:28px; height:28px; border:2px solid var(--ink); border-radius:50%;
+      display:flex; align-items:center; justify-content:center; font-size:13px; flex:0 0 auto;
+      transition:transform .2s ease;
+    }
+  .album.open .album-toggle .album-arrow{transform:rotate(180deg);}
+  .album.open .album-toggle{border-bottom:2px solid var(--ink);}
+  .album-body{display:none; padding:20px 22px 22px;}
+  .album.open .album-body{display:block;}
   .gallery-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -308,7 +324,8 @@
   .lightbox img{max-width:100%; max-height:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4);}
   @media (max-width:900px){
     .gallery-grid{grid-template-columns:repeat(2,1fr);}
-    .album{padding:16px;}
+    .album-toggle{padding:16px 18px;}
+    .album-body{padding:16px 18px 18px;}
   }
   .video-card{
       background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); padding:20px; text-decoration:none; color:var(--ink);
@@ -389,30 +406,50 @@
     .then(albums => {
       const wrap = document.getElementById('albums');
       wrap.innerHTML = '';
-      albums.forEach(album => {
+      function fotoLabel(n) {
+        if (n === 1) return '1 fotka';
+        if (n >= 2 && n <= 4) return n + ' fotky';
+        return n + ' fotiek';
+      }
+      albums.forEach((album, idx) => {
+        const fotky = album.fotky || [];
         const card = document.createElement('div');
         card.className = 'album';
-        const title = document.createElement('h3');
-        title.textContent = album.nazov || '';
-        card.appendChild(title);
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'album-toggle';
+        toggle.innerHTML =
+          '<h3>' + (album.nazov || '') + '</h3>' +
+          '<div class="album-right"><span class="album-count">' + fotoLabel(fotky.length) + '</span>' +
+          '<span class="album-arrow">▾</span></div>';
+        toggle.addEventListener('click', () => card.classList.toggle('open'));
+        card.appendChild(toggle);
+
+        const body = document.createElement('div');
+        body.className = 'album-body';
         const grid = document.createElement('div');
         grid.className = 'gallery-grid';
-        (album.fotky || []).forEach(foto => {
+        fotky.forEach(foto => {
           const cell = document.createElement('div');
           cell.className = 'g-item';
           const img = document.createElement('img');
+          img.loading = 'lazy';
           img.src = foto;
           img.alt = album.nazov || '';
           cell.appendChild(img);
           grid.appendChild(cell);
         });
-        card.appendChild(grid);
+        body.appendChild(grid);
+        card.appendChild(body);
+
         wrap.appendChild(card);
       });
       const lightbox = document.getElementById('lightbox');
       const lightboxImg = document.getElementById('lightbox-img');
       wrap.querySelectorAll('.gallery-grid img').forEach(img => {
-        img.addEventListener('click', () => {
+        img.addEventListener('click', (e) => {
+          e.stopPropagation();
           lightboxImg.src = img.src;
           lightboxImg.alt = img.alt;
           lightbox.classList.add('open');
@@ -454,9 +491,9 @@
       <a href="gallery.html">Galéria</a>
       <a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a>
       <div class="footer-social">
-        <a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener" aria-label="Facebook"><img src="facebook-logo.png" alt="Facebook"></a>
-        <a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener" aria-label="Instagram"><img src="instagram-logo.png" alt="Instagram"></a>
-        <a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener" aria-label="YouTube"><img src="youtube-logo.png" alt="YouTube"></a>
+        <a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener" aria-label="Facebook">FB</a>
+        <a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener" aria-label="Instagram">IG</a>
+        <a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener" aria-label="YouTube">YT</a>
       </div>
     </div>
   </div>
