@@ -249,6 +249,9 @@
   .cards{
     display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
   }
+  @media (max-width:900px){
+    .cards{grid-template-columns:1fr;}
+  }
   .recruit{
     background:var(--red); color:#fff; padding:52px 40px;
     display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;
@@ -379,11 +382,6 @@
           </div>
         </div>
 
-     </div>
-    </section>
-
-    <section class="block">
-      <div class="cards">
         <div class="contact-card">
           <h2>Hádzaná Malacky (HC Záhoráci)</h2>
           <div class="role">
@@ -411,11 +409,7 @@
             <div class="role-phone"><a href="tel:+421904618080">+421 904 618 080</a></div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="block">
-      <div class="cards">
         <div class="contact-card">
           <h2>TJ Strojár Malacky</h2>
           <div class="role">

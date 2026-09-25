@@ -128,7 +128,6 @@
   @media (max-width:900px){
     .footer-inner{grid-template-columns:1fr; padding:36px 20px 20px;}
     .footer-bottom{padding:16px 20px;}
-    .cards{grid-template-columns:1fr;}
   }
 
   
@@ -249,6 +248,9 @@
   .contact-card .pending{color:#6b6455; font-style:italic; font-size:14px;}
   .cards{
     display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+  }
+  @media (max-width:900px){
+    .cards{grid-template-columns:1fr;}
   }
   .recruit{
     background:var(--red); color:#fff; padding:52px 40px;
