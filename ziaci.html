@@ -305,6 +305,22 @@
   .page-title{font-size:clamp(26px,4vw,38px); margin-bottom:12px;}
   .page-intro{color:#5c5648; font-size:15px; max-width:640px; margin-bottom:8px;}
   .block{margin-top:44px;}
+  .sponsors-band{width:100%; background:#fff; border-top:3px solid var(--ink);}
+  .sponsors-inner{max-width:1200px; margin:0 auto; padding:32px 40px 36px;}
+  .sponsors-label{
+    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
+    color:#6b6455; margin-bottom:18px; text-align:center;
+  }
+  .sponsors-logos{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:20px;}
+  .sponsors-logos img{
+    height:48px; width:auto; object-fit:contain; opacity:0.9; transition:opacity .15s ease;
+  }
+  .sponsors-logos img:hover{opacity:1;}
+  @media (max-width:640px){
+    .sponsors-inner{padding:24px 20px 28px;}
+    .sponsors-logos{gap:14px;}
+    .sponsors-logos img{height:36px;}
+  }
 </style>
 </head>
 <body>
@@ -439,6 +455,34 @@
   </div>
   <div class="footer-bottom">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</div>
 </footer>
+
+<div class="sponsors-band">
+  <div class="sponsors-inner">
+    <div class="sponsors-label">Naši partneri</div>
+    <div class="sponsors-logos">
+      <img src="sponsors/extraliga-handball.png" alt="Slovenská Handballová Extraliga">
+      <img src="sponsors/szh.png" alt="Slovenský zväz hádzanej">
+      <img src="sponsors/erwood.png" alt="ER WOOD">
+      <img src="sponsors/alfimex.png" alt="Alfimex">
+      <img src="sponsors/hilek.png" alt="Hílek">
+      <img src="sponsors/npe.png" alt="NPE">
+      <img src="sponsors/sytiq.png" alt="Sytiq">
+      <img src="sponsors/homegym.png" alt="Home Gym">
+      <img src="sponsors/bizektrans.png" alt="Bízek Trans">
+      <img src="sponsors/mattoni.png" alt="Mattoni">
+      <img src="sponsors/oliveto.png" alt="Oliveto">
+      <img src="sponsors/mcdonalds.png" alt="McDonald's">
+      <img src="sponsors/malacky-erb.png" alt="Mesto Malacky">
+      <img src="sponsors/csob-leasing.png" alt="ČSOB Leasing">
+      <img src="sponsors/malacky-mesto.png" alt="Malacky – dobré miesto pre život">
+      <img src="sponsors/kobu.png" alt="KO&BU">
+      <img src="sponsors/x-logo.png" alt="X">
+      <img src="sponsors/autosave.png" alt="Autosave">
+      <img src="sponsors/nemocnicna.png" alt="Nemocničná">
+      <img src="sponsors/sportbar-arena.png" alt="Šport Bar Aréna Malacky">
+    </div>
+  </div>
+</div>
 <script>
   function renderResults(key, matches) {
     const tbody = document.getElementById('tbody-' + key);
