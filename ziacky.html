@@ -321,6 +321,11 @@
     .sponsors-logos{gap:14px;}
     .sponsors-logos img{height:36px;}
   }
+  .table-label{
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    color:#6b6455; margin:0 0 8px;
+  }
+  table.results + .table-label{margin-top:22px;}
 </style>
 </head>
 <body>
@@ -374,7 +379,19 @@
 <div class="category-card" id="sz">
           <h3>Staršie žiačky</h3>
           <img class="team-photo" src="tim-sz.jpg" alt="Tím Staršie žiačky">
-          <div class="upcoming" id="upcoming-sz"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-sz">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-sz"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="sz">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -390,7 +407,19 @@
         </div>
 <div class="category-card" id="mza">
           <h3>Mladšie žiačky A</h3>
-          <div class="upcoming" id="upcoming-mza"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-mza">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-mza"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="mza">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -407,7 +436,19 @@
 <div class="category-card" id="mzb">
           <h3>Mladšie žiačky B</h3>
           <img class="team-photo" src="tim-mzb.jpg" alt="Tím Mladšie žiačky B">
-          <div class="upcoming" id="upcoming-mzb"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-mzb">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-mzb"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="mzb">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -553,17 +594,21 @@
   }
 
   function renderUpcoming(key, upcoming) {
-    const box = document.getElementById('upcoming-' + key);
-    if (!box) return;
-    box.innerHTML = '';
-    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) return;
+    const tbody = document.getElementById('upcoming-' + key);
+    const note = document.getElementById('upcoming-note-' + key);
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) {
+      if (note) note.textContent = 'Zatiaľ žiadny naplánovaný zápas.';
+      return;
+    }
+    if (note) note.textContent = '';
     upcoming.forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'upcoming-card';
+      const tr = document.createElement('tr');
       const matchLabel = m.home ? ('Rohožník – ' + m.opponent) : (m.opponent + ' – Rohožník');
       const timeLabel = m.time ? m.time : 'čas bude upresnený';
-      card.innerHTML = '<span class="uc-date">' + m.date + '</span>' + '<span class="uc-match">' + matchLabel + '</span>' + '<span class="uc-time">' + timeLabel + '</span>';
-      box.appendChild(card);
+      tr.innerHTML = '<td>' + m.date + '</td>' + '<td>' + matchLabel + '</td>' + '<td>' + timeLabel + '</td>';
+      tbody.appendChild(tr);
     });
   }
 

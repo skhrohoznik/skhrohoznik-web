@@ -321,6 +321,11 @@
     .sponsors-logos{gap:14px;}
     .sponsors-logos img{height:36px;}
   }
+  .table-label{
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    color:#6b6455; margin:0 0 8px;
+  }
+  table.results + .table-label{margin-top:22px;}
 </style>
 </head>
 <body>
@@ -373,7 +378,19 @@
       <div class="category-grid">
 <div class="category-card" id="ziaci_ml">
           <h3>Mladší žiaci</h3>
-          <div class="upcoming" id="upcoming-ziaci_ml"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-ziaci_ml">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-ziaci_ml"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="ziaci_ml">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -389,7 +406,19 @@
         </div>
 <div class="category-card" id="ziaci_st">
           <h3>Starší žiaci</h3>
-          <div class="upcoming" id="upcoming-ziaci_st"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-ziaci_st">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-ziaci_st"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="ziaci_st">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -504,17 +533,21 @@
   }
 
   function renderUpcoming(key, upcoming) {
-    const box = document.getElementById('upcoming-' + key);
-    if (!box) return;
-    box.innerHTML = '';
-    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) return;
+    const tbody = document.getElementById('upcoming-' + key);
+    const note = document.getElementById('upcoming-note-' + key);
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) {
+      if (note) note.textContent = 'Zatiaľ žiadny naplánovaný zápas.';
+      return;
+    }
+    if (note) note.textContent = '';
     upcoming.forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'upcoming-card';
+      const tr = document.createElement('tr');
       const matchLabel = m.home ? ('Malacky – ' + m.opponent) : (m.opponent + ' – Malacky');
       const timeLabel = m.time ? m.time : 'čas bude upresnený';
-      card.innerHTML = '<span class="uc-date">' + m.date + '</span>' + '<span class="uc-match">' + matchLabel + '</span>' + '<span class="uc-time">' + timeLabel + '</span>';
-      box.appendChild(card);
+      tr.innerHTML = '<td>' + m.date + '</td>' + '<td>' + matchLabel + '</td>' + '<td>' + timeLabel + '</td>';
+      tbody.appendChild(tr);
     });
   }
 

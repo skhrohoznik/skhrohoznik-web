@@ -321,6 +321,11 @@
     .sponsors-logos{gap:14px;}
     .sponsors-logos img{height:36px;}
   }
+  .table-label{
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
+    color:#6b6455; margin:0 0 8px;
+  }
+  table.results + .table-label{margin-top:22px;}
 </style>
 </head>
 <body>
@@ -374,7 +379,19 @@
 <div class="category-card" id="muzi_a">
           <h3>Muži A (Extraliga)</h3>
           <img class="team-photo" src="tim-muzi-a.jpg" alt="Tím HC Záhoráci Muži A, sezóna 2025/2026">
-          <div class="upcoming" id="upcoming-muzi_a"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-muzi_a">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-muzi_a"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="muzi_a">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -391,7 +408,19 @@
 <div class="category-card" id="muzi_b">
           <h3>Muži B (1. liga)</h3>
           <img class="team-photo" src="tim-muzi-b.jpg" alt="Tím HC Záhoráci Muži B, sezóna 2025/2026">
-          <div class="upcoming" id="upcoming-muzi_b"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-muzi_b">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-muzi_b"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="muzi_b">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -408,7 +437,19 @@
 <div class="category-card" id="dorast_st_ch">
           <h3>Starší dorastenci</h3>
           <img class="team-photo" src="tim-dorast-st.jpg" alt="Tím HC Záhoráci Starší dorastenci, sezóna 2025/2026">
-          <div class="upcoming" id="upcoming-dorast_st_ch"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-dorast_st_ch">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-dorast_st_ch"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="dorast_st_ch">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -425,7 +466,19 @@
 <div class="category-card" id="dorast_ml_ch">
           <h3>Mladší dorastenci</h3>
           <img class="team-photo" src="tim-dorast-ml.jpg" alt="Tím HC Záhoráci Mladší dorastenci">
-          <div class="upcoming" id="upcoming-dorast_ml_ch"></div>
+          <div class="table-label">Najbližšie zápasy</div>
+          <p class="standing-note" id="upcoming-note-dorast_ml_ch">Načítavam…</p>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Dátum</th>
+                <th>Zápas</th>
+                <th>Čas</th>
+              </tr>
+            </thead>
+            <tbody id="upcoming-dorast_ml_ch"></tbody>
+          </table>
+          <div class="table-label">Odohrané zápasy</div>
           <p class="standing-note" data-note="dorast_ml_ch">Načítavam výsledky…</p>
           <table class="results">
             <thead>
@@ -548,17 +601,21 @@
   }
 
   function renderUpcoming(key, upcoming) {
-    const box = document.getElementById('upcoming-' + key);
-    if (!box) return;
-    box.innerHTML = '';
-    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) return;
+    const tbody = document.getElementById('upcoming-' + key);
+    const note = document.getElementById('upcoming-note-' + key);
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) {
+      if (note) note.textContent = 'Zatiaľ žiadny naplánovaný zápas.';
+      return;
+    }
+    if (note) note.textContent = '';
     upcoming.forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'upcoming-card';
+      const tr = document.createElement('tr');
       const matchLabel = m.home ? ('Malacky – ' + m.opponent) : (m.opponent + ' – Malacky');
       const timeLabel = m.time ? m.time : 'čas bude upresnený';
-      card.innerHTML = '<span class="uc-date">' + m.date + '</span>' + '<span class="uc-match">' + matchLabel + '</span>' + '<span class="uc-time">' + timeLabel + '</span>';
-      box.appendChild(card);
+      tr.innerHTML = '<td>' + m.date + '</td>' + '<td>' + matchLabel + '</td>' + '<td>' + timeLabel + '</td>';
+      tbody.appendChild(tr);
     });
   }
 
