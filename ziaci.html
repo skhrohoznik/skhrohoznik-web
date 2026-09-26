@@ -81,7 +81,15 @@
   .navbar .dropdown-menu li a:hover{background:rgba(214,38,44,0.06); color:var(--red);}
   .navbar .nav-toggle{display:none;}
 
-  main.page{max-width:1200px; margin:0 auto; width:100%; padding:48px 40px; flex:1;}
+  main.page{
+    max-width:1500px; margin:0 auto; width:100%; padding:48px 40px; flex:1;
+    display:grid; grid-template-columns:240px 1fr; gap:40px; align-items:start;
+  }
+  @media (max-width:1300px){
+    main.page{grid-template-columns:1fr; max-width:1200px;}
+    .site-sidebar{position:static; order:2; margin-top:56px;}
+    .page-content{order:1; min-width:0;}
+  }
 
   @media (max-width:900px){
     .navbar-inner{padding:14px 20px;}
@@ -99,35 +107,32 @@
     main.page{padding:32px 20px;}
   }
 
-  /* ---- FOOTER ---- */
-  footer{
-    background:var(--blue-dark); color:#DDE4F1; border-top:3px solid var(--ink); margin-top:64px;
+  /* ---- SIDEBAR (bocny panel, predtym pata) ---- */
+  .site-sidebar{
+    background:var(--blue-dark); color:#DDE4F1; padding:26px 22px; position:sticky; top:24px;
   }
-  .footer-inner{
-    max-width:1200px; margin:0 auto; padding:48px 40px 28px;
-    display:grid; grid-template-columns:repeat(2,1fr); gap:36px;
-  }
+  .page-content{min-width:0;}
   .footer-col h4{
     font-family:'Archivo Black', sans-serif; font-weight:400; text-transform:uppercase;
-    font-size:14px; letter-spacing:0.04em; color:#fff; margin-bottom:16px;
+    font-size:13px; letter-spacing:0.04em; color:#fff; margin-bottom:14px;
   }
-  .footer-col p, .footer-col a{font-size:14px; color:#C3CBDD; line-height:1.8;}
+  .footer-col p, .footer-col a{font-size:13px; color:#C3CBDD; line-height:1.7;}
   .footer-col a{text-decoration:none; display:block;}
   .footer-col a:hover{color:#fff;}
-  .footer-social{display:flex; gap:12px; margin-top:8px;}
+  .footer-col + .footer-col{margin-top:26px;}
+  .footer-social{display:flex; gap:10px; margin-top:10px;}
   .footer-social a{
-    width:36px; height:36px; border:2px solid #3A4E70; display:flex; align-items:center; justify-content:center;
-    border-radius:50%; font-size:13px; font-weight:700; overflow:hidden; transition:border-color .15s ease;
+    width:32px; height:32px; border:2px solid #3A4E70; display:flex; align-items:center; justify-content:center;
+    border-radius:50%; overflow:hidden; transition:border-color .15s ease;
   }
   .footer-social a img{width:100%; height:100%; object-fit:cover;}
   .footer-social a:hover{border-color:var(--red);}
   .footer-bottom{
-    border-top:1px solid #2A3B5A; padding:18px 40px; max-width:1200px; margin:0 auto;
-    font-size:12px; color:#8E9BB8; text-align:center;
+    border-top:1px solid #2A3B5A; margin-top:20px; padding-top:14px;
+    font-size:11px; color:#8E9BB8;
   }
   @media (max-width:900px){
-    .footer-inner{grid-template-columns:1fr; padding:36px 20px 20px;}
-    .footer-bottom{padding:16px 20px;}
+    main.page{padding:32px 20px;}
   }
 
   
@@ -370,6 +375,35 @@
 </header>
 
 <main class="page">
+<aside class="site-sidebar">
+  <div class="footer-col">
+    <h4>Kluby</h4>
+    <p>ŠKH Rohožník<br><a href="mailto:skhrohoznik@gmail.com">skhrohoznik@gmail.com</a></p>
+    <p style="margin-top:10px;">HC Záhoráci<br><a href="mailto:info@hczahoraci.sk">info@hczahoraci.sk</a></p>
+    <p style="margin-top:10px;">TJ Strojár Malacky<br><a href="mailto:info@handballmalacky.sk">info@handballmalacky.sk</a></p>
+    <div class="footer-social">
+      <a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener" aria-label="Facebook"><img src="facebook-logo.png" alt="Facebook"></a>
+      <a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener" aria-label="Instagram"><img src="instagram-logo.png" alt="Instagram"></a>
+      <a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener" aria-label="YouTube"><img src="youtube-logo.png" alt="YouTube"></a>
+    </div>
+  </div>
+  <div class="footer-col">
+    <h4>Menu</h4>
+    <a href="index.html">Domov</a>
+    <a href="zeny-dorastenky.html">Ženy a dorastenky</a>
+    <a href="ziacky.html">Žiačky</a>
+    <a href="muzi-dorastenci.html">Muži a dorastenci</a>
+    <a href="ziaci.html">Žiaci</a>
+    <a href="nabor.html">Nábor</a>
+    <a href="klub.html">Klub</a>
+    <a href="kontakty.html">Kontakty</a>
+    <a href="gallery.html">Galéria</a>
+    <a href="sledujte-nas.html">Sledujte nás</a>
+    <a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a>
+  </div>
+  <div class="footer-bottom">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</div>
+</aside>
+<div class="page-content">
     <h1 class="page-title">Žiaci</h1>
     <p class="page-intro">Mladší a starší žiaci — TJ Strojár Malacky.</p>
 
@@ -449,38 +483,9 @@
       </div>
     </section>
 
+  </div>
   </main>
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-col">
-      <h4>Kluby</h4>
-      <p>ŠKH Rohožník<br><a href="mailto:skhrohoznik@gmail.com">skhrohoznik@gmail.com</a></p>
-      <p style="margin-top:10px;">HC Záhoráci<br><a href="mailto:info@hczahoraci.sk">info@hczahoraci.sk</a></p>
-      <p style="margin-top:10px;">TJ Strojár Malacky<br><a href="mailto:info@handballmalacky.sk">info@handballmalacky.sk</a></p>
-      <div class="footer-social">
-        <a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener" aria-label="Facebook"><img src="facebook-logo.png" alt="Facebook"></a>
-        <a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener" aria-label="Instagram"><img src="instagram-logo.png" alt="Instagram"></a>
-        <a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener" aria-label="YouTube"><img src="youtube-logo.png" alt="YouTube"></a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Menu</h4>
-      <a href="index.html">Domov</a>
-      <a href="zeny-dorastenky.html">Ženy a dorastenky</a>
-      <a href="ziacky.html">Žiačky</a>
-      <a href="muzi-dorastenci.html">Muži a dorastenci</a>
-      <a href="ziaci.html">Žiaci</a>
-      <a href="nabor.html">Nábor</a>
-      <a href="klub.html">Klub</a>
-      <a href="kontakty.html">Kontakty</a>
-      <a href="gallery.html">Galéria</a>
-      <a href="sledujte-nas.html">Sledujte nás</a>
-      <a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a>
-    </div>
-  </div>
-  <div class="footer-bottom">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</div>
-</footer>
 
 <div class="sponsors-band">
   <div class="sponsors-inner">
