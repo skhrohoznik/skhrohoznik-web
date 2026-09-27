@@ -12,6 +12,7 @@
     --blue:#173B73;
     --blue-dark:#0E2749;
     --red:#D6262C;
+    --red-soft:#B23A34; /* zjemnena cervena pre bocny panel */
     --yellow:#F2B705;
     --cream:#F7F4EC;
     --ink:#161A22;
@@ -112,7 +113,7 @@
 
   /* ---- SIDEBAR (bocny panel, predtym pata) ---- */
   .site-sidebar{
-    background:var(--red); color:#fff;
+    background:var(--red-soft); color:#fff;
     position:relative;
   }
   .site-sidebar::before{
@@ -120,7 +121,7 @@
     position:absolute;
     top:0; bottom:0; right:100%;
     width:100vw;
-    background:var(--red);
+    background:var(--red-soft);
   }
   @media (max-width:1300px){
     .site-sidebar::before{display:none;}
