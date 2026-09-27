@@ -26,6 +26,7 @@
     line-height:1.5;
     min-height:100vh;
     display:flex; flex-direction:column;
+    overflow-x:clip;
   }
   h1,h2,h3{
     font-family:'Archivo Black', sans-serif;
@@ -83,11 +84,12 @@
 
   main.page{
     max-width:1500px; margin:0 auto; width:100%; padding:48px 40px; flex:1;
-    display:grid; grid-template-columns:240px 1fr; gap:40px; align-items:start;
+    display:grid; grid-template-columns:240px 1fr; gap:40px;
   }
   @media (max-width:1300px){
     main.page{grid-template-columns:1fr; max-width:1200px;}
-    .site-sidebar{position:static; order:2; margin-top:56px;}
+    .site-sidebar{order:2; margin-top:56px;}
+    .site-sidebar-inner{position:static;}
     .page-content{order:1; min-width:0;}
   }
 
@@ -109,7 +111,21 @@
 
   /* ---- SIDEBAR (bocny panel, predtym pata) ---- */
   .site-sidebar{
-    background:var(--red); color:#fff; padding:26px 22px; position:sticky; top:24px;
+    background:var(--red); color:#fff;
+    position:relative;
+  }
+  .site-sidebar::before{
+    content:'';
+    position:absolute;
+    top:0; bottom:0; right:100%;
+    width:100vw;
+    background:var(--red);
+  }
+  @media (max-width:1300px){
+    .site-sidebar::before{display:none;}
+  }
+  .site-sidebar-inner{
+    position:sticky; top:24px; padding:26px 22px;
   }
   .page-content{min-width:0;}
   .footer-col h4{
@@ -363,6 +379,7 @@
 
 <main class="page">
 <aside class="site-sidebar">
+<div class="site-sidebar-inner">
   <div class="footer-col">
     <h4>Menu</h4>
     <a href="index.html">Domov</a>
@@ -378,6 +395,7 @@
     <a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a>
   </div>
   <div class="footer-bottom">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</div>
+</div>
 </aside>
 <div class="page-content">
     <h1 class="page-title">Klub</h1>
