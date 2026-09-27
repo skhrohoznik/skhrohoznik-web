@@ -620,7 +620,8 @@
           '</div>'
         : '';
       const clubHtml = item.klub ? '<div class="news-club">' + escapeHtml(item.klub) + '</div>' : '';
-      const textHtml = escapeHtml(item.text || '').replace(/\n/g, '<br>');
+      const titleHtml = item.nadpis ? '<h3>' + escapeHtml(item.nadpis) + '</h3>' : '';
+      const textHtml = item.text ? '<p>' + escapeHtml(item.text).replace(/\n/g, '<br>') + '</p>' : '';
       const linkHtml = item.zdroj
         ? '<a class="news-more" href="' + escapeHtml(item.zdroj) + '" target="_blank" rel="noopener">Zobraziť na Facebooku →</a>'
         : '';
@@ -629,8 +630,8 @@
         '<div class="news-body">' +
         '<div class="news-date">' + escapeHtml(item.datum || '') + '</div>' +
         clubHtml +
-        '<h3>' + escapeHtml(item.nadpis || '') + '</h3>' +
-        '<p>' + textHtml + '</p>' +
+        titleHtml +
+        textHtml +
         linkHtml +
         '</div>';
       return card;

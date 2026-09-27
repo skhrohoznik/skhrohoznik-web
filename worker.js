@@ -236,18 +236,32 @@ function fbDateToDatum(iso) {
   return `${dd}.${mm}.${d.getFullYear()}`;
 }
 
+const BARE_URL_RE = /^https?:\/\/\S+$/i;
+
 function fbPostToItem(post, club) {
   const message = String(post.message || post.story || "").trim();
-  const firstLine = message.split("\n")[0] || "";
-  let nadpis = firstLine.slice(0, 80);
-  if (firstLine.length > 80) nadpis += "…";
-  if (!nadpis) nadpis = "Nový príspevok";
+  let text = message;
+  let nadpis = null; // FB príspevky sami o sebe nemajú nadpis - nevymýšľame ho zo správy
+  let foto = post.full_picture || null;
+
+  const attachment = post.attachments && post.attachments.data && post.attachments.data[0];
+  if (attachment) {
+    // Zdieľaný odkaz (napr. článok) - ak správa je iba samotná URL adresa (alebo prázdna),
+    // použijeme radšej skutočný názov/popis z náhľadu odkazu namiesto surovej URL.
+    if (attachment.title && (!text || BARE_URL_RE.test(text))) {
+      nadpis = attachment.title;
+      text = attachment.description || "";
+    }
+    if (!foto && attachment.media && attachment.media.image && attachment.media.image.src) {
+      foto = attachment.media.image.src;
+    }
+  }
 
   return {
     datum: fbDateToDatum(post.created_time),
     nadpis,
-    text: message,
-    foto: post.full_picture || null,
+    text,
+    foto,
     zdroj: post.permalink_url || null,
     klub: club,
     _sortTime: new Date(post.created_time).getTime() || 0,
@@ -257,7 +271,9 @@ function fbPostToItem(post, club) {
 async function fetchFbPosts(page, env) {
   const token = env[page.tokenEnv];
   if (!token) return [];
-  const fields = "message,story,created_time,full_picture,permalink_url";
+  const fields =
+    "message,story,created_time,full_picture,permalink_url," +
+    "attachments{title,description,media}";
   const apiUrl =
     `https://graph.facebook.com/${FB_API_VERSION}/${page.pageId}/posts` +
     `?fields=${fields}&limit=15&access_token=${encodeURIComponent(token)}`;
