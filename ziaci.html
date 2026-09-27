@@ -90,7 +90,7 @@
   @media (max-width:1300px){
     main.page{grid-template-columns:1fr; max-width:1200px;}
     .site-sidebar{order:2; margin-top:56px;}
-    .site-sidebar-inner{position:static;}
+    .site-sidebar-inner{position:static; margin-left:0;}
     .page-content{order:1; min-width:0;}
   }
 
@@ -127,6 +127,12 @@
   }
   .site-sidebar-inner{
     position:sticky; top:24px; padding:26px 20px 26px 16px;
+    /* Textovy obsah panelu drzime na pevnom malom odstupe od skutocneho
+       okraja obrazovky, nezavisle od sirky monitora - inak by sa (kedze
+       .site-sidebar sedi v mriezke vycentrovanej na max. 1500px) na
+       sirokych monitoroch posuval stale dalej od okraja aj napriek tomu,
+       ze cervene pozadie uz siaha az k okraju. */
+    margin-left:calc(-32px - max(0px, (100vw - 1500px)/2));
   }
   .page-content{min-width:0;}
   .footer-col h4{
