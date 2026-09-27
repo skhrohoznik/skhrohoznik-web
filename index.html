@@ -265,8 +265,20 @@
   .lightbox img{max-width:100%; max-height:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4);}
   .news-card .news-body{padding:22px;}
   .news-date{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--red); margin-bottom:8px;}
+  .news-club{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455; margin-bottom:8px;}
   .news-card h3{font-size:16px; margin-bottom:8px;}
-  .news-card p{font-size:14px; color:#5c5648;}
+  .news-card p{font-size:14px; color:#5c5648; white-space:pre-line;}
+  .news-more{
+    display:inline-block; margin-top:12px; font-size:12px; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.03em; color:var(--red); text-decoration:underline; text-underline-offset:3px;
+  }
+  .news-loadmore-wrap{display:none; text-align:center; margin-top:28px;}
+  .news-loadmore-btn{
+    background:#fff; border:2px solid var(--ink); color:var(--ink); cursor:pointer;
+    font-family:inherit; font-weight:700; text-transform:uppercase; letter-spacing:0.03em;
+    font-size:13px; padding:12px 28px;
+  }
+  .news-loadmore-btn:hover{background:var(--ink); color:#fff;}
 
   .next-match{
     background:var(--blue); color:#fff; border:2px solid var(--ink);
@@ -497,6 +509,9 @@
         <h2>Aktuality</h2>
       </div>
       <div class="news-grid" id="news-grid"></div>
+      <div class="news-loadmore-wrap" id="news-loadmore-wrap" style="display:none;">
+        <button type="button" class="news-loadmore-btn" id="news-loadmore">Zobraziť staršie príspevky</button>
+      </div>
     </section>
 
     <section class="block">
@@ -580,52 +595,105 @@
     });
   })();
 
-  fetch('/aktuality.json')
-    .then(r => r.json())
-    .then(items => {
-      const grid = document.getElementById('news-grid');
-      grid.innerHTML = '';
-      items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'news-card';
-        let photos = [];
-        if (Array.isArray(item.fotky)) {
-          photos = item.fotky;
-        } else if (item.foto) {
-          photos = String(item.foto).split(',').map(s => s.trim()).filter(Boolean);
+  (function(){
+    function escapeHtml(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function buildNewsCard(item) {
+      const card = document.createElement('div');
+      card.className = 'news-card';
+      let photos = [];
+      if (Array.isArray(item.fotky)) {
+        photos = item.fotky;
+      } else if (item.foto) {
+        photos = String(item.foto).split(',').map(s => s.trim()).filter(Boolean);
+      }
+      const altText = escapeHtml(item.nadpis || '');
+      const photosHtml = photos.length
+        ? '<div class="news-photos">' +
+          photos.map(f => '<img class="news-photo" src="' + escapeHtml(f) + '" alt="' + altText + '">').join('') +
+          '</div>'
+        : '';
+      const clubHtml = item.klub ? '<div class="news-club">' + escapeHtml(item.klub) + '</div>' : '';
+      const textHtml = escapeHtml(item.text || '').replace(/\n/g, '<br>');
+      const linkHtml = item.zdroj
+        ? '<a class="news-more" href="' + escapeHtml(item.zdroj) + '" target="_blank" rel="noopener">Zobraziť na Facebooku →</a>'
+        : '';
+      card.innerHTML =
+        photosHtml +
+        '<div class="news-body">' +
+        '<div class="news-date">' + escapeHtml(item.datum || '') + '</div>' +
+        clubHtml +
+        '<h3>' + escapeHtml(item.nadpis || '') + '</h3>' +
+        '<p>' + textHtml + '</p>' +
+        linkHtml +
+        '</div>';
+      return card;
+    }
+
+    fetch('/aktuality.json')
+      .then(r => r.json())
+      .then(items => {
+        const grid = document.getElementById('news-grid');
+        const loadMoreWrap = document.getElementById('news-loadmore-wrap');
+        const loadMoreBtn = document.getElementById('news-loadmore');
+        grid.innerHTML = '';
+
+        if (!Array.isArray(items) || !items.length) {
+          grid.innerHTML = '<p style="color:#5c5648;">Zatiaľ žiadne aktuality.</p>';
+          return;
         }
-        const photosHtml = photos.length
-          ? '<div class="news-photos">' +
-            photos.map(f => '<img class="news-photo" src="' + f + '" alt="' + item.nadpis + '">').join('') +
-            '</div>'
-          : '';
-        card.innerHTML =
-          photosHtml +
-          '<div class="news-body">' +
-          '<div class="news-date">' + item.datum + '</div>' +
-          '<h3>' + item.nadpis + '</h3>' +
-          '<p>' + item.text + '</p>' +
-          '</div>';
-        grid.appendChild(card);
-      });
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImg = document.getElementById('lightbox-img');
-      grid.querySelectorAll('.news-photo').forEach(img => {
-        img.addEventListener('click', () => {
-          lightboxImg.src = img.src;
-          lightboxImg.alt = img.alt;
-          lightbox.classList.add('open');
+
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        function wireLightbox(card) {
+          card.querySelectorAll('.news-photo').forEach(img => {
+            img.addEventListener('click', () => {
+              lightboxImg.src = img.src;
+              lightboxImg.alt = img.alt;
+              lightbox.classList.add('open');
+            });
+          });
+        }
+
+        const PAGE_SIZE = 6;
+        let shown = 0;
+
+        function showMore() {
+          const next = items.slice(shown, shown + PAGE_SIZE);
+          next.forEach(item => {
+            const card = buildNewsCard(item);
+            grid.appendChild(card);
+            wireLightbox(card);
+          });
+          shown += next.length;
+          if (loadMoreWrap) {
+            loadMoreWrap.style.display = shown < items.length ? 'block' : 'none';
+          }
+        }
+
+        showMore();
+
+        if (loadMoreBtn) {
+          loadMoreBtn.addEventListener('click', showMore);
+        }
+
+        lightbox.addEventListener('click', () => {
+          lightbox.classList.remove('open');
+          lightboxImg.src = '';
         });
+      })
+      .catch(() => {
+        document.getElementById('news-grid').innerHTML =
+          '<p style="color:#5c5648;">Aktuality sa nepodarilo načítať.</p>';
       });
-      lightbox.addEventListener('click', () => {
-        lightbox.classList.remove('open');
-        lightboxImg.src = '';
-      });
-    })
-    .catch(() => {
-      document.getElementById('news-grid').innerHTML =
-        '<p style="color:#5c5648;">Aktuality sa nepodarilo načítať.</p>';
-    });
+  })();
   const CATEGORY_LABELS = {
     zeny: "Ženy",
     dorast_st: "Staršie dorastenky",

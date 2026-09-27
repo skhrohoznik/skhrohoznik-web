@@ -190,11 +190,105 @@ async function handleVysledky() {
   });
 }
 
+// --- AKTUALITY: automatické stiahnutie príspevkov z Facebook stránok ---
+// Tokeny sa NIKDY nedávajú do kódu/repozitára - nastavujú sa ako Cloudflare
+// Worker "secrets" (wrangler secret put FB_TOKEN_ROHOZNIK / FB_TOKEN_ZAHORACI),
+// odtiaľ sú dostupné cez `env`.
+const FB_API_VERSION = "v21.0";
+
+const FB_PAGES = [
+  {
+    key: "rohoznik",
+    pageId: "292481291455655",
+    tokenEnv: "FB_TOKEN_ROHOZNIK",
+    club: "ŠKH Rohožník / TJ Strojár Malacky",
+  },
+  {
+    key: "zahoraci",
+    pageId: "104785271891529",
+    tokenEnv: "FB_TOKEN_ZAHORACI",
+    club: "HC Záhoráci",
+  },
+];
+
+// Ručne pridané, "vždyzelené" aktuality (napr. nábor), ktoré sa zobrazujú
+// vždy navrchu, pred automaticky stiahnutými príspevkami z Facebooku.
+const MANUAL_AKTUALITY = [
+  {
+    datum: "Nábor",
+    nadpis: "Hľadáme nové hráčky a hráčov",
+    text: "Príď sa pozrieť na tréning — viac informácií nájdeš na karte Nábor.",
+    fotky: ["nabor-chlapci.jpg", "nabor-dievcata.jpg"],
+  },
+];
+
+function fbDateToDatum(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return `${dd}.${mm}.${d.getFullYear()}`;
+}
+
+function fbPostToItem(post, club) {
+  const message = String(post.message || post.story || "").trim();
+  const firstLine = message.split("\n")[0] || "";
+  let nadpis = firstLine.slice(0, 80);
+  if (firstLine.length > 80) nadpis += "…";
+  if (!nadpis) nadpis = "Nový príspevok";
+
+  return {
+    datum: fbDateToDatum(post.created_time),
+    nadpis,
+    text: message,
+    foto: post.full_picture || null,
+    zdroj: post.permalink_url || null,
+    klub: club,
+    _sortTime: new Date(post.created_time).getTime() || 0,
+  };
+}
+
+async function fetchFbPosts(page, env) {
+  const token = env[page.tokenEnv];
+  if (!token) return [];
+  const fields = "message,story,created_time,full_picture,permalink_url";
+  const apiUrl =
+    `https://graph.facebook.com/${FB_API_VERSION}/${page.pageId}/posts` +
+    `?fields=${fields}&limit=15&access_token=${encodeURIComponent(token)}`;
+  const res = await fetch(apiUrl);
+  const data = await res.json();
+  if (!data || !Array.isArray(data.data)) return [];
+  return data.data.map((post) => fbPostToItem(post, page.club));
+}
+
+async function handleAktuality(env) {
+  const results = await Promise.all(
+    FB_PAGES.map((page) => fetchFbPosts(page, env).catch(() => []))
+  );
+
+  const fbItems = results.flat();
+  fbItems.sort((a, b) => b._sortTime - a._sortTime);
+  fbItems.forEach((item) => delete item._sortTime);
+
+  const output = [...MANUAL_AKTUALITY, ...fbItems];
+
+  return new Response(JSON.stringify(output), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "public, max-age=900",
+    },
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/vysledky") {
       return handleVysledky();
+    }
+    if (url.pathname === "/aktuality.json") {
+      return handleAktuality(env);
     }
     // všetko ostatné (HTML, obrázky, ...) obslúži statický súborový systém
     return env.ASSETS.fetch(request);
