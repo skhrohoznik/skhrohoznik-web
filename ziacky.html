@@ -442,7 +442,6 @@
                 <th>Dátum</th>
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
-                <th>Liga</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -464,7 +463,6 @@
                 <th>Dátum</th>
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
-                <th>Liga</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -486,7 +484,6 @@
                 <th>Dátum</th>
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
-                <th>Liga</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -499,15 +496,34 @@
     </section>
 
     <section class="block">
+      <div class="section-head"><h2>Tréneri</h2></div>
+      <div class="cards">
+<div class="contact-card">
+        <h2>Tréneri</h2>
+        <div class="role">
+          <div class="role-label">Staršie žiačky</div>
+          <div class="role-name">Ladislav Topolčány</div>
+          <div class="role-phone"><a href="tel:+421902576937">+421 902 576 937</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Mladšie žiačky A</div>
+          <div class="role-name">Ľuboš Hurban</div>
+          <div class="role-phone"><a href="tel:+421903822217">+421 903 822 217</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Mladšie žiačky B</div>
+          <div class="role-name">Robo Baláž</div>
+          <div class="role-phone tba">Telefón bude doplnený</div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section class="block">
       <div class="section-head"><h2>Kontakty</h2></div>
       <div class="cards">
 <div class="contact-card">
         <h2>Staršie žiačky</h2>
-        <div class="role">
-          <div class="role-label">Tréner</div>
-          <div class="role-name">Ladislav Topolčány</div>
-          <div class="role-phone"><a href="tel:+421902576937">+421 902 576 937</a></div>
-        </div>
         <div class="role">
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Jozef Majerský</div>
@@ -517,11 +533,6 @@
 <div class="contact-card">
         <h2>Mladšie žiačky A</h2>
         <div class="role">
-          <div class="role-label">Tréner</div>
-          <div class="role-name">Ľuboš Hurban</div>
-          <div class="role-phone"><a href="tel:+421903822217">+421 903 822 217</a></div>
-        </div>
-        <div class="role">
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Martin Šraga</div>
           <div class="role-phone"><a href="tel:+421907655169">+421 907 655 169</a></div>
@@ -529,11 +540,6 @@
       </div>
 <div class="contact-card">
         <h2>Mladšie žiačky B</h2>
-        <div class="role">
-          <div class="role-label">Tréner</div>
-          <div class="role-name">Robo Baláž</div>
-          <div class="role-phone tba">Telefón bude doplnený</div>
-        </div>
         <div class="role">
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Vojto Planka</div>
@@ -618,7 +624,6 @@
       tr.innerHTML = '<td>' + m.date + '</td>' +
         '<td>' + matchLabel + '</td>' +
         '<td class="' + resultClass + '">' + timeOrScore + '</td>' +
-        '<td>' + meta.liga + '</td>' +
                 '<td>' + miesto + '</td>';
       tbody.appendChild(tr);
     });

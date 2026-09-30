@@ -442,7 +442,6 @@
                 <th>Dátum</th>
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
-                <th>Liga</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -464,7 +463,6 @@
                 <th>Dátum</th>
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
-                <th>Liga</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -477,15 +475,29 @@
     </section>
 
     <section class="block">
+      <div class="section-head"><h2>Tréneri</h2></div>
+      <div class="cards">
+<div class="contact-card">
+        <h2>Tréneri</h2>
+        <div class="role">
+          <div class="role-label">Mladší žiaci</div>
+          <div class="role-name">Vladimír Nižňanský</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Starší žiaci</div>
+          <div class="role-name">Lazar Gugolj</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section class="block">
       <div class="section-head"><h2>Kontakty</h2></div>
       <div class="cards">
 <div class="contact-card">
         <h2>Mladší žiaci</h2>
-        <div class="role">
-          <div class="role-label">Tréner</div>
-          <div class="role-name">Vladimír Nižňanský</div>
-          <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
-        </div>
         <div class="role">
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Peter Kováč</div>
@@ -494,11 +506,6 @@
       </div>
 <div class="contact-card">
         <h2>Starší žiaci</h2>
-        <div class="role">
-          <div class="role-label">Tréner</div>
-          <div class="role-name">Lazar Gugolj</div>
-          <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
-        </div>
         <div class="role">
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Jakub Jánoš</div>
@@ -582,7 +589,6 @@
       tr.innerHTML = '<td>' + m.date + '</td>' +
         '<td>' + matchLabel + '</td>' +
         '<td class="' + resultClass + '">' + timeOrScore + '</td>' +
-        '<td>' + meta.liga + '</td>' +
                 '<td>' + miesto + '</td>';
       tbody.appendChild(tr);
     });
