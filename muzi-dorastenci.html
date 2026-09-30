@@ -428,7 +428,7 @@
 <div class="category-card" id="muzi_a">
           <h3>Muži A (Extraliga)</h3>
           <div class="cat-body">
-          <img class="team-photo" src="tim-muzi-a.jpg" alt="Tím HC Záhoráci Muži A">
+          <img class="team-photo" src="tim-muzi-a.jpg" alt="Tím HC Záhoráci Muži A, sezóna 2025/2026">
           <div class="cat-table-wrap">
           <div class="table-label">Rozpis zápasov</div>
           <p class="standing-note" data-note="muzi_a">Načítavam…</p>
@@ -439,6 +439,7 @@
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
                 <th>Liga</th>
+                <th>Sezóna</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -450,7 +451,7 @@
 <div class="category-card" id="muzi_b">
           <h3>Muži B (1. liga)</h3>
           <div class="cat-body">
-          <img class="team-photo" src="tim-muzi-b.jpg" alt="Tím HC Záhoráci Muži B">
+          <img class="team-photo" src="tim-muzi-b.jpg" alt="Tím HC Záhoráci Muži B, sezóna 2025/2026">
           <div class="cat-table-wrap">
           <div class="table-label">Rozpis zápasov</div>
           <p class="standing-note" data-note="muzi_b">Načítavam…</p>
@@ -461,6 +462,7 @@
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
                 <th>Liga</th>
+                <th>Sezóna</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -472,7 +474,7 @@
 <div class="category-card" id="dorast_st_ch">
           <h3>Starší dorastenci</h3>
           <div class="cat-body">
-          <img class="team-photo" src="tim-dorast-st.jpg" alt="Tím HC Záhoráci Starší dorastenci">
+          <img class="team-photo" src="tim-dorast-st.jpg" alt="Tím HC Záhoráci Starší dorastenci, sezóna 2025/2026">
           <div class="cat-table-wrap">
           <div class="table-label">Rozpis zápasov</div>
           <p class="standing-note" data-note="dorast_st_ch">Načítavam…</p>
@@ -483,6 +485,7 @@
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
                 <th>Liga</th>
+                <th>Sezóna</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -505,6 +508,7 @@
                 <th>Zápas</th>
                 <th>Čas/Výsledok</th>
                 <th>Liga</th>
+                <th>Sezóna</th>
                 <th>Miesto zápasu</th>
               </tr>
             </thead>
@@ -613,6 +617,12 @@
     dorast_st_ch: { teamLabel: "Malacky", liga: "1. liga starší dorastenci", venue: "Šport Aréna Malacky" },
     dorast_ml_ch: { teamLabel: "Malacky", liga: "1. liga mladší dorastenci", venue: "Šport Aréna Malacky" },
   };
+
+  function seasonLabel() {
+    const d = new Date();
+    const y = d.getFullYear();
+    return d.getMonth() >= 6 ? (y + '/' + (y + 1)) : ((y - 1) + '/' + y);
+  }
 
   function parseSkDate(s) {
     const parts = String(s).split('.').map(Number);
