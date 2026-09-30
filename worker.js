@@ -100,6 +100,62 @@ function dateToObj(d) {
   return new Date(year, month - 1, day);
 }
 
+// Slovenský zväz hádzanej v rozpise zápasov neuvádza halu/mesto zápasu priamo -
+// len názov súperovho klubu. Mesto teda odvodzujeme z názvu klubu podľa tejto
+// mapy (ručne udržiavaná, keďže to nie je nikde strojovo dostupné). Ak súper
+// v mape chýba (napr. nový/neznámy klub), pole ostane prázdne - rovnako ako
+// doteraz - namiesto uhádnutia zlého mesta.
+const OPPONENT_CITY = {
+  "HK Košice": "Košice",
+  "HK Bojnice": "Bojnice",
+  "MŠK Považská Bystrica": "Považská Bystrica",
+  "HC Sporta Hlohovec": "Hlohovec",
+  "MHC ŠTART Nové Zámky": "Nové Zámky",
+  "Háo TJ Slovan Modra": "Modra",
+  "HáO TJ Slovan Modra": "Modra",
+  "HK AGRO Topoľčany": "Topoľčany",
+  "ŠKP Bratislava": "Bratislava",
+  "Tatran Prešov": "Prešov",
+  "ŠK Zemplín Trebišov": "Trebišov",
+  "HK Bojnice / MŠK Kysucké Nové Mesto": "Bojnice / Kysucké Nové Mesto",
+  "SMF HK Žilina": "Žilina",
+  "HC Sporta Hlohovec / HŠK Legends Šaľa": "Hlohovec / Šaľa",
+  "MHáK Martin": "Martin",
+  "HC Pezinok": "Pezinok",
+  "HK Vajnory": "Vajnory (Bratislava)",
+  "HKM Šaľa": "Šaľa",
+  "HŠK - 74 Kolárovo": "Kolárovo",
+  "MHK Piešťany": "Piešťany",
+  "ŠK DAC Dunajská Streda": "Dunajská Streda",
+  "HC DAC Dunajská Streda": "Dunajská Streda",
+  "HK Slovan Duslo Šaľa": "Šaľa",
+  "Handball Zlatná na Ostrove": "Zlatná na Ostrove",
+  "ŠŠK Prešov": "Prešov",
+  "ŠŠK Bernolákova Košice": "Košice",
+  "HK Sokol Bánovce nad Bebravou": "Bánovce nad Bebravou",
+  "DHK-71 Nesvady": "Nesvady",
+  "HKM Šurany": "Šurany",
+  "HK Laugaricio Trenčín": "Trenčín",
+  "HK Junior Močenok": "Močenok",
+  "HK Slávia Sereď / Slávia Partizánske": "Sereď / Partizánske",
+  "ŠKP Topoľčany": "Topoľčany",
+  "MHK Bytča": "Bytča",
+  "MŠK IUVENTA Michalovce": "Michalovce",
+  "HC Tatran Stupava": "Stupava",
+  "ŠŠK Prešov / Štart Trebišov": "Prešov / Trebišov",
+  "Slovan Modra": "Modra",
+  "HK Senec": "Senec",
+  "Handball Club Pezinok": "Pezinok",
+  "Tatran Stupava": "Stupava",
+};
+
+function cityForOpponent(name) {
+  if (!name) return null;
+  // odstranime pripadne koncove oznacenie tímu (napr. "Slovan Modra A" -> "Slovan Modra")
+  const normalized = name.trim().replace(/\s+[A-C]$/, "");
+  return OPPONENT_CITY[normalized] || OPPONENT_CITY[name.trim()] || null;
+}
+
 function toClubResults(matches, teamMatch) {
   const results = [];
   for (const match of matches) {
@@ -125,6 +181,7 @@ function toClubResults(matches, teamMatch) {
       home: homeIsClub,
       score: `${clubScore} : ${oppScore}`,
       result,
+      awayCity: homeIsClub ? null : cityForOpponent(opponent),
     });
   }
   results.sort((a, b) => dateToObj(a.date) - dateToObj(b.date));
@@ -153,6 +210,7 @@ function toClubUpcoming(matches, teamMatch, limit) {
       opponent,
       home: homeIsClub,
       time: isTbaTime ? null : match.score,
+      awayCity: homeIsClub ? null : cityForOpponent(opponent),
     });
   }
   upcoming.sort((a, b) => dateToObj(a.date) - dateToObj(b.date));
