@@ -185,7 +185,9 @@ function toClubResults(matches, teamMatch) {
       date: match.date,
       opponent,
       home: homeIsClub,
-      score: `${clubScore} : ${oppScore}`,
+      // skóre v poradí domáci:hostia (rovnako ako matchLabel), nie "naši:súper" -
+      // inak by pri zápasoch vonku sedelo poradie tímov, ale nie poradie čísel skóre
+      score: `${s1} : ${s2}`,
       result,
       awayCity: homeIsClub ? null : cityForOpponent(opponent),
       detailUrl: match.detailUrl || null,
