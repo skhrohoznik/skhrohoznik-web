@@ -355,9 +355,28 @@
     color:#6b6455; margin:0 0 8px;
   }
   table.results + .table-label{margin-top:22px;}
+  .team-photo{ cursor: zoom-in; }
+  .lightbox-overlay{
+    display:none; position:fixed; inset:0; background:rgba(15,15,20,0.92);
+    z-index:1000; align-items:center; justify-content:center; padding:40px;
+    cursor:zoom-out;
+  }
+  .lightbox-overlay.open{ display:flex; }
+  .lightbox-overlay img{
+    max-width:90vw; max-height:90vh; width:auto; height:auto;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5); border:2px solid rgba(255,255,255,0.15);
+  }
+  .lightbox-close{
+    position:fixed; top:20px; right:28px; color:#fff; font-size:32px; line-height:1;
+    background:none; border:none; cursor:pointer; z-index:1001; font-family:inherit;
+  }
 </style>
 </head>
 <body>
+<div class="lightbox-overlay" id="lightbox">
+  <button type="button" class="lightbox-close" aria-label="Zavrieť">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
 
 <header class="navbar">
   <div class="navbar-inner">
@@ -611,6 +630,37 @@
         var li = btn.closest('li');
         li.classList.toggle('open');
       });
+    });
+  })();
+</script>
+<script>
+  (function(){
+    var overlay = document.getElementById('lightbox');
+    var overlayImg = document.getElementById('lightbox-img');
+    var closeBtn = overlay ? overlay.querySelector('.lightbox-close') : null;
+    if (!overlay || !overlayImg) return;
+
+    function openLightbox(src, alt){
+      overlayImg.src = src;
+      overlayImg.alt = alt || '';
+      overlay.classList.add('open');
+    }
+    function closeLightbox(){
+      overlay.classList.remove('open');
+      overlayImg.src = '';
+    }
+
+    document.querySelectorAll('.team-photo').forEach(function(img){
+      img.addEventListener('click', function(){
+        openLightbox(img.getAttribute('src'), img.getAttribute('alt'));
+      });
+    });
+    overlay.addEventListener('click', function(e){
+      if (e.target === overlay) closeLightbox();
+    });
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') closeLightbox();
     });
   })();
 </script>
