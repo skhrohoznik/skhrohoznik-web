@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dorastenky — Hádzaná Záhorie</title>
+<title>Tréneri — Hádzaná Záhorie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -152,8 +152,8 @@
 
   
   .category-grid {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
       margin-bottom: 12px;
     }
@@ -172,18 +172,9 @@
       padding-bottom: 10px;
       border-bottom: 2px solid var(--ink);
     }
-  .cat-body{
-      display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start;
-    }
-  .cat-table-wrap{
-      flex:1 1 420px; min-width:280px; overflow-x:auto;
-    }
   .team-photo{
-      flex:0 0 240px; width:240px; aspect-ratio:4/3; object-fit:cover; margin-bottom:0; border:1px solid var(--line);
+      width:100%; aspect-ratio:16/10; object-fit:cover; margin-bottom:14px; border:1px solid var(--line);
     }
-  @media (max-width:640px){
-    .team-photo{ flex-basis:100%; width:100%; }
-  }
   .upcoming {
       display: flex;
       flex-wrap: wrap;
@@ -350,11 +341,6 @@
     .sponsors-logos{gap:14px;}
     .sponsors-logos img{height:36px;}
   }
-  .table-label{
-    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
-    color:#6b6455; margin:0 0 8px;
-  }
-  table.results + .table-label{margin-top:22px;}
 </style>
 </head>
 <body>
@@ -386,11 +372,11 @@
             <li><a href="dorastenci.html">Dorastenci</a></li>
             <li><a href="ziaci.html">Žiaci</a></li>
             <li><a href="zeny.html">Ženy</a></li>
+            <li><a href="dorastenky.html">Dorastenky</a></li>
             <li><a href="ziacky.html">Žiačky</a></li>
           </ul>
         </li>
         <li><a href="nabor.html">Nábor</a></li>
-        <li><a href="treneri.html">Tréneri</a></li>
         <li><a href="klub.html">Klub</a></li>
         <li><a href="kontakty.html">Kontakty</a></li>
         <li><a href="sledujte-nas.html">Sledujte nás</a></li>
@@ -425,79 +411,90 @@
 </div>
 </aside>
 <div class="page-content">
-    <h1 class="page-title">Dorastenky</h1>
-    <p class="page-intro">Staršie a mladšie dorastenky — Športový klub hádzanej Rohožník.</p>
+    <h1 class="page-title">Tréneri</h1>
+    <p class="page-intro">Tréneri jednotlivých kategórií — ŠKH Rohožník, HC Záhoráci, TJ Strojár Malacky.</p>
 
     <section class="block">
-      <div class="section-head"><h2>Výsledky a najbližšie zápasy</h2></div>
-      <div class="category-grid">
-<div class="category-card" id="dorast_st">
-          <h3>Staršie dorastenky (1. liga)</h3>
-          <div class="cat-body">
-          <img class="team-photo" src="tim-dorast-st-d.jpg" alt="Tím Staršie dorastenky">
-          <div class="cat-table-wrap">
-          <div class="table-label">Rozpis zápasov</div>
-          <p class="standing-note" data-note="dorast_st">Načítavam…</p>
-          <table class="results">
-            <thead>
-              <tr>
-                <th>Dátum</th>
-                <th>Zápas</th>
-                <th>Čas/Výsledok</th>
-                <th>Miesto zápasu</th>
-              </tr>
-            </thead>
-            <tbody id="schedule-dorast_st"></tbody>
-          </table>
-          </div>
-          </div>
-        </div>
-<div class="category-card" id="dorast_ml">
-          <h3>Mladšie dorastenky (1. liga)</h3>
-          <div class="cat-body">
-          <img class="team-photo" src="tim-dorast-ml-d.jpg" alt="Tím Mladšie dorastenky">
-          <div class="cat-table-wrap">
-          <div class="table-label">Rozpis zápasov</div>
-          <p class="standing-note" data-note="dorast_ml">Načítavam…</p>
-          <table class="results">
-            <thead>
-              <tr>
-                <th>Dátum</th>
-                <th>Zápas</th>
-                <th>Čas/Výsledok</th>
-                <th>Miesto zápasu</th>
-              </tr>
-            </thead>
-            <tbody id="schedule-dorast_ml"></tbody>
-          </table>
-          </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="block">
-      <div class="section-head"><h2>Kontakty</h2></div>
+      <div class="section-head"><h2>Tréneri</h2></div>
       <div class="cards">
 <div class="contact-card">
-        <h2>Staršie dorastenky (1. liga)</h2>
+        <h2>Muži</h2>
         <div class="role">
-          <div class="role-label">Vedúci družstva</div>
-          <div class="role-name">Peter Kováč</div>
-          <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
+          <div class="role-label">Muži A (Extraliga)</div>
+          <div class="role-name">Bojan Ćirić</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
-
-      </div>
-<div class="contact-card">
-        <h2>Mladšie dorastenky (1. liga)</h2>
         <div class="role">
-          <div class="role-label">Vedúci družstva</div>
-          <div class="role-name">Vladimír Pavlík ml.</div>
+          <div class="role-label">Muži B (1. liga)</div>
+          <div class="role-name">Tomáš Stachovič</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
       </div>
-
+<div class="contact-card">
+        <h2>Dorastenci</h2>
+        <div class="role">
+          <div class="role-label">Starší dorastenci</div>
+          <div class="role-name">Tomáš Stachovič</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Mladší dorastenci</div>
+          <div class="role-name">Pavol Stachovič</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+      </div>
+<div class="contact-card">
+        <h2>Žiaci</h2>
+        <div class="role">
+          <div class="role-label">Mladší žiaci</div>
+          <div class="role-name">Vladimír Nižňanský</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Starší žiaci</div>
+          <div class="role-name">Lazar Gugolj</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+      </div>
+<div class="contact-card">
+        <h2>Ženy</h2>
+        <div class="role">
+          <div class="role-label">Ženy</div>
+          <div class="role-name">Marek Bozsóky</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+      </div>
+<div class="contact-card">
+        <h2>Dorastenky</h2>
+        <div class="role">
+          <div class="role-label">Staršie dorastenky (1. liga)</div>
+          <div class="role-name">Marek Bozsóky</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Mladšie dorastenky (1. liga)</div>
+          <div class="role-name">Patrik Walter</div>
+          <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
+        </div>
+      </div>
+<div class="contact-card">
+        <h2>Žiačky</h2>
+        <div class="role">
+          <div class="role-label">Staršie žiačky</div>
+          <div class="role-name">Ladislav Topolčány</div>
+          <div class="role-phone"><a href="tel:+421902576937">+421 902 576 937</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Mladšie žiačky A</div>
+          <div class="role-name">Ľuboš Hurban</div>
+          <div class="role-phone"><a href="tel:+421903822217">+421 903 822 217</a></div>
+        </div>
+        <div class="role">
+          <div class="role-label">Mladšie žiačky B</div>
+          <div class="role-name">Robo Baláž</div>
+          <div class="role-phone tba">Telefón bude doplnený</div>
+        </div>
+      </div>
       </div>
     </section>
 
@@ -533,74 +530,7 @@
     </div>
   </div>
 </div>
-<script>
-  const CATEGORY_META = {
-    dorast_st: { teamLabel: "Rohožník", liga: "1. liga staršie dorastenky", venue: "Šport Aréna Malacky" },
-    dorast_ml: { teamLabel: "Rohožník", liga: "1. liga mladšie dorastenky", venue: "Šport Aréna Malacky" },
-  };
 
-  function seasonLabel() {
-    const d = new Date();
-    const y = d.getFullYear();
-    return d.getMonth() >= 6 ? (y + '/' + (y + 1)) : ((y - 1) + '/' + y);
-  }
-
-  function parseSkDate(s) {
-    const parts = String(s).split('.').map(Number);
-    return new Date(parts[2], (parts[1] || 1) - 1, parts[0] || 1);
-  }
-
-  function renderSchedule(key, results, upcoming) {
-    const tbody = document.getElementById('schedule-' + key);
-    const note = document.querySelector('.standing-note[data-note="' + key + '"]');
-    const meta = CATEGORY_META[key];
-    if (!tbody || !meta) return;
-    tbody.innerHTML = '';
-    const rows = [];
-    (results || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: true, score: m.score, result: m.result }));
-    (upcoming || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: false, time: m.time }));
-    if (rows.length === 0) {
-      if (note) note.textContent = 'Zatiaľ žiadne naplánované ani odohrané zápasy v tejto sezóne.';
-      return;
-    }
-    if (note) note.textContent = 'Zdroj: Slovenský zväz hádzanej (slovakhandball.sk), automaticky aktualizované.';
-    rows.sort((a, b) => parseSkDate(a.date) - parseSkDate(b.date));
-    const season = seasonLabel();
-    rows.forEach(m => {
-      const tr = document.createElement('tr');
-      const matchLabel = m.home ? (meta.teamLabel + ' – ' + m.opponent) : (m.opponent + ' – ' + meta.teamLabel);
-      const timeOrScore = m.played ? m.score : (m.time ? (m.time + ' h') : 'čas bude upresnený');
-      const miesto = m.home ? meta.venue : '';
-      const resultClass = m.played ? (m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '')) : '';
-      tr.innerHTML = '<td>' + m.date + '</td>' +
-        '<td>' + matchLabel + '</td>' +
-        '<td class="' + resultClass + '">' + timeOrScore + '</td>' +
-                '<td>' + miesto + '</td>';
-      tbody.appendChild(tr);
-    });
-  }
-
-  const PAGE_CATEGORY_KEYS = ["dorast_st", "dorast_ml"];
-
-  fetch('/vysledky')
-    .then(r => { if (!r.ok) throw new Error('Function error ' + r.status); return r.json(); })
-    .then(data => {
-      PAGE_CATEGORY_KEYS.forEach(key => {
-        if (data[key] && data[key].error) {
-          const note = document.querySelector('.standing-note[data-note="' + key + '"]');
-          if (note) note.textContent = 'Rozpis sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.';
-        } else {
-          renderSchedule(key, data[key] && data[key].results, data[key] && data[key].upcoming);
-        }
-      });
-    })
-    .catch(() => {
-      PAGE_CATEGORY_KEYS.forEach(key => {
-        const note = document.querySelector('.standing-note[data-note="' + key + '"]');
-        if (note) note.textContent = 'Automatický rozpis sa nepodarilo načítať. Sledujte priamo na slovakhandball.sk.';
-      });
-    });
-</script>
 
 <script>
   (function(){
