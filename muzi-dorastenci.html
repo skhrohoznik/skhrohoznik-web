@@ -644,7 +644,7 @@
     rows.forEach(m => {
       const tr = document.createElement('tr');
       const matchLabel = m.home ? (meta.teamLabel + ' – ' + m.opponent) : (m.opponent + ' – ' + meta.teamLabel);
-      const timeOrScore = m.played ? m.score : (m.time ? m.time : 'čas bude upresnený');
+      const timeOrScore = m.played ? m.score : (m.time ? (m.time + ' h') : 'čas bude upresnený');
       const miesto = m.home ? meta.venue : '';
       const resultClass = m.played ? (m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '')) : '';
       tr.innerHTML = '<td>' + m.date + '</td>' +
