@@ -86,11 +86,17 @@ function extractMatches(text) {
     const teamHome = m[2].trim();
     const score = m[3];
     const teamAway = m[4].trim();
-    const played = Boolean(m[5]);
+    const detailHref = m[5] || null;
+    const played = Boolean(detailHref);
     const key = date + "|" + teamHome + "|" + teamAway + "|" + score;
     if (seen.has(key)) continue;
     seen.add(key);
-    matches.push({ date, teamHome, score, teamAway, played });
+    // "Detail zápasu" odkaz na slovakhandball.sk je relatívna cesta (napr. "/match/2009249"),
+    // na frontend ju posielame ako plnú URL.
+    const detailUrl = detailHref
+      ? new URL(detailHref, "https://www.slovakhandball.sk").toString()
+      : null;
+    matches.push({ date, teamHome, score, teamAway, played, detailUrl });
   }
   return matches;
 }
@@ -182,6 +188,7 @@ function toClubResults(matches, teamMatch) {
       score: `${clubScore} : ${oppScore}`,
       result,
       awayCity: homeIsClub ? null : cityForOpponent(opponent),
+      detailUrl: match.detailUrl || null,
     });
   }
   results.sort((a, b) => dateToObj(a.date) - dateToObj(b.date));

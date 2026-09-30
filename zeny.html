@@ -214,6 +214,12 @@
       color: #6b6455;
       font-size: 12px;
     }
+  .match-detail-link{
+      margin-left:8px; font-size:11px; font-weight:600;
+      color:#6b6455; text-decoration:none; border-bottom:1px dotted #6b6455;
+      white-space:nowrap;
+    }
+  .match-detail-link:hover{ color:var(--red); border-bottom-color:var(--red); }
   .standing-note {
       font-size: 13px;
       color: #6b6455;
@@ -543,7 +549,7 @@
     if (!tbody || !meta) return;
     tbody.innerHTML = '';
     const rows = [];
-    (results || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: true, score: m.score, result: m.result, awayCity: m.awayCity }));
+    (results || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: true, score: m.score, result: m.result, awayCity: m.awayCity, detailUrl: m.detailUrl }));
     (upcoming || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: false, time: m.time, awayCity: m.awayCity }));
     if (rows.length === 0) {
       if (note) note.textContent = 'Zatiaľ žiadne naplánované ani odohrané zápasy v tejto sezóne.';
@@ -555,7 +561,9 @@
     rows.forEach(m => {
       const tr = document.createElement('tr');
       const matchLabel = m.home ? (meta.teamLabel + ' – ' + m.opponent) : (m.opponent + ' – ' + meta.teamLabel);
-      const timeOrScore = m.played ? m.score : (m.time ? (m.time + ' h') : 'čas bude upresnený');
+      const timeOrScore = m.played
+        ? (m.score + (m.detailUrl ? ' <a class="match-detail-link" href="' + m.detailUrl + '" target="_blank" rel="noopener">Detail</a>' : ''))
+        : (m.time ? (m.time + ' h') : 'čas bude upresnený');
       const miesto = m.home ? meta.venue : (m.awayCity || '');
       const resultClass = m.played ? (m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '')) : '';
       tr.innerHTML = '<td>' + m.date + '</td>' +
