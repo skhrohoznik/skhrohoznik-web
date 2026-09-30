@@ -614,12 +614,6 @@
     dorast_ml_ch: { teamLabel: "Malacky", liga: "1. liga mladší dorastenci", venue: "Šport Aréna Malacky" },
   };
 
-  function seasonLabel() {
-    const d = new Date();
-    const y = d.getFullYear();
-    return d.getMonth() >= 6 ? (y + '/' + (y + 1)) : ((y - 1) + '/' + y);
-  }
-
   function parseSkDate(s) {
     const parts = String(s).split('.').map(Number);
     return new Date(parts[2], (parts[1] || 1) - 1, parts[0] || 1);
