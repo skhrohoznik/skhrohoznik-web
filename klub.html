@@ -383,6 +383,13 @@
   /* ---- Aktualna stranka v menu (zvyraznena, ale stale zobrazena) ---- */
   .navbar nav a.current, .navbar .dd-btn.current{color:var(--red);}
   .navbar .dropdown-menu li a.current{color:var(--red); background:rgba(214,38,44,0.08);}
+
+  /* ---- Siroke menu: vsetky polozky v jednom riadku ---- */
+  .navbar-inner{max-width:1500px; padding-left:24px; padding-right:24px;}
+  @media (min-width:901px) and (max-width:1280px){
+    .navbar nav > ul > li > a, .navbar nav > ul > li > button.dd-btn{padding:10px 5px; font-size:11px;}
+    .navbar .logo-item span{max-width:70px;}
+  }
 </style>
 </head>
 <body>
@@ -407,6 +414,8 @@
     <nav id="nav-menu">
       <ul>
         <li><a href="index.html">Domov</a></li>
+        <li><a href="aktuality.html">Aktuality</a></li>
+        <li><a href="oznamy.html">Oznamy</a></li>
         <li class="has-dd">
           <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
           <ul class="dropdown-menu">

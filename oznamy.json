@@ -1,0 +1,16 @@
+[
+  {
+    "datum": "31.10.2026",
+    "nadpis": "Turnaj starších žiačok",
+    "text": "V sobotu, dňa 31.10.2026 sa v ŠH Rohožník uskutoční jednodňový turnaj starších žiačok, ktorého sa zúčastní celkom 5 tímov z Českej republiky a zo Slovenska. Budeme radi, ak prídete podporiť dievčatá v hre.",
+    "fotky": ["turnaj-ziacky.png"]
+  },
+  {
+    "datum": "Nábor",
+    "nadpis": "Hľadáme nové hráčky a hráčov",
+    "text": "Príď sa pozrieť na tréning — viac informácií nájdeš na karte Nábor.",
+    "fotky": ["nabor-chlapci.jpg", "nabor-dievcata.jpg"],
+    "odkaz": "nabor.html",
+    "odkaz_text": "Viac o nábore →"
+  }
+]

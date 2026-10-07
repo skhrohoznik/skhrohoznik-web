@@ -284,22 +284,7 @@ const FB_PAGES = [
   },
 ];
 
-// Ručne pridané, "vždyzelené" aktuality (napr. nábor), ktoré sa zobrazujú
-// vždy navrchu, pred automaticky stiahnutými príspevkami z Facebooku.
-const MANUAL_AKTUALITY = [
-  {
-    datum: "31.10.2026",
-    nadpis: "Turnaj starších žiačok",
-    text: "V sobotu, dňa 31.10.2026 sa v ŠH Rohožník uskutoční jednodňový turnaj starších žiačok, ktorého sa zúčastní celkom 5 tímov z Českej republiky a zo Slovenska. Budeme radi, ak prídete podporiť dievčatá v hre.",
-    foto: "turnaj-ziacky.png",
-  },
-  {
-    datum: "Nábor",
-    nadpis: "Hľadáme nové hráčky a hráčov",
-    text: "Príď sa pozrieť na tréning — viac informácií nájdeš na karte Nábor.",
-    fotky: ["nabor-chlapci.jpg", "nabor-dievcata.jpg"],
-  },
-];
+// Ručne pridávané oznamy sú v súbore oznamy.json (stránka Oznamy); aktuality sú len z Facebooku.
 
 function fbDateToDatum(iso) {
   const d = new Date(iso);
@@ -365,7 +350,7 @@ async function handleAktuality(env) {
   fbItems.sort((a, b) => b._sortTime - a._sortTime);
   fbItems.forEach((item) => delete item._sortTime);
 
-  const output = [...MANUAL_AKTUALITY, ...fbItems];
+  const output = fbItems;
 
   return new Response(JSON.stringify(output), {
     status: 200,

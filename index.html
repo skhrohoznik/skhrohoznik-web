@@ -368,7 +368,16 @@
   /* ---- Aktualna stranka v menu (zvyraznena, ale stale zobrazena) ---- */
   .navbar nav a.current, .navbar .dd-btn.current{color:var(--red);}
   .navbar .dropdown-menu li a.current{color:var(--red); background:rgba(214,38,44,0.08);}
+
+  /* ---- Siroke menu: vsetky polozky v jednom riadku ---- */
+  .navbar-inner{max-width:1500px; padding-left:24px; padding-right:24px;}
+  @media (min-width:901px) and (max-width:1280px){
+    .navbar nav > ul > li > a, .navbar nav > ul > li > button.dd-btn{padding:10px 5px; font-size:11px;}
+    .navbar .logo-item span{max-width:70px;}
+  }
 </style>
+<link rel="stylesheet" href="news.css">
+<script src="news.js"></script>
 </head>
 <body>
 
@@ -392,6 +401,8 @@
     <nav id="nav-menu">
       <ul>
         <li><a href="index.html" class="current" aria-current="page">Domov</a></li>
+        <li><a href="aktuality.html">Aktuality</a></li>
+        <li><a href="oznamy.html">Oznamy</a></li>
         <li class="has-dd">
           <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
           <ul class="dropdown-menu">
@@ -565,14 +576,20 @@
 
 <main class="page">
 <div class="page-content">
-    <section class="block">
-      <div class="section-head">
+    <section class="block" id="oznamy-section">
+      <div class="section-head with-link">
+        <h2>Oznamy</h2>
+        <a class="section-all" href="oznamy.html">Všetky oznamy →</a>
+      </div>
+      <div class="news-grid" id="oznamy-grid"></div>
+    </section>
+
+    <section class="block" id="aktuality-section">
+      <div class="section-head with-link">
         <h2>Aktuality</h2>
+        <a class="section-all" href="aktuality.html">Všetky aktuality →</a>
       </div>
       <div class="news-grid" id="news-grid"></div>
-      <div class="news-loadmore-wrap" id="news-loadmore-wrap" style="display:none;">
-        <button type="button" class="news-loadmore-btn" id="news-loadmore">Zobraziť staršie príspevky</button>
-      </div>
     </section>
 
     <section class="block">
@@ -668,99 +685,8 @@
     });
   })();
 
-  (function(){
-    function escapeHtml(str) {
-      return String(str == null ? '' : str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-
-    function buildNewsCard(item) {
-      const card = document.createElement('div');
-      card.className = 'news-card';
-      let photos = [];
-      if (Array.isArray(item.fotky)) {
-        photos = item.fotky;
-      } else if (item.foto) {
-        photos = String(item.foto).split(',').map(s => s.trim()).filter(Boolean);
-      }
-      const altText = escapeHtml(item.nadpis || '');
-      const photosHtml = photos.length
-        ? '<div class="news-photos">' +
-          photos.map(f => '<img class="news-photo" src="' + escapeHtml(f) + '" alt="' + altText + '">').join('') +
-          '</div>'
-        : '';
-      const clubHtml = item.klub ? '<div class="news-club">' + escapeHtml(item.klub) + '</div>' : '';
-      const titleHtml = item.nadpis ? '<h3>' + escapeHtml(item.nadpis) + '</h3>' : '';
-      const textHtml = item.text ? '<p>' + escapeHtml(item.text).replace(/\n/g, '<br>') + '</p>' : '';
-      const linkHtml = item.zdroj
-        ? '<a class="news-more" href="' + escapeHtml(item.zdroj) + '" target="_blank" rel="noopener">Zobraziť na Facebooku →</a>'
-        : '';
-      card.innerHTML =
-        photosHtml +
-        '<div class="news-body">' +
-        '<div class="news-date">' + escapeHtml(item.datum || '') + '</div>' +
-        clubHtml +
-        titleHtml +
-        textHtml +
-        linkHtml +
-        '</div>';
-      return card;
-    }
-
-    fetch('/aktuality.json')
-      .then(r => r.json())
-      .then(items => {
-        const grid = document.getElementById('news-grid');
-        const loadMoreWrap = document.getElementById('news-loadmore-wrap');
-        const loadMoreBtn = document.getElementById('news-loadmore');
-        grid.innerHTML = '';
-
-        if (!Array.isArray(items) || !items.length) {
-          grid.innerHTML = '<p style="color:#5c5648;">Zatiaľ žiadne aktuality.</p>';
-          return;
-        }
-
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-
-        function wireLightbox(card) {
-          const imgs = Array.from(card.querySelectorAll('.news-photo'));
-          imgs.forEach((img, i) => {
-            img.addEventListener('click', () => openLightbox(imgs.map(x => x.src), i, img.alt));
-          });
-        }
-
-        const PAGE_SIZE = 6;
-        let shown = 0;
-
-        function showMore() {
-          const next = items.slice(shown, shown + PAGE_SIZE);
-          next.forEach(item => {
-            const card = buildNewsCard(item);
-            grid.appendChild(card);
-            wireLightbox(card);
-          });
-          shown += next.length;
-          if (loadMoreWrap) {
-            loadMoreWrap.style.display = shown < items.length ? 'block' : 'none';
-          }
-        }
-
-        showMore();
-
-        if (loadMoreBtn) {
-          loadMoreBtn.addEventListener('click', showMore);
-        }
-
-      })
-      .catch(() => {
-        document.getElementById('news-grid').innerHTML =
-          '<p style="color:#5c5648;">Aktuality sa nepodarilo načítať.</p>';
-      });
-  })();
+  NewsFeed.render({url:'/oznamy.json', grid:'oznamy-grid', section:'oznamy-section', compact:true, linkTo:'oznamy.html', hideWhenEmpty:true});
+  NewsFeed.render({url:'/aktuality.json', grid:'news-grid', section:'aktuality-section', compact:true, linkTo:'aktuality.html', hideWhenEmpty:true});
   const CATEGORY_LABELS = {
     zeny: "Ženy",
     dorast_st: "Staršie dorastenky",
