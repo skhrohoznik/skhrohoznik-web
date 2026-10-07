@@ -414,6 +414,19 @@
     color:rgba(255,255,255,0.65); margin:10px 0 2px;
   }
   .footer-col a.menu-sub{padding-left:12px;}
+
+  /* ---- Bez bocneho panela: obsah na celu sirku ---- */
+  main.page{display:block; max-width:1500px;}
+  .site-footer{background:var(--ink); color:rgba(255,255,255,0.8); font-size:12px; text-align:center; padding:16px 20px;}
+  /* ---- Sponzori: jeden riadok, automaticky posuvny ---- */
+  .sponsors-logos{display:block; overflow:hidden; position:relative;
+    -webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
+            mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);}
+  .sponsors-track{display:flex; flex-wrap:nowrap; align-items:center; width:max-content; animation:sponsors-scroll 70s linear infinite;}
+  .sponsors-logos:hover .sponsors-track{animation-play-state:paused;}
+  .sponsors-track img{flex:0 0 auto; margin-right:44px;}
+  @keyframes sponsors-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  @media (prefers-reduced-motion:reduce){.sponsors-track{animation:none; width:auto; flex-wrap:wrap; justify-content:center;}}
 </style>
 </head>
 <body>
@@ -480,43 +493,6 @@
 </header>
 
 <main class="page">
-<aside class="site-sidebar">
-<div class="site-sidebar-inner">
-  <div class="footer-col">
-    <h4>Menu</h4>
-    <a href="index.html">Domov</a>
-    <div class="menu-group">Muži</div>
-    <a class="menu-sub" href="muzi-extraliga.html">Extraliga</a>
-    <a class="menu-sub" href="muzi-1-liga.html">1. liga</a>
-    <div class="menu-group">Dorastenci</div>
-    <a class="menu-sub" href="starsi-dorastenci.html">Starší</a>
-    <a class="menu-sub" href="mladsi-dorastenci.html">Mladší</a>
-    <div class="menu-group">Žiaci</div>
-    <a class="menu-sub" href="starsi-ziaci.html">Starší</a>
-    <a class="menu-sub" href="mladsi-ziaci.html">Mladší</a>
-    <a href="zeny.html">Ženy</a>
-    <div class="menu-group">Dorastenky</div>
-    <a class="menu-sub" href="starsie-dorastenky.html">Staršie</a>
-    <a class="menu-sub" href="mladsie-dorastenky.html">Mladšie</a>
-    <div class="menu-group">Žiačky</div>
-    <a class="menu-sub" href="starsie-ziacky.html">Staršie</a>
-    <a class="menu-sub" href="mladsie-ziacky-a.html">Mladšie A</a>
-    <a class="menu-sub" href="mladsie-ziacky-b.html">Mladšie B</a>
-    <a class="menu-sub" href="mladsie-ziacky-c.html">Mladšie C</a>
-    <div class="menu-group">Mini</div>
-    <a class="menu-sub" href="dievcata-mini.html">Dievčatá mini</a>
-    <a class="menu-sub" href="chlapci-mini.html">Chlapci mini</a>
-    <a href="nabor.html">Nábor</a>
-    <a href="treneri.html">Tréneri</a>
-    <a href="klub.html">Klub</a>
-    <a href="kontakty.html">Kontakty</a>
-    <a href="gallery.html">Galéria</a>
-    <a href="sledujte-nas.html">Sledujte nás</a>
-    <a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a>
-  </div>
-  <div class="footer-bottom">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</div>
-</div>
-</aside>
 <div class="page-content">
     <h1 class="page-title">Mladšie žiačky B</h1>
     <p class="page-intro">Športový klub hádzanej Rohožník. Rozpis zápasov a výsledky.</p>
@@ -555,6 +531,7 @@
   <div class="sponsors-inner">
     <div class="sponsors-label">Naši partneri</div>
     <div class="sponsors-logos">
+<div class="sponsors-track">
       <img src="sponsors/extraliga-handball.png" alt="Slovenská Handballová Extraliga">
       <img src="sponsors/szh.png" alt="Slovenský zväz hádzanej">
       <img src="sponsors/erwood.png" alt="ER WOOD">
@@ -576,9 +553,19 @@
       <img src="sponsors/autosave.png" alt="Autosave">
       <img src="sponsors/nemocnicna.png" alt="Nemocničná">
       <img src="sponsors/sportbar-arena.png" alt="Šport Bar Aréna Malacky">
+</div>
     </div>
   </div>
 </div>
+
+<footer class="site-footer">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</footer>
+<script>
+  (function(){
+    var t=document.querySelector('.sponsors-track'); if(!t) return;
+    Array.prototype.slice.call(t.children).forEach(function(n){var c=n.cloneNode(true); c.setAttribute('aria-hidden','true'); c.alt=''; t.appendChild(c);});
+  })();
+</script>
+
 <script>
   const CATEGORY_META = {
     mzb: { teamLabel: "Rohožník", liga: "1. liga mladšie žiačky B", venue: "ŠH Rohožník" },
