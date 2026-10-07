@@ -195,7 +195,7 @@
 
   /* ---------- odkazy v pätičke ---------- */
   function addFooterLinks() {
-    var fb = document.querySelector('.footer-bottom');
+    var fb = document.querySelector('.site-footer') || document.querySelector('.footer-bottom');
     if (!fb) return;
     var wrap = document.createElement('div');
     wrap.className = 'ck-footer-links';
