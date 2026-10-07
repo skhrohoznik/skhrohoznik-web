@@ -472,6 +472,36 @@
   }
   .phase-tabs button.active{background:var(--ink); color:#fff;}
   .phase-tabs button:hover:not(.active){background:rgba(214,38,44,0.08);}
+  .dd-break{display:none;}
+  /* ---- PODMENU KATEGORIE NA CELU SIRKU ---- */
+  @media (min-width:901px){
+    .navbar nav > ul > li.has-dd{position:static;}
+    .navbar .dropdown-menu{
+      position:absolute; left:0; right:0; top:100%; width:100%; max-height:none; overflow:visible;
+      background:var(--cream); border:none; border-top:2px solid var(--red); border-bottom:3px solid var(--ink);
+      box-shadow:0 10px 24px rgba(0,0,0,.12); padding:14px 24px 16px; display:none;
+      flex-wrap:wrap; align-items:center; justify-content:center; gap:6px 6px;
+    }
+    .navbar li:hover > .dropdown-menu, .navbar li.open > .dropdown-menu{display:flex;}
+    .navbar .dropdown-menu li.dd-group, .navbar .dropdown-menu li.dd-solo{
+      padding:6px 4px 6px 18px; margin-left:12px; border-left:1px solid rgba(22,26,34,.25);
+      font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--red);
+    }
+    .navbar .dropdown-menu li.dd-group:first-child{border-left:none; margin-left:0; padding-left:6px;}
+    .navbar .dropdown-menu li.dd-solo{padding:0 0 0 18px;}
+    .navbar .dropdown-menu li a, .navbar .dropdown-menu li.dd-item a{
+      display:block; padding:7px 13px; font-size:13px; font-weight:600; border-radius:4px;
+      background:rgba(22,26,34,.07); color:var(--ink);
+    }
+    .navbar .dropdown-menu li a:hover{background:var(--red); color:#fff;}
+    .navbar .dropdown-menu li a.current{background:var(--red); color:#fff;}
+    .navbar .dropdown-menu li.dd-break{display:block; flex-basis:100%; height:0; padding:0; margin:0; border:0;}
+    /* varianta nad fotkou (index) */
+    .navbar.on-hero .dropdown-menu{background:rgba(15,15,20,.94)!important; border-bottom:none; border-top:2px solid var(--red); box-shadow:none;}
+    .navbar.on-hero .dropdown-menu li.dd-group, .navbar.on-hero .dropdown-menu li.dd-solo{color:#ff8a8f!important; border-left-color:rgba(255,255,255,.25);}
+    .navbar.on-hero .dropdown-menu li a, .navbar.on-hero .dropdown-menu li.dd-item a{background:rgba(255,255,255,.1); color:#fff!important;}
+    .navbar.on-hero .dropdown-menu li a:hover, .navbar.on-hero .dropdown-menu li a.current{background:var(--red)!important; color:#fff!important;}
+  }
 </style>
 </head>
 <body>
@@ -508,16 +538,17 @@
             <li class="dd-group">Muži</li>
             <li class="dd-item"><a href="muzi-extraliga.html">Extraliga</a></li>
             <li class="dd-item"><a href="muzi-1-liga.html">1. liga</a></li>
+            <li class="dd-solo"><a href="zeny.html">Ženy</a></li>
             <li class="dd-group">Dorastenci</li>
             <li class="dd-item"><a href="starsi-dorastenci.html">Starší</a></li>
             <li class="dd-item"><a href="mladsi-dorastenci.html">Mladší</a></li>
-            <li class="dd-group">Žiaci</li>
-            <li class="dd-item"><a href="starsi-ziaci.html" class="current" aria-current="page">Starší</a></li>
-            <li class="dd-item"><a href="mladsi-ziaci.html">Mladší</a></li>
-            <li><a href="zeny.html">Ženy</a></li>
             <li class="dd-group">Dorastenky</li>
             <li class="dd-item"><a href="starsie-dorastenky.html">Staršie</a></li>
             <li class="dd-item"><a href="mladsie-dorastenky.html">Mladšie</a></li>
+            <li class="dd-group">Žiaci</li>
+            <li class="dd-item"><a href="starsi-ziaci.html" class="current" aria-current="page">Starší</a></li>
+            <li class="dd-item"><a href="mladsi-ziaci.html">Mladší</a></li>
+            <li class="dd-break" aria-hidden="true"></li>
             <li class="dd-group">Žiačky</li>
             <li class="dd-item"><a href="starsie-ziacky.html">Staršie</a></li>
             <li class="dd-item"><a href="mladsie-ziacky-a.html">Mladšie A</a></li>
