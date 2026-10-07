@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galéria — Hádzaná Záhorie</title>
+<title>Ochrana údajov — Hádzaná Záhorie</title>
 <link rel="icon" type="image/png" href="skh.png">
-<link rel="canonical" href="https://skhrohoznik.sk/gallery.html">
-<meta name="description" content="Fotky z tréningov, zápasov a turnajov všetkých klubov Hádzaná Záhorie.">
+<link rel="canonical" href="https://skhrohoznik.sk/ochrana-udajov.html">
+<meta name="description" content="Aké údaje a cookies web Hádzaná Záhorie používa a ako ich môžeš nastaviť.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://skhrohoznik.sk/gallery.html">
+<meta property="og:url" content="https://skhrohoznik.sk/ochrana-udajov.html">
 <meta property="og:site_name" content="Hádzaná Záhorie">
-<meta property="og:title" content="Galéria — Hádzaná Záhorie">
-<meta property="og:description" content="Fotky z tréningov, zápasov a turnajov všetkých klubov Hádzaná Záhorie.">
+<meta property="og:title" content="Ochrana údajov — Hádzaná Záhorie">
+<meta property="og:description" content="Aké údaje a cookies web Hádzaná Záhorie používa a ako ich môžeš nastaviť.">
 <meta property="og:image" content="https://skhrohoznik.sk/logo.png">
 <meta property="og:locale" content="sk_SK">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Galéria — Hádzaná Záhorie">
-<meta name="twitter:description" content="Fotky z tréningov, zápasov a turnajov všetkých klubov Hádzaná Záhorie.">
+<meta name="twitter:title" content="Ochrana údajov — Hádzaná Záhorie">
+<meta name="twitter:description" content="Aké údaje a cookies web Hádzaná Záhorie používa a ako ich môžeš nastaviť.">
 <meta name="twitter:image" content="https://skhrohoznik.sk/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -305,40 +305,16 @@
   .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
   .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
   .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
-  .albums{display:flex; flex-direction:column; gap:16px;}
-  .album{
-      background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10);
-    }
-  .album-toggle{
-      width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
-      background:none; border:none; cursor:pointer; padding:20px 22px; text-align:left;
-      font-family:inherit; color:var(--ink);
-    }
-  .album-toggle h3{
-      font-size:17px;
-    }
-  .album-toggle .album-count{
-      font-size:12px; font-weight:700; color:#6b6455; text-transform:none; letter-spacing:0; white-space:nowrap;
-    }
-  .album-toggle .album-right{display:flex; align-items:center; gap:14px; flex:0 0 auto;}
-  .album-toggle .album-arrow{
-      width:28px; height:28px; border:2px solid var(--ink); border-radius:50%;
-      display:flex; align-items:center; justify-content:center; font-size:13px; flex:0 0 auto;
-      transition:transform .2s ease;
-    }
-  .album.open .album-toggle .album-arrow{transform:rotate(180deg);}
-  .album.open .album-toggle{border-bottom:2px solid var(--ink);}
-  .album-body{display:none; padding:20px 22px 22px;}
-  .album.open .album-body{display:block;}
   .gallery-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
-  .gallery-grid .g-item {
+  .gallery-grid div {
       aspect-ratio: 1;
-      background: #f0ede3;
+      background: #fff;
       border: 1px solid var(--line);
+      box-shadow:0 4px 16px rgba(22,26,34,0.10);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -346,22 +322,8 @@
       font-size: 13px;
       font-weight: 600;
       text-align: center;
-      overflow: hidden;
+      padding: 8px;
     }
-  .gallery-grid .g-item img{
-      width:100%; height:100%; object-fit:cover; cursor:zoom-in; display:block;
-    }
-  .lightbox{
-      display:none; position:fixed; inset:0; background:rgba(14,39,73,0.92);
-      align-items:center; justify-content:center; z-index:1000; padding:30px; cursor:zoom-out;
-    }
-  .lightbox.open{display:flex;}
-  .lightbox img{max-width:100%; max-height:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4);}
-  @media (max-width:900px){
-    .gallery-grid{grid-template-columns:repeat(2,1fr);}
-    .album-toggle{padding:16px 18px;}
-    .album-body{padding:16px 18px 18px;}
-  }
   .video-card{
       background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); padding:20px; text-decoration:none; color:var(--ink);
       display:flex; align-items:center; gap:14px;
@@ -376,7 +338,7 @@
   main{max-width:1200px;}
   .page-title{font-size:clamp(26px,4vw,38px); margin-bottom:12px;}
   .page-intro{color:#5c5648; font-size:15px; max-width:640px; margin-bottom:8px;}
-  .block{margin-top:32px;}
+  .block{margin-top:44px;}
   .sponsors-band{width:100%; background:#fff; border-top:3px solid var(--ink);}
   .sponsors-inner{max-width:1200px; margin:0 auto; padding:32px 40px 36px;}
   .sponsors-label{
@@ -393,6 +355,11 @@
     .sponsors-logos{gap:14px;}
     .sponsors-logos img{height:36px;}
   }
+  .legal{max-width:760px; font-size:15px; line-height:1.65; color:#2b2f38; margin-bottom:10px;}
+  .legal a{color:#173B73;}
+  .legal-list{max-width:760px; padding-left:20px; font-size:15px; line-height:1.65; color:#2b2f38;}
+  .legal-list li{margin-bottom:10px;}
+  .legal .btn{color:#fff;}
 </style>
 </head>
 <body>
@@ -433,6 +400,7 @@
         <li><a href="klub.html">Klub</a></li>
         <li><a href="kontakty.html">Kontakty</a></li>
         <li><a href="sledujte-nas.html">Sledujte nás</a></li>
+        <li><a href="gallery.html">Galéria</a></li>
         <li><a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a></li>
       </ul>
     </nav>
@@ -463,86 +431,38 @@
 </div>
 </aside>
 <div class="page-content">
-    <h1 class="page-title">Galéria</h1>
-    <p class="page-intro">Fotky z tréningov, zápasov a turnajov všetkých klubov.</p>
+    <h1 class="page-title">Ochrana údajov a cookies</h1>
+    <p class="page-intro">Stručne a zrozumiteľne o tom, aké údaje tento web spracúva a prečo.</p>
+
     <section class="block">
-      <div class="albums" id="albums">
-        <p style="color:#5c5648;">Galéria sa načítava…</p>
-      </div>
+      <div class="section-head"><h2>Kto web prevádzkuje</h2></div>
+      <p class="legal">Web <strong>Hádzaná Záhorie</strong> (skhrohoznik.sk) prevádzkuje Športový klub hádzanej Rohožník (IČO 34003169) v spolupráci s HC Záhoráci a TJ Strojár Malacky. Kontakt: <a href="mailto:skhrohoznik@gmail.com">skhrohoznik@gmail.com</a>.</p>
     </section>
 
+    <section class="block">
+      <div class="section-head"><h2>Čo web používa</h2></div>
+      <ul class="legal-list">
+        <li><strong>Nevyhnutné úložisko.</strong> Do úložiska prehliadača (localStorage) sa uloží len tvoja voľba o cookies, aby sa banner nezobrazoval pri každej návšteve. Neobsahuje žiadne osobné údaje.</li>
+        <li><strong>Štatistika návštevnosti.</strong> Používame Cloudflare Web Analytics. Funguje bez cookies a bez ukladania osobných údajov, slúži len na anonymné počty návštev a zobrazení stránok. Poskytovateľ: Cloudflare, Inc.</li>
+        <li><strong>Externý obsah (len so súhlasom).</strong> Mapy Google na stránke Klub a Facebook stránky na stránke Sledujte nás sa načítajú až po tvojom súhlase. Po načítaní môžu Google a Meta (Facebook) ukladať cookies a spracúvať tvoju IP adresu a údaje o používaní podľa vlastných pravidiel.</li>
+        <li><strong>Písma Google Fonts.</strong> Písma sa sťahujú zo serverov Google, preto Google pri načítaní stránky zaznamená IP adresu návštevníka.</li>
+        <li><strong>Hosting a ochrana webu.</strong> Web beží na službách Cloudflare (hosting, DNS a ochrana pred útokmi). Cloudflare pri doručovaní stránok dočasne spracúva technické údaje o pripojení (napr. IP adresu).</li>
+        <li><strong>Odkazy na iné weby.</strong> Odkazy na YouTube, Instagram, Facebook, Fanshop a slovakhandball.sk vedú na weby tretích strán, za ktoré nezodpovedáme. Po kliknutí platia ich pravidlá.</li>
+      </ul>
+    </section>
+
+    <section class="block">
+      <div class="section-head"><h2>Tvoja voľba</h2></div>
+      <p class="legal">Súhlas s externým obsahom môžeš kedykoľvek zmeniť alebo odvolať. Odvolanie neovplyvňuje zákonnosť spracúvania pred jeho odvolaním.</p>
+      <p class="legal"><a href="#" data-cookie-settings class="btn btn-primary" style="display:inline-block;margin-top:6px;">Nastavenia cookies</a></p>
+    </section>
+
+    <section class="block">
+      <div class="section-head"><h2>Osobné údaje z kontaktu</h2></div>
+      <p class="legal">Ak nám napíšeš e-mail (napr. kvôli náboru), použijeme tvoje údaje len na vybavenie tvojej požiadavky a neposkytujeme ich ďalej. Máš právo na prístup k údajom, ich opravu, vymazanie, obmedzenie spracúvania a právo podať sťažnosť Úradu na ochranu osobných údajov Slovenskej republiky. Žiadosti posielaj na <a href="mailto:skhrohoznik@gmail.com">skhrohoznik@gmail.com</a>.</p>
+    </section>
   </div>
   </main>
-
-<div class="lightbox" id="lightbox">
-  <img id="lightbox-img" src="" alt="">
-</div>
-
-<script>
-  fetch('/galeria.json')
-    .then(r => r.json())
-    .then(albums => {
-      const wrap = document.getElementById('albums');
-      wrap.innerHTML = '';
-      function fotoLabel(n) {
-        if (n === 1) return '1 fotka';
-        if (n >= 2 && n <= 4) return n + ' fotky';
-        return n + ' fotiek';
-      }
-      albums.forEach((album, idx) => {
-        const fotky = album.fotky || [];
-        const card = document.createElement('div');
-        card.className = 'album';
-
-        const toggle = document.createElement('button');
-        toggle.type = 'button';
-        toggle.className = 'album-toggle';
-        toggle.innerHTML =
-          '<h3>' + (album.nazov || '') + '</h3>' +
-          '<div class="album-right"><span class="album-count">' + fotoLabel(fotky.length) + '</span>' +
-          '<span class="album-arrow">▾</span></div>';
-        toggle.addEventListener('click', () => card.classList.toggle('open'));
-        card.appendChild(toggle);
-
-        const body = document.createElement('div');
-        body.className = 'album-body';
-        const grid = document.createElement('div');
-        grid.className = 'gallery-grid';
-        fotky.forEach(foto => {
-          const cell = document.createElement('div');
-          cell.className = 'g-item';
-          const img = document.createElement('img');
-          img.loading = 'lazy';
-          img.src = foto;
-          img.alt = album.nazov || '';
-          cell.appendChild(img);
-          grid.appendChild(cell);
-        });
-        body.appendChild(grid);
-        card.appendChild(body);
-
-        wrap.appendChild(card);
-      });
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImg = document.getElementById('lightbox-img');
-      wrap.querySelectorAll('.gallery-grid img').forEach(img => {
-        img.addEventListener('click', (e) => {
-          e.stopPropagation();
-          lightboxImg.src = img.src;
-          lightboxImg.alt = img.alt;
-          lightbox.classList.add('open');
-        });
-      });
-      lightbox.addEventListener('click', () => {
-        lightbox.classList.remove('open');
-        lightboxImg.src = '';
-      });
-    })
-    .catch(() => {
-      document.getElementById('albums').innerHTML =
-        '<p style="color:#5c5648;">Galériu sa nepodarilo načítať.</p>';
-    });
-</script>
 
 
 <div class="sponsors-band">
