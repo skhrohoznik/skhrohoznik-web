@@ -326,31 +326,211 @@ function fbPostToItem(post, club) {
   };
 }
 
-async function fetchFbPosts(page, env) {
-  const token = env[page.tokenEnv];
-  if (!token) return [];
+// ---------------------------------------------------------------------------
+// ARCHÍV AKTUALÍT (Cloudflare KV, binding "ARCHIV")
+//
+// Facebook API vracia len aktuálnu "výpoveď" najnovších príspevkov a odkazy na
+// fotky časom expirujú. Preto worker raz za hodinu (cron) príspevky aj fotky
+// ukladá do KV:
+//   "feed"        - pole všetkých príspevkov (najnovšie prvé)
+//   "img:<id>"    - fotka príspevku (binárne, typ v metadátach)
+//   "state"       - stav postupného dosťahovania starších príspevkov
+// Staré príspevky tak ostanú dostupné aj po ich zmazaní na Facebooku.
+// Bez KV bindingu (alebo kým je archív prázdny) sa používa živé sťahovanie.
+// ---------------------------------------------------------------------------
+const FB_PAGE_SIZE = 25;          // príspevkov na jedno volanie Graph API
+const NEW_PAGES_PER_RUN = 3;      // koľko "strán" najnovších príspevkov sa kontroluje pri každom behu
+const BACKFILL_PAGES_PER_RUN = 1; // koľko strán starších príspevkov sa dosťahuje pri každom behu
+const MAX_ARCHIVE_PER_PAGE = 600; // horná hranica dosťahovania histórie pre jednu FB stránku
+const MAX_IMAGES_PER_RUN = 25;    // limit sťahovania fotiek za jeden beh (limit podpožiadaviek Workera)
+
+function fbPostsUrl(page, env) {
   const fields =
     "message,story,created_time,full_picture,permalink_url," +
     "attachments{title,description,media}";
-  const apiUrl =
+  return (
     `https://graph.facebook.com/${FB_API_VERSION}/${page.pageId}/posts` +
-    `?fields=${fields}&limit=15&access_token=${encodeURIComponent(token)}`;
-  const res = await fetch(apiUrl);
-  const data = await res.json();
-  if (!data || !Array.isArray(data.data)) return [];
-  return data.data.map((post) => fbPostToItem(post, page.club));
+    `?fields=${fields}&limit=${FB_PAGE_SIZE}&access_token=${encodeURIComponent(env[page.tokenEnv])}`
+  );
 }
 
-async function handleAktuality(env) {
-  const results = await Promise.all(
-    FB_PAGES.map((page) => fetchFbPosts(page, env).catch(() => []))
-  );
+async function fetchFbPostsPage(url) {
+  const res = await fetch(url);
+  const data = await res.json();
+  if (!data || !Array.isArray(data.data)) return { posts: [], next: null };
+  return { posts: data.data, next: (data.paging && data.paging.next) || null };
+}
 
-  const fbItems = results.flat();
-  fbItems.sort((a, b) => b._sortTime - a._sortTime);
-  fbItems.forEach((item) => delete item._sortTime);
+function fbPostToFeedItem(post, page) {
+  const item = fbPostToItem(post, page.club);
+  item.id = String(post.id);
+  item.t = item._sortTime;
+  delete item._sortTime;
+  return item;
+}
 
-  const output = fbItems;
+function hasContent(item) {
+  return Boolean(item.text || item.nadpis || item.foto);
+}
+
+async function readFeed(env) {
+  const feed = await env.ARCHIV.get("feed", { type: "json" });
+  return Array.isArray(feed) ? feed : [];
+}
+
+// Zlúči čerstvé príspevky do archívu: nové pridá, existujúcim aktualizuje text/nadpis/odkaz
+// (fotku si ponechá tú archivovanú).
+function mergeIntoFeed(feed, fresh) {
+  const byId = new Map(feed.map((it) => [it.id, it]));
+  let changed = false;
+  for (const item of fresh) {
+    if (!hasContent(item)) continue;
+    const old = byId.get(item.id);
+    if (!old) {
+      byId.set(item.id, item);
+      changed = true;
+    } else {
+      for (const k of ["nadpis", "text", "zdroj", "klub", "datum", "t"]) {
+        if (old[k] !== item[k]) {
+          old[k] = item[k];
+          changed = true;
+        }
+      }
+      // fotka sa ešte nedostala do archívu (stále je to FB odkaz) -> použi čerstvý odkaz
+      if (old.foto && /^https?:/i.test(old.foto) && item.foto && old.foto !== item.foto) {
+        old.foto = item.foto;
+        changed = true;
+      }
+      if (!old.foto && item.foto) {
+        old.foto = item.foto;
+        changed = true;
+      }
+    }
+  }
+  const merged = Array.from(byId.values()).sort((a, b) => (b.t || 0) - (a.t || 0));
+  return { merged, changed };
+}
+
+async function archiveImages(env, feed) {
+  let downloaded = 0;
+  let changed = false;
+  for (const item of feed) {
+    if (downloaded >= MAX_IMAGES_PER_RUN) break;
+    if (!item.foto || !/^https?:/i.test(item.foto)) continue; // žiadna fotka alebo už archivovaná
+    try {
+      const res = await fetch(item.foto);
+      downloaded++;
+      if (!res.ok) continue;
+      const ct = res.headers.get("content-type") || "image/jpeg";
+      if (!/^image\//i.test(ct)) continue;
+      const buf = await res.arrayBuffer();
+      await env.ARCHIV.put("img:" + item.id, buf, { metadata: { ct } });
+      item.foto = "/archiv/img/" + encodeURIComponent(item.id);
+      changed = true;
+    } catch (err) {
+      // nepodarilo sa - skúsime pri ďalšom behu (kým FB odkaz platí)
+    }
+  }
+  return changed;
+}
+
+async function syncArchive(env) {
+  if (!env.ARCHIV) return { skipped: "no ARCHIV binding" };
+  const state = (await env.ARCHIV.get("state", { type: "json" })) || { backfill: {} };
+  let feed = await readFeed(env);
+  let anyChange = false;
+  let stateChanged = false;
+
+  for (const page of FB_PAGES) {
+    if (!env[page.tokenEnv]) continue;
+    try {
+      // 1) najnovšie príspevky (zachytí nové aj úpravy)
+      let url = fbPostsUrl(page, env);
+      let nextAfterNew = null;
+      for (let i = 0; i < NEW_PAGES_PER_RUN && url; i++) {
+        const { posts, next } = await fetchFbPostsPage(url);
+        const r = mergeIntoFeed(feed, posts.map((p) => fbPostToFeedItem(p, page)));
+        feed = r.merged;
+        anyChange = anyChange || r.changed;
+        url = next;
+        nextAfterNew = next;
+      }
+      // 2) postupné dosťahovanie histórie (od miesta, kde sa skončilo naposledy)
+      const bf = state.backfill[page.key];
+      if (bf === undefined) {
+        // prvý beh: história začína tam, kde sme skončili pri kontrole najnovších
+        state.backfill[page.key] = { next: nextAfterNew, count: NEW_PAGES_PER_RUN * FB_PAGE_SIZE };
+        stateChanged = true;
+      } else if (bf.next && bf.count < MAX_ARCHIVE_PER_PAGE) {
+        let next = bf.next;
+        let count = bf.count;
+        for (let i = 0; i < BACKFILL_PAGES_PER_RUN && next; i++) {
+          const { posts, next: n2 } = await fetchFbPostsPage(next);
+          const r = mergeIntoFeed(feed, posts.map((p) => fbPostToFeedItem(p, page)));
+          feed = r.merged;
+          anyChange = anyChange || r.changed;
+          count += posts.length;
+          next = posts.length ? n2 : null;
+        }
+        state.backfill[page.key] = { next, count };
+        stateChanged = true;
+      }
+    } catch (err) {
+      // chyba jednej stránky nesmie zhodiť synchronizáciu druhej
+    }
+  }
+
+  if (await archiveImages(env, feed)) anyChange = true;
+  if (anyChange) await env.ARCHIV.put("feed", JSON.stringify(feed));
+  if (stateChanged) await env.ARCHIV.put("state", JSON.stringify(state));
+  return { items: feed.length, changed: anyChange };
+}
+
+async function handleArchivImg(env, pathname) {
+  if (!env.ARCHIV) return new Response("Not found", { status: 404 });
+  const id = decodeURIComponent(pathname.slice("/archiv/img/".length));
+  if (!/^[\w.\-]+$/.test(id)) return new Response("Not found", { status: 404 });
+  const { value, metadata } = await env.ARCHIV.getWithMetadata("img:" + id, { type: "arrayBuffer" });
+  if (!value) return new Response("Not found", { status: 404 });
+  return new Response(value, {
+    headers: {
+      "Content-Type": (metadata && metadata.ct) || "image/jpeg",
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
+  });
+}
+
+async function handleAktuality(env, ctx) {
+  let output = null;
+
+  if (env.ARCHIV) {
+    try {
+      const feed = await readFeed(env);
+      if (feed.length) {
+        output = feed.map(({ id, t, ...rest }) => rest);
+      } else if (ctx) {
+        // archív je prázdny (prvé spustenie) - naplň ho na pozadí
+        ctx.waitUntil(syncArchive(env).catch(() => {}));
+      }
+    } catch (err) {
+      output = null;
+    }
+  }
+
+  if (!output) {
+    // záloha: živé sťahovanie z Facebooku (bez archívu)
+    const results = await Promise.all(
+      FB_PAGES.map((page) =>
+        env[page.tokenEnv]
+          ? fetchFbPostsPage(fbPostsUrl(page, env)).then((r) => r.posts.map((p) => fbPostToItem(p, page.club))).catch(() => [])
+          : []
+      )
+    );
+    const fbItems = results.flat();
+    fbItems.sort((a, b) => b._sortTime - a._sortTime);
+    fbItems.forEach((item) => delete item._sortTime);
+    output = fbItems;
+  }
 
   return new Response(JSON.stringify(output), {
     status: 200,
@@ -362,15 +542,21 @@ async function handleAktuality(env) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/vysledky") {
       return handleVysledky();
     }
     if (url.pathname === "/aktuality.json") {
-      return handleAktuality(env);
+      return handleAktuality(env, ctx);
+    }
+    if (url.pathname.startsWith("/archiv/img/")) {
+      return handleArchivImg(env, url.pathname);
     }
     // všetko ostatné (HTML, obrázky, ...) obslúži statický súborový systém
     return env.ASSETS.fetch(request);
+  },
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(syncArchive(env));
   },
 };
