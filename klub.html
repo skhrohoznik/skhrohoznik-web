@@ -390,6 +390,26 @@
     .navbar nav > ul > li > a, .navbar nav > ul > li > button.dd-btn{padding:10px 5px; font-size:11px;}
     .navbar .logo-item span{max-width:70px;}
   }
+
+  /* ---- Fotky hal ---- */
+  .maps-grid{grid-template-columns:repeat(auto-fit, minmax(min(100%,440px), 1fr));}
+  .hall-photos{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:8px; margin-bottom:12px;}
+  .hall-photo{width:100%; aspect-ratio:4/3; object-fit:cover; border:2px solid var(--ink); cursor:zoom-in; background:#f0ede3; transition:opacity .15s;}
+  .hall-photo:hover{opacity:.88;}
+  .lightbox{
+    display:none; position:fixed; inset:0; background:rgba(14,39,73,0.92);
+    align-items:center; justify-content:center; z-index:1000; padding:30px; cursor:default;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:100%; max-height:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4); cursor:pointer; user-select:none;}
+  .lb-btn{position:absolute; background:rgba(255,255,255,0.14); color:#fff; border:none; cursor:pointer;
+    font-family:inherit; line-height:1; display:flex; align-items:center; justify-content:center; transition:background .15s;}
+  .lb-btn:hover{background:rgba(255,255,255,0.32);}
+  .lb-close{top:16px; right:16px; width:44px; height:44px; font-size:30px; border-radius:50%;}
+  .lb-prev,.lb-next{top:50%; transform:translateY(-50%); width:52px; height:80px; font-size:48px;}
+  .lb-prev{left:12px;} .lb-next{right:12px;}
+  .lb-counter{position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:13px; font-weight:700; letter-spacing:.05em;}
+  @media (max-width:640px){ .lb-prev,.lb-next{width:40px; height:64px; font-size:36px;} .lightbox{padding:16px;} }
 </style>
 </head>
 <body>
@@ -470,18 +490,30 @@
       </div>
       <div class="map-item">
         <p>Športová hala — Rohožník</p>
+        <div class="hall-photos">
+          <img class="hall-photo" loading="lazy" src="haly/hala-rohoznik-1.jpg" alt="Športová hala Rohožník – interiér">
+          <img class="hall-photo" loading="lazy" src="haly/hala-rohoznik-2.jpg" alt="Športová hala Rohožník – pohľad zhora">
+        </div>
         <iframe class="map-frame" loading="lazy"
           data-consent-label="Mapa Google" data-consent-src="https://www.google.com/maps?q=48.457725,17.162437&output=embed">
         </iframe>
       </div>
       <div class="map-item">
         <p>Šport Aréna Malacky</p>
+        <div class="hall-photos">
+          <img class="hall-photo" loading="lazy" src="haly/arena-malacky-1.jpg" alt="Šport Aréna Malacky – interiér">
+          <img class="hall-photo" loading="lazy" src="haly/arena-malacky-2.jpg" alt="Šport Aréna Malacky – budova">
+        </div>
         <iframe class="map-frame" loading="lazy"
           data-consent-label="Mapa Google" data-consent-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5698.349588266692!2d17.02837440986971!3d48.43378887671449!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x476cc3004cdfa3cd%3A0x94bff12c496cb6a3!2zxaBQT1JUIEFSw4lOQQ!5e1!3m2!1ssk!2ssk!4v1790766002330!5m2!1ssk!2ssk">
         </iframe>
       </div>
       <div class="map-item">
         <p>Športová hala Malina</p>
+        <div class="hall-photos">
+          <img class="hall-photo" loading="lazy" src="haly/hala-malina-1.jpg" alt="Športová hala Malina – interiér">
+          <img class="hall-photo" loading="lazy" src="haly/hala-malina-2.jpg" alt="Športová hala Malina – budova">
+        </div>
         <iframe class="map-frame" loading="lazy"
           data-consent-label="Mapa Google" data-consent-src="https://www.google.com/maps?q=%C5%A0portov%C3%A1%20hala%20Malina&output=embed">
         </iframe>
@@ -524,6 +556,10 @@
   </div>
 </div>
 
+<div class="lightbox" id="lightbox">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
 <footer class="site-footer">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</footer>
 <script>
   (function(){
@@ -550,7 +586,18 @@
     });
   })();
 </script>
+<script>
+  document.querySelectorAll('.hall-photos').forEach(function(group){
+    var imgs = Array.prototype.slice.call(group.querySelectorAll('.hall-photo'));
+    imgs.forEach(function(img, i){
+      img.addEventListener('click', function(){
+        if (window.openLightbox) window.openLightbox(imgs.map(function(x){ return x.getAttribute('src'); }), i, img.alt);
+      });
+    });
+  });
+</script>
 <script src="cookies.js" defer></script>
+<script src="lightbox.js" defer></script>
 <!-- Cloudflare Web Analytics -->
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c7352b5a92454699beeeae323e83f2f6"}'></script>
 <!-- End Cloudflare Web Analytics -->
