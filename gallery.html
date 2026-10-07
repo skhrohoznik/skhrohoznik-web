@@ -429,6 +429,10 @@
   .lb-prev{left:12px;} .lb-next{right:12px;}
   .lb-counter{position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:13px; font-weight:700; letter-spacing:.05em;}
   @media (max-width:640px){ .lb-prev,.lb-next{width:40px; height:64px; font-size:36px;} .lightbox{padding:16px;} }
+
+  /* ---- Aktualna stranka v menu (zvyraznena, ale stale zobrazena) ---- */
+  .navbar nav a.current, .navbar .dd-btn.current{color:var(--red);}
+  .navbar .dropdown-menu li a.current{color:var(--red); background:rgba(214,38,44,0.08);}
 </style>
 </head>
 <body>
@@ -484,6 +488,7 @@
         <li><a href="klub.html">Klub</a></li>
         <li><a href="kontakty.html">Kontakty</a></li>
         <li><a href="sledujte-nas.html">Sledujte nás</a></li>
+        <li><a href="gallery.html" class="current" aria-current="page">Galéria</a></li>
         <li><a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a></li>
       </ul>
     </nav>

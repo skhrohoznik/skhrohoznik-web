@@ -435,6 +435,10 @@
     aspect-ratio:auto; object-fit:contain; background:#f0ede3; margin:0 auto;
   }
   .cat-table-wrap{flex:none; width:100%; min-width:0;}
+
+  /* ---- Aktualna stranka v menu (zvyraznena, ale stale zobrazena) ---- */
+  .navbar nav a.current, .navbar .dd-btn.current{color:var(--red);}
+  .navbar .dropdown-menu li a.current{color:var(--red); background:rgba(214,38,44,0.08);}
 </style>
 </head>
 <body>
@@ -464,7 +468,7 @@
       <ul>
         <li><a href="index.html">Domov</a></li>
         <li class="has-dd">
-          <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
+          <button type="button" class="dd-btn current">Kategórie <span class="car">▾</span></button>
           <ul class="dropdown-menu">
             <li class="dd-group">Muži</li>
             <li class="dd-item"><a href="muzi-extraliga.html">Extraliga</a></li>
@@ -486,6 +490,7 @@
             <li class="dd-item"><a href="mladsie-ziacky-c.html">Mladšie C</a></li>
             <li class="dd-group">Mini</li>
             <li class="dd-item"><a href="dievcata-mini.html">Dievčatá mini</a></li>
+            <li class="dd-item"><a href="chlapci-mini.html" class="current" aria-current="page">Chlapci mini</a></li>
           </ul>
         </li>
         <li><a href="nabor.html">Nábor</a></li>

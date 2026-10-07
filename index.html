@@ -364,6 +364,10 @@
   .lb-prev{left:12px;} .lb-next{right:12px;}
   .lb-counter{position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:13px; font-weight:700; letter-spacing:.05em;}
   @media (max-width:640px){ .lb-prev,.lb-next{width:40px; height:64px; font-size:36px;} .lightbox{padding:16px;} }
+
+  /* ---- Aktualna stranka v menu (zvyraznena, ale stale zobrazena) ---- */
+  .navbar nav a.current, .navbar .dd-btn.current{color:var(--red);}
+  .navbar .dropdown-menu li a.current{color:var(--red); background:rgba(214,38,44,0.08);}
 </style>
 </head>
 <body>
@@ -387,6 +391,7 @@
     <button class="nav-toggle" id="nav-toggle" type="button">MENU</button>
     <nav id="nav-menu">
       <ul>
+        <li><a href="index.html" class="current" aria-current="page">Domov</a></li>
         <li class="has-dd">
           <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
           <ul class="dropdown-menu">
