@@ -591,18 +591,6 @@
       </div>
       <div class="news-grid" id="news-grid"></div>
     </section>
-
-    <section class="block">
-      <div class="section-head">
-        <h2>Najbližší zápas</h2>
-      </div>
-      <div class="next-match" id="next-match">
-        <div>
-          <div class="nm-label">Načítavam…</div>
-          <div class="nm-teams">—</div>
-        </div>
-      </div>
-    </section>
   </div>
   </main>
 
@@ -765,42 +753,8 @@
         renderHomeResult(key, data[key] && data[key].results);
         renderHomeUpcoming(key, data[key] && data[key].upcoming);
       });
-
-      let soonest = null;
-      Object.entries(data).forEach(([key, val]) => {
-        if (!val || !Array.isArray(val.upcoming)) return;
-        val.upcoming.forEach(m => {
-          const d = dateToObj(m.date);
-          if (!soonest || d < soonest.dateObj) {
-            soonest = { ...m, category: key, dateObj: d };
-          }
-        });
-      });
-
-      const box = document.getElementById('next-match');
-      if (!soonest) {
-        box.innerHTML = '<div><div class="nm-label">Najbližší zápas</div><div class="nm-teams">Zatiaľ žiadny naplánovaný zápas</div></div>';
-        return;
-      }
-
-      const clubName = CATEGORY_CLUB[soonest.category] || 'Naši';
-      const teams = soonest.home
-        ? clubName + ' – ' + soonest.opponent
-        : soonest.opponent + ' – ' + clubName;
-      const timeLabel = soonest.time ? (' · ' + soonest.time) : '';
-      const catLabel = CATEGORY_LABELS[soonest.category] || soonest.category;
-
-      box.innerHTML =
-        '<div>' +
-          '<div class="nm-label">' + soonest.date + timeLabel + '</div>' +
-          '<div class="nm-teams">' + teams + '</div>' +
-          '<div class="nm-meta">' + catLabel + '</div>' +
-        '</div>' +
-        '<div class="nm-cat">' + catLabel + '</div>';
     })
     .catch(() => {
-      const box = document.getElementById('next-match');
-      box.innerHTML = '<div><div class="nm-label">Najbližší zápas</div><div class="nm-teams">Nepodarilo sa načítať</div></div>';
       Object.keys(CATEGORY_LABELS).forEach(key => {
         const b = document.getElementById('home-upcoming-' + key);
         if (b) b.innerHTML = '<div class="cat-empty">Výsledky sa nepodarilo načítať.</div>';
