@@ -169,8 +169,9 @@
   .intro{
     position:relative; overflow:hidden;
     width:100%;
-    min-height: 460px;
-    border-top: 3px solid var(--ink);
+    min-height: 580px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    border-top: none;
     border-bottom: 3px solid var(--ink);
     color: #fff;
   }
@@ -181,14 +182,14 @@
   }
   .intro .slide::after{
     content:''; position:absolute; inset:0;
-    background:linear-gradient(90deg, rgba(10,10,12,0.68) 0%, rgba(10,10,12,0.32) 45%, rgba(10,10,12,0.12) 100%);
+    background:linear-gradient(90deg, rgba(10,10,12,0.62) 0%, rgba(10,10,12,0.25) 22%, rgba(10,10,12,0.05) 50%, rgba(10,10,12,0.78) 100%);
   }
   .intro .slide.active{opacity:1;}
   .intro-content{
-    position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:80px 40px;
+    position:relative; z-index:2; width:100%; max-width:1200px; margin:0 auto; padding:120px 40px 12px;
   }
-  .intro h1{font-size:clamp(30px,5vw,52px); line-height:1.1; margin-bottom:18px; color:#fff;}
-  .intro p{max-width:640px; font-size:17px; color:#EAEEF7;}
+  .intro h1{font-size:clamp(30px,5vw,52px); line-height:1.1; margin-bottom:12px; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.6);}
+  .intro p{max-width:600px; font-size:16px; color:#EAEEF7; text-shadow:0 1px 8px rgba(0,0,0,.6);}
   .intro-dots{
     position:relative; z-index:2; max-width:1200px; margin:0 auto; display:flex; gap:8px; padding:0 40px 28px;
   }
@@ -198,8 +199,9 @@
   }
   .intro-dots button.active{background:#fff; opacity:1;}
   @media (max-width:640px){
-    .intro{min-height:380px;}
-    .intro-content{padding:48px 20px;}
+    .intro{min-height:520px;}
+    .intro-content{padding:90px 20px 8px;}
+    .intro p{font-size:15px;}
     .intro-dots{padding:0 20px 20px;}
   }
 
@@ -374,6 +376,19 @@
   @media (min-width:901px) and (max-width:1280px){
     .navbar nav > ul > li > a, .navbar nav > ul > li > button.dd-btn{padding:10px 5px; font-size:11px;}
     .navbar .logo-item span{max-width:70px;}
+  }
+
+  /* ---- MENU NAD FOTKOU ---- */
+  .navbar{position:absolute!important; left:0; right:0; top:0; background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.2))!important; border-bottom:none!important;}
+  .navbar, .navbar nav > ul > li > a, .navbar .dd-btn, .navbar .logo-item span{color:#fff!important;}
+  .navbar nav > ul > li > a:hover, .navbar nav > ul > li > button.dd-btn:hover, .navbar nav > ul > li.open > button.dd-btn{background:rgba(255,255,255,.18)!important; color:#fff!important;}
+  .navbar nav a.current, .navbar .dd-btn.current{color:#ff8a8f!important;}
+  .navbar .dropdown-menu{background:#fff;}
+  .navbar .dropdown-menu li a{color:#222!important;}
+  .navbar .dropdown-menu li a.current{color:var(--red)!important;}
+  .navbar .dropdown-menu li a:hover{background:rgba(214,38,44,0.08)!important; color:var(--red)!important;}
+  @media (max-width:900px){
+    .navbar nav.open{background:rgba(15,15,20,.92); border-radius:6px;}
   }
 </style>
 <link rel="stylesheet" href="news.css">
