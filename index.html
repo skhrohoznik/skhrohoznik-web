@@ -443,15 +443,6 @@
 
 <div class="intro" id="hero">
   <div class="slide active" style="background-image:url('hero-akcia.jpg'); background-position:center 12%;"></div>
-  <div class="slide" style="background-image:url('skok.jpg'); background-position:center 10%;"></div>
-  <div class="slide" style="background-image:url('muzi.jpg'); background-position:center top;"></div>
-  <div class="slide" style="background-image:url('akcia2.jpg'); background-position:center top;"></div>
-  <div class="slide" style="background-image:url('oslava.jpg'); background-position:center 15%;"></div>
-  <div class="slide" style="background-image:url('akcia3.jpg'); background-position:center 8%;"></div>
-  <div class="slide" style="background-image:url('akcia4.jpg'); background-position:center 15%;"></div>
-  <div class="slide" style="background-image:url('akcia5.jpg'); background-position:center top;"></div>
-  <div class="slide" style="background-image:url('akcia6.jpg'); background-position:center top;"></div>
-  <div class="slide" style="background-image:url('akcia7.jpg'); background-position:center 10%;"></div>
   <div class="intro-content">
     <h1>Hádzaná Záhorie</h1>
     <p>Spoločný projekt troch hádzanárskych klubov z regiónu Záhorie — ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky. Spolupracujeme na rozvoji hádzanej od najmladších kategórií až po najvyššiu súťaž.</p>
@@ -640,25 +631,60 @@
 </div>
 
 <script>
+  // Banner (hero): fotky, nadpis a text sa berú zo súboru hero.json
   (function(){
-    const slides = document.querySelectorAll('#hero .slide');
+    const hero = document.getElementById('hero');
     const dotsWrap = document.getElementById('hero-dots');
-    let current = 0;
-    slides.forEach((_, i) => {
-      const dot = document.createElement('button');
-      dot.type = 'button';
-      if (i === 0) dot.className = 'active';
-      dot.addEventListener('click', () => show(i));
-      dotsWrap.appendChild(dot);
-    });
+    let slides = hero.querySelectorAll('.slide');
+    let current = 0, timer = null;
+
     function show(i) {
       slides[current].classList.remove('active');
-      dotsWrap.children[current].classList.remove('active');
+      if (dotsWrap.children[current]) dotsWrap.children[current].classList.remove('active');
       current = i;
       slides[current].classList.add('active');
-      dotsWrap.children[current].classList.add('active');
+      if (dotsWrap.children[current]) dotsWrap.children[current].classList.add('active');
     }
-    setInterval(() => show((current + 1) % slides.length), 5000);
+    function start(seconds) {
+      dotsWrap.innerHTML = '';
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.setAttribute('aria-label', 'Fotka ' + (i + 1));
+        if (i === current) dot.className = 'active';
+        dot.addEventListener('click', () => show(i));
+        dotsWrap.appendChild(dot);
+      });
+      if (timer) clearInterval(timer);
+      if (slides.length > 1) timer = setInterval(() => show((current + 1) % slides.length), (seconds || 5) * 1000);
+    }
+
+    start(5);
+
+    fetch('/hero.json', { cache: 'no-cache' })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(cfg => {
+        const list = (cfg.fotky || []).map(f => typeof f === 'string' ? { foto: f } : f).filter(f => f && f.foto);
+        if (list.length) {
+          hero.querySelectorAll('.slide').forEach(el => el.remove());
+          const content = hero.querySelector('.intro-content');
+          list.forEach((f, i) => {
+            const d = document.createElement('div');
+            d.className = 'slide' + (i === 0 ? ' active' : '');
+            d.style.backgroundImage = "url('" + String(f.foto).replace(/'/g, "%27") + "')";
+            d.style.backgroundPosition = f.pozicia || 'center 15%';
+            hero.insertBefore(d, content);
+          });
+          slides = hero.querySelectorAll('.slide');
+          current = 0;
+          start(Number(cfg.interval_sekundy) || 5);
+        }
+        const h1 = hero.querySelector('.intro-content h1');
+        const p = hero.querySelector('.intro-content p');
+        if (cfg.nadpis && h1) h1.textContent = cfg.nadpis;
+        if (typeof cfg.text === 'string' && p) p.textContent = cfg.text;
+      })
+      .catch(() => { /* ostane predvolený banner */ });
   })();
 
   (function(){

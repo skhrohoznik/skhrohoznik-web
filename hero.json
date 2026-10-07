@@ -1,0 +1,17 @@
+{
+  "nadpis": "Hádzaná Záhorie",
+  "text": "Spoločný projekt troch hádzanárskych klubov z regiónu Záhorie — ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky. Spolupracujeme na rozvoji hádzanej od najmladších kategórií až po najvyššiu súťaž.",
+  "interval_sekundy": 5,
+  "fotky": [
+    { "foto": "hero-akcia.jpg", "pozicia": "center 12%" },
+    { "foto": "skok.jpg",       "pozicia": "center 10%" },
+    { "foto": "muzi.jpg",       "pozicia": "center top" },
+    { "foto": "akcia2.jpg",     "pozicia": "center top" },
+    { "foto": "oslava.jpg",     "pozicia": "center 15%" },
+    { "foto": "akcia3.jpg",     "pozicia": "center 8%" },
+    { "foto": "akcia4.jpg",     "pozicia": "center 15%" },
+    { "foto": "akcia5.jpg",     "pozicia": "center top" },
+    { "foto": "akcia6.jpg",     "pozicia": "center top" },
+    { "foto": "akcia7.jpg",     "pozicia": "center 10%" }
+  ]
+}
