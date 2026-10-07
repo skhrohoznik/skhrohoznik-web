@@ -420,6 +420,22 @@
     .navbar.on-hero .dropdown-menu li a, .navbar.on-hero .dropdown-menu li.dd-item a{background:rgba(255,255,255,.1); color:#fff!important;}
     .navbar.on-hero .dropdown-menu li a:hover, .navbar.on-hero .dropdown-menu li a.current{background:var(--red)!important; color:#fff!important;}
   }
+  /* ---- KATEGORIE VYSLEDKOV NA HERO FOTKE ---- */
+  .intro .cat-tabs{
+    position:relative; z-index:3; width:100%; margin:0; padding:34px 18px 18px; gap:6px; justify-content:center; align-items:stretch;
+    background:linear-gradient(rgba(10,10,14,0), rgba(10,10,14,.72));
+  }
+  .intro .cat-tab{
+    flex:1 1 0; min-width:0; background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.5)!important; border-radius:5px;
+    padding:12px 4px; font-size:11px; line-height:1.25; backdrop-filter:blur(3px);
+  }
+  .intro .cat-tab:hover{background:rgba(255,255,255,.3);}
+  .intro .cat-tab.active{background:var(--red); border-color:var(--red)!important; color:#fff;}
+  .results-band .results-inner{padding-top:8px;}
+  @media (max-width:1100px){
+    .intro .cat-tabs{flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; -webkit-overflow-scrolling:touch; padding:30px 14px 14px;}
+    .intro .cat-tab{flex:0 0 auto; padding:11px 14px; font-size:12px; white-space:nowrap;}
+  }
 </style>
 <link rel="stylesheet" href="news.css">
 <script src="news.js"></script>
@@ -494,10 +510,6 @@
     <p>Spoločný projekt troch hádzanárskych klubov z regiónu Záhorie — ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky. Spolupracujeme na rozvoji hádzanej od najmladších kategórií až po najvyššiu súťaž.</p>
   </div>
   <div class="intro-dots" id="hero-dots"></div>
-</div>
-
-<div class="results-band">
-  <div class="results-inner">
     <div class="cat-tabs" id="cat-tabs">
       <button type="button" class="cat-tab active" data-panel="panel-muzi_a">Muži Extraliga</button>
       <button type="button" class="cat-tab" data-panel="panel-muzi_b">Muži 1. liga</button>
@@ -512,6 +524,10 @@
       <button type="button" class="cat-tab" data-panel="panel-mza">Mladšie žiačky A</button>
       <button type="button" class="cat-tab" data-panel="panel-mzb">Mladšie žiačky B</button>
     </div>
+</div>
+
+<div class="results-band">
+  <div class="results-inner">
     
     <div class="cat-panel" id="panel-zeny">
       <div class="cat-cols">
