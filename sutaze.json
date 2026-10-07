@@ -1,0 +1,165 @@
+{
+  "_navod": "Sezóny: pod \"sezony\" pridaj novú sezónu (napr. \"2027/2028\") so zoznamom fáz súťaže (každá fáza má \"nazov\" a \"url\" zo slovakhandball.sk). Viac fáz v jednej sezóne (základná časť, nadstavba, play-off) sa na stránke tímu zobrazí ako záložky. \"aktualna_sezona\" je sezóna, ktorá sa zobrazí ako prvá. \"tim\" = jedna z hodnôt girls, boys, zahoraci_a, zahoraci_b (ako je tím pomenovaný v rozpise zväzu); alebo \"tim_regex\" s vlastným vzorom názvu tímu.",
+  "aktualna_sezona": "2026/2027",
+  "timy": {
+    "muzi_a": {
+      "nazov": "Muži Extraliga",
+      "tim": "zahoraci_a",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=154264"
+          }
+        ]
+      }
+    },
+    "muzi_b": {
+      "nazov": "Muži 1. liga",
+      "tim": "zahoraci_b",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=154349"
+          }
+        ]
+      }
+    },
+    "zeny": {
+      "nazov": "Ženy",
+      "tim": "girls",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=154381"
+          }
+        ]
+      }
+    },
+    "dorast_st_ch": {
+      "nazov": "Starší dorastenci",
+      "tim": "zahoraci_a",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=154350"
+          }
+        ]
+      }
+    },
+    "dorast_st": {
+      "nazov": "Staršie dorastenky",
+      "tim": "girls",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=154399"
+          }
+        ]
+      }
+    },
+    "dorast_ml_ch": {
+      "nazov": "Mladší dorastenci",
+      "tim": "zahoraci_a",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=154355"
+          }
+        ]
+      }
+    },
+    "dorast_ml": {
+      "nazov": "Mladšie dorastenky",
+      "tim": "girls",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=154400"
+          }
+        ]
+      }
+    },
+    "ziaci_st": {
+      "nazov": "Starší žiaci",
+      "tim": "boys",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=158787&part=366588"
+          }
+        ]
+      }
+    },
+    "sz": {
+      "nazov": "Staršie žiačky",
+      "tim": "girls",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=158786&part=366691"
+          }
+        ]
+      }
+    },
+    "ziaci_ml": {
+      "nazov": "Mladší žiaci",
+      "tim": "boys",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=158788&part=366264"
+          }
+        ]
+      }
+    },
+    "mza": {
+      "nazov": "Mladšie žiačky A",
+      "tim_regex": "^Malacky\\s*/\\s*Rohožník A$",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=158785&part=366361"
+          }
+        ]
+      }
+    },
+    "mzb": {
+      "nazov": "Mladšie žiačky B",
+      "tim_regex": "^Malacky\\s*/\\s*Rohožník B$",
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=158785&part=366256"
+          }
+        ]
+      }
+    },
+    "mzc": {
+      "nazov": "Mladšie žiačky C",
+      "tim_regex": "^Malacky\\s*/\\s*Rohožník C$",
+      "sezony": {}
+    },
+    "dievcata_mini": {
+      "nazov": "Dievčatá mini",
+      "tim": "girls",
+      "sezony": {}
+    },
+    "chlapci_mini": {
+      "nazov": "Chlapci mini",
+      "tim": "boys",
+      "sezony": {}
+    }
+  }
+}

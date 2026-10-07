@@ -232,26 +232,98 @@ function toClubUpcoming(matches, teamMatch, limit) {
   return upcoming.slice(0, limit);
 }
 
-async function handleVysledky() {
+const TEAM_PRESETS = {
+  girls: GIRLS_TEAM,
+  boys: BOYS_TEAM,
+  zahoraci_a: ZAHORACI_A,
+  zahoraci_b: ZAHORACI_B,
+};
+
+// Zálohová konfigurácia (ak by sa súbor sutaze.json nepodarilo načítať)
+function defaultConfig() {
+  const teams = {};
+  for (const [key, conf] of Object.entries(COMPETITIONS)) {
+    teams[key] = {
+      teamMatch: conf.teamMatch,
+      sezony: { "2026/2027": [{ nazov: "Základná časť", url: conf.url }] },
+    };
+  }
+  return { aktualna_sezona: "2026/2027", timy: teams };
+}
+
+// Konfigurácia súťaží je v súbore sutaze.json (upravuje sa na GitHube, bez zásahu do kódu).
+async function loadConfig(env, request) {
+  try {
+    const res = await env.ASSETS.fetch(new Request(new URL("/sutaze.json", request.url)));
+    if (!res.ok) throw new Error("status " + res.status);
+    const cfg = await res.json();
+    if (!cfg || typeof cfg.timy !== "object") throw new Error("bad config");
+    for (const t of Object.values(cfg.timy)) {
+      t.teamMatch = t.tim_regex ? new RegExp(t.tim_regex, "i") : TEAM_PRESETS[t.tim] || GIRLS_TEAM;
+      t.sezony = t.sezony || {};
+    }
+    return cfg;
+  } catch (err) {
+    return defaultConfig();
+  }
+}
+
+function sortSeasonsDesc(seasons) {
+  return seasons.slice().sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
+}
+
+async function loadPhase(comp, teamMatch) {
+  try {
+    const res = await fetch(comp.url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
+    });
+    const html = await res.text();
+    const matches = extractMatches(htmlToMarkerText(html));
+    return {
+      nazov: comp.nazov || "Súťaž",
+      results: toClubResults(matches, teamMatch),
+      upcoming: toClubUpcoming(matches, teamMatch, 4),
+    };
+  } catch (err) {
+    return { nazov: comp.nazov || "Súťaž", error: String(err) };
+  }
+}
+
+// /vysledky                       -> všetky tímy, aktuálna sezóna
+// /vysledky?tim=zeny,sz           -> len vybrané tímy
+// /vysledky?sezona=2025/2026      -> iná sezóna
+async function handleVysledky(request, env) {
+  const url = new URL(request.url);
+  const cfg = await loadConfig(env, request);
+  const wantedTeams = (url.searchParams.get("tim") || "")
+    .split(",").map((s) => s.trim()).filter(Boolean);
+  const season = url.searchParams.get("sezona") || cfg.aktualna_sezona;
   const output = {};
 
   await Promise.all(
-    Object.entries(COMPETITIONS).map(async ([key, conf]) => {
-      try {
-        const res = await fetch(conf.url, {
-          headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
-        });
-        const html = await res.text();
-        const text = htmlToMarkerText(html);
-        const matches = extractMatches(text);
-        output[key] = {
-          results: toClubResults(matches, conf.teamMatch),
-          upcoming: toClubUpcoming(matches, conf.teamMatch, 2),
+    Object.entries(cfg.timy)
+      .filter(([key]) => !wantedTeams.length || wantedTeams.includes(key))
+      .map(async ([key, team]) => {
+        const comps = (team.sezony && team.sezony[season]) || [];
+        const phases = await Promise.all(comps.map((c) => loadPhase(c, team.teamMatch)));
+        const ok = phases.filter((p) => !p.error);
+        const entry = {
+          season,
+          seasons: sortSeasonsDesc(Object.keys(team.sezony || {})),
+          phases,
         };
-      } catch (err) {
-        output[key] = { error: String(err) };
-      }
-    })
+        if (comps.length && !ok.length) {
+          entry.error = phases.map((p) => p.error).join("; ");
+        } else {
+          const results = ok.flatMap((p) => p.results);
+          results.sort((a, b) => dateToObj(a.date) - dateToObj(b.date));
+          const upcoming = ok.flatMap((p) => p.upcoming);
+          upcoming.sort((a, b) => dateToObj(a.date) - dateToObj(b.date));
+          entry.results = results;
+          entry.upcoming = upcoming.slice(0, 2);
+        }
+        output[key] = entry;
+      })
   );
 
   return new Response(JSON.stringify(output), {
@@ -545,7 +617,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/vysledky") {
-      return handleVysledky();
+      return handleVysledky(request, env);
     }
     if (url.pathname === "/aktuality.json") {
       return handleAktuality(env, ctx);

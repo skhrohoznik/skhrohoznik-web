@@ -446,6 +446,32 @@
     .navbar nav > ul > li > a, .navbar nav > ul > li > button.dd-btn{padding:10px 5px; font-size:11px;}
     .navbar .logo-item span{max-width:70px;}
   }
+
+  /* ---- Prepinanie timov, vyber sezony a fazy sutaze ---- */
+  .team-switch{display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 26px;}
+  .team-switch a{
+    display:inline-block; padding:7px 12px; border:2px solid var(--ink); background:#fff; color:var(--ink);
+    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.02em; text-decoration:none; white-space:nowrap;
+  }
+  .team-switch a:hover{background:rgba(214,38,44,0.08); border-color:var(--red); color:var(--red);}
+  .team-switch a.current{background:var(--ink); color:#fff;}
+  @media (max-width:700px){
+    .team-switch{flex-wrap:nowrap; overflow-x:auto; padding-bottom:8px; -webkit-overflow-scrolling:touch;}
+  }
+  .season-bar{display:flex; flex-wrap:wrap; align-items:center; gap:12px 22px; margin:0 0 16px;}
+  .season-bar[hidden]{display:none;}
+  .season-bar label{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
+  .season-bar select{
+    font:inherit; font-size:14px; font-weight:600; margin-left:8px; padding:8px 12px;
+    border:2px solid var(--ink); background:#fff; color:var(--ink); cursor:pointer;
+  }
+  .phase-tabs{display:flex; flex-wrap:wrap; gap:0;}
+  .phase-tabs button{
+    font:inherit; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.03em;
+    padding:9px 14px; border:2px solid var(--ink); margin-right:-2px; background:#fff; color:var(--ink); cursor:pointer;
+  }
+  .phase-tabs button.active{background:var(--ink); color:#fff;}
+  .phase-tabs button:hover:not(.active){background:rgba(214,38,44,0.08);}
 </style>
 </head>
 <body>
@@ -518,6 +544,7 @@
 <div class="page-content">
     <h1 class="page-title">Muži — Extraliga</h1>
     <p class="page-intro">HC Záhoráci. Rozpis zápasov a výsledky.</p>
+    <nav class="team-switch" aria-label="Prepnúť tím"><a href="muzi-extraliga.html" class="current" aria-current="page">Muži Extraliga</a><a href="muzi-1-liga.html">Muži 1. liga</a><a href="zeny.html">Ženy</a><a href="starsi-dorastenci.html">Starší dorastenci</a><a href="starsie-dorastenky.html">Staršie dorastenky</a><a href="mladsi-dorastenci.html">Mladší dorastenci</a><a href="mladsie-dorastenky.html">Mladšie dorastenky</a><a href="starsi-ziaci.html">Starší žiaci</a><a href="starsie-ziacky.html">Staršie žiačky</a><a href="mladsi-ziaci.html">Mladší žiaci</a><a href="mladsie-ziacky-a.html">Mladšie žiačky A</a><a href="mladsie-ziacky-b.html">Mladšie žiačky B</a><a href="mladsie-ziacky-c.html">Mladšie žiačky C</a><a href="dievcata-mini.html">Dievčatá mini</a><a href="chlapci-mini.html">Chlapci mini</a></nav>
 
     <section class="block">
       <div class="section-head"><h2>Výsledky a najbližšie zápasy</h2></div>
@@ -527,6 +554,10 @@
           <div class="cat-body">
           <img class="team-photo" src="tim-muzi-a.jpg" alt="Tím HC Záhoráci Muži A, sezóna 2025/2026">
           <div class="cat-table-wrap">
+          <div class="season-bar" id="season-bar" hidden>
+          <label id="season-select-wrap" hidden>Sezóna <select id="season-select"></select></label>
+          <div class="phase-tabs" id="phase-tabs" hidden></div>
+          </div>
           <div class="table-label">Rozpis zápasov</div>
           <p class="standing-note" data-note="muzi_a">Načítavam…</p>
           <table class="results">
@@ -593,18 +624,12 @@
     muzi_a: { teamLabel: "Malacky", liga: "Extraliga", venue: "Šport Aréna Malacky" },
   };
 
-  function seasonLabel() {
-    const d = new Date();
-    const y = d.getFullYear();
-    return d.getMonth() >= 6 ? (y + '/' + (y + 1)) : ((y - 1) + '/' + y);
-  }
-
   function parseSkDate(s) {
     const parts = String(s).split('.').map(Number);
     return new Date(parts[2], (parts[1] || 1) - 1, parts[0] || 1);
   }
 
-  function renderSchedule(key, results, upcoming) {
+  function renderSchedule(key, results, upcoming, emptyText) {
     const tbody = document.getElementById('schedule-' + key);
     const note = document.querySelector('.standing-note[data-note="' + key + '"]');
     const meta = CATEGORY_META[key];
@@ -614,12 +639,11 @@
     (results || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: true, score: m.score, result: m.result, awayCity: m.awayCity, detailUrl: m.detailUrl }));
     (upcoming || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: false, time: m.time, awayCity: m.awayCity }));
     if (rows.length === 0) {
-      if (note) note.textContent = 'Zatiaľ žiadne naplánované ani odohrané zápasy v tejto sezóne.';
+      if (note) note.textContent = emptyText || 'Zatiaľ žiadne naplánované ani odohrané zápasy v tejto sezóne.';
       return;
     }
     if (note) note.textContent = 'Zdroj: Slovenský zväz hádzanej (slovakhandball.sk), automaticky aktualizované.';
     rows.sort((a, b) => parseSkDate(a.date) - parseSkDate(b.date));
-    const season = seasonLabel();
     rows.forEach(m => {
       const tr = document.createElement('tr');
       const matchLabel = m.home ? (meta.teamLabel + ' – ' + m.opponent) : (m.opponent + ' – ' + meta.teamLabel);
@@ -638,24 +662,78 @@
 
   const PAGE_CATEGORY_KEYS = ["muzi_a"];
 
-  fetch('/vysledky')
-    .then(r => { if (!r.ok) throw new Error('Function error ' + r.status); return r.json(); })
-    .then(data => {
-      PAGE_CATEGORY_KEYS.forEach(key => {
-        if (data[key] && data[key].error) {
-          const note = document.querySelector('.standing-note[data-note="' + key + '"]');
-          if (note) note.textContent = 'Rozpis sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.';
-        } else {
-          renderSchedule(key, data[key] && data[key].results, data[key] && data[key].upcoming);
-        }
+  // Výber sezóny a fázy súťaže (zoznam sezón a súťaží je v súbore sutaze.json)
+  (function () {
+    const key = PAGE_CATEGORY_KEYS[0];
+    const note = document.querySelector('.standing-note[data-note="' + key + '"]');
+    const table = document.querySelector('#schedule-' + key);
+    const tableEl = table ? table.closest('table') : null;
+    const bar = document.getElementById('season-bar');
+    const sel = document.getElementById('season-select');
+    const selWrap = document.getElementById('season-select-wrap');
+    const tabs = document.getElementById('phase-tabs');
+    let info = null;
+
+    function failText(msg) { if (note) note.textContent = msg; }
+
+    function pickPhase(phases) {
+      const ok = phases.map((p, i) => ({ p, i })).filter(x => !x.p.error);
+      if (!ok.length) return 0;
+      const withUpcoming = ok.find(x => x.p.upcoming && x.p.upcoming.length);
+      if (withUpcoming) return withUpcoming.i;
+      const withResults = ok.filter(x => x.p.results && x.p.results.length);
+      return withResults.length ? withResults[withResults.length - 1].i : ok[0].i;
+    }
+
+    function showPhase(i) {
+      const p = info.phases[i];
+      Array.prototype.forEach.call(tabs.children, (b, idx) => b.classList.toggle('active', idx === i));
+      if (!p) { renderSchedule(key, [], [], 'Pre túto sezónu zatiaľ nie je zadaná žiadna súťaž.'); return; }
+      if (p.error) { renderSchedule(key, [], [], 'Rozpis sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.'); return; }
+      renderSchedule(key, p.results, p.upcoming);
+    }
+
+    function apply(data, initial) {
+      info = data[key];
+      if (!info) { failText('Rozpis sa nepodarilo načítať.'); return; }
+      if (info.error) { failText('Rozpis sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.'); return; }
+      const seasons = info.seasons || [];
+      if (!seasons.length) {
+        // tím zatiaľ nemá zadanú žiadnu súťaž
+        if (tableEl) tableEl.style.display = 'none';
+        failText('Rozpis zápasov a výsledky pre túto kategóriu doplníme.');
+        return;
+      }
+      if (tableEl) tableEl.style.display = '';
+      if (initial) {
+        sel.innerHTML = '';
+        seasons.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
+      }
+      sel.value = info.season;
+      selWrap.hidden = seasons.length < 2;
+      tabs.innerHTML = '';
+      const phases = info.phases || [];
+      phases.forEach((p, i) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = p.nazov;
+        b.addEventListener('click', () => showPhase(i));
+        tabs.appendChild(b);
       });
-    })
-    .catch(() => {
-      PAGE_CATEGORY_KEYS.forEach(key => {
-        const note = document.querySelector('.standing-note[data-note="' + key + '"]');
-        if (note) note.textContent = 'Automatický rozpis sa nepodarilo načítať. Sledujte priamo na slovakhandball.sk.';
-      });
-    });
+      tabs.hidden = phases.length < 2;
+      bar.hidden = seasons.length < 2 && phases.length < 2;
+      showPhase(pickPhase(phases));
+    }
+
+    function load(season, initial) {
+      fetch('/vysledky?tim=' + encodeURIComponent(key) + (season ? '&sezona=' + encodeURIComponent(season) : ''))
+        .then(r => { if (!r.ok) throw new Error('Function error ' + r.status); return r.json(); })
+        .then(data => apply(data, initial))
+        .catch(() => failText('Automatický rozpis sa nepodarilo načítať. Sledujte priamo na slovakhandball.sk.'));
+    }
+
+    sel.addEventListener('change', () => load(sel.value, false));
+    load(null, true);
+  })();
 </script>
 
 <script>
