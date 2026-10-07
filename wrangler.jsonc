@@ -9,5 +9,14 @@
   "assets": {
     "directory": ".",
     "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "ARCHIV",
+      "id": "66634e03e12642eb95573800500b0baa"
+    }
+  ],
+  "triggers": {
+    "crons": ["7 * * * *"]
   }
 }
