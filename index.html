@@ -328,6 +328,17 @@
     .sponsors-logos{gap:14px;}
     .sponsors-logos img{height:36px;}
   }
+  .navbar .dropdown-menu{max-height:75vh; overflow-y:auto;}
+  .navbar .dropdown-menu li.dd-group{
+    padding:10px 16px 2px; font-size:11px; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase; color:#8a8573;
+  }
+  .navbar .dropdown-menu li.dd-item a{padding:7px 16px 7px 28px;}
+  .footer-col .menu-group{
+    font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:rgba(255,255,255,0.65); margin:10px 0 2px;
+  }
+  .footer-col a.menu-sub{padding-left:12px;}
 </style>
 </head>
 <body>
@@ -339,11 +350,11 @@
         <img src="logo.png" alt="Logo ŠKH Rohožník">
         <span>ŠKH Rohožník</span>
       </a>
-      <a class="logo-item" href="muzi.html">
+      <a class="logo-item" href="muzi-extraliga.html">
         <img src="zahoraci.png" alt="Logo HC Záhoráci">
         <span>HC Záhoráci</span>
       </a>
-      <a class="logo-item" href="ziaci.html">
+      <a class="logo-item" href="starsi-ziaci.html">
         <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
         <span>TJ Strojár Malacky</span>
       </a>
@@ -354,12 +365,27 @@
         <li class="has-dd">
           <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
           <ul class="dropdown-menu">
-            <li><a href="muzi.html">Muži</a></li>
-            <li><a href="dorastenci.html">Dorastenci</a></li>
-            <li><a href="ziaci.html">Žiaci</a></li>
+            <li class="dd-group">Muži</li>
+            <li class="dd-item"><a href="muzi-extraliga.html">Extraliga</a></li>
+            <li class="dd-item"><a href="muzi-1-liga.html">1. liga</a></li>
+            <li class="dd-group">Dorastenci</li>
+            <li class="dd-item"><a href="starsi-dorastenci.html">Starší</a></li>
+            <li class="dd-item"><a href="mladsi-dorastenci.html">Mladší</a></li>
+            <li class="dd-group">Žiaci</li>
+            <li class="dd-item"><a href="starsi-ziaci.html">Starší</a></li>
+            <li class="dd-item"><a href="mladsi-ziaci.html">Mladší</a></li>
             <li><a href="zeny.html">Ženy</a></li>
-            <li><a href="dorastenky.html">Dorastenky</a></li>
-            <li><a href="ziacky.html">Žiačky</a></li>
+            <li class="dd-group">Dorastenky</li>
+            <li class="dd-item"><a href="starsie-dorastenky.html">Staršie</a></li>
+            <li class="dd-item"><a href="mladsie-dorastenky.html">Mladšie</a></li>
+            <li class="dd-group">Žiačky</li>
+            <li class="dd-item"><a href="starsie-ziacky.html">Staršie</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-a.html">Mladšie A</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-b.html">Mladšie B</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-c.html">Mladšie C</a></li>
+            <li class="dd-group">Mini</li>
+            <li class="dd-item"><a href="dievcata-mini.html">Dievčatá mini</a></li>
+            <li class="dd-item"><a href="chlapci-mini.html">Chlapci mini</a></li>
           </ul>
         </li>
         <li><a href="nabor.html">Nábor</a></li>
@@ -422,7 +448,7 @@
         <div id="home-result-dorast_st"></div>
         <div class="upcoming" id="home-upcoming-dorast_st"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="dorastenky.html">Všetky výsledky →</a>
+      <a class="cat-more" href="starsie-dorastenky.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-dorast_ml">
@@ -430,7 +456,7 @@
         <div id="home-result-dorast_ml"></div>
         <div class="upcoming" id="home-upcoming-dorast_ml"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="dorastenky.html">Všetky výsledky →</a>
+      <a class="cat-more" href="mladsie-dorastenky.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-sz">
@@ -438,7 +464,7 @@
         <div id="home-result-sz"></div>
         <div class="upcoming" id="home-upcoming-sz"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="ziacky.html">Všetky výsledky →</a>
+      <a class="cat-more" href="starsie-ziacky.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-mza">
@@ -446,7 +472,7 @@
         <div id="home-result-mza"></div>
         <div class="upcoming" id="home-upcoming-mza"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="ziacky.html">Všetky výsledky →</a>
+      <a class="cat-more" href="mladsie-ziacky-a.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-mzb">
@@ -454,7 +480,7 @@
         <div id="home-result-mzb"></div>
         <div class="upcoming" id="home-upcoming-mzb"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="ziacky.html">Všetky výsledky →</a>
+      <a class="cat-more" href="mladsie-ziacky-b.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-muzi_a">
@@ -462,7 +488,7 @@
         <div id="home-result-muzi_a"></div>
         <div class="upcoming" id="home-upcoming-muzi_a"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="muzi.html">Všetky výsledky →</a>
+      <a class="cat-more" href="muzi-extraliga.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-muzi_b">
@@ -470,7 +496,7 @@
         <div id="home-result-muzi_b"></div>
         <div class="upcoming" id="home-upcoming-muzi_b"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="muzi.html">Všetky výsledky →</a>
+      <a class="cat-more" href="muzi-1-liga.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-dorast_st_ch">
@@ -478,7 +504,7 @@
         <div id="home-result-dorast_st_ch"></div>
         <div class="upcoming" id="home-upcoming-dorast_st_ch"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="dorastenci.html">Všetky výsledky →</a>
+      <a class="cat-more" href="starsi-dorastenci.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-dorast_ml_ch">
@@ -486,7 +512,7 @@
         <div id="home-result-dorast_ml_ch"></div>
         <div class="upcoming" id="home-upcoming-dorast_ml_ch"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="dorastenci.html">Všetky výsledky →</a>
+      <a class="cat-more" href="mladsi-dorastenci.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-ziaci_ml">
@@ -494,7 +520,7 @@
         <div id="home-result-ziaci_ml"></div>
         <div class="upcoming" id="home-upcoming-ziaci_ml"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="ziaci.html">Všetky výsledky →</a>
+      <a class="cat-more" href="mladsi-ziaci.html">Všetky výsledky →</a>
     </div>
 
     <div class="cat-panel" id="panel-ziaci_st">
@@ -502,7 +528,7 @@
         <div id="home-result-ziaci_st"></div>
         <div class="upcoming" id="home-upcoming-ziaci_st"><div class="cat-empty">Načítavam…</div></div>
       </div>
-      <a class="cat-more" href="ziaci.html">Všetky výsledky →</a>
+      <a class="cat-more" href="starsi-ziaci.html">Všetky výsledky →</a>
     </div>
   </div>
 </div>
@@ -513,12 +539,27 @@
   <div class="footer-col">
     <h4>Menu</h4>
     <a href="index.html">Domov</a>
-    <a href="muzi.html">Muži</a>
-    <a href="dorastenci.html">Dorastenci</a>
-    <a href="ziaci.html">Žiaci</a>
+    <div class="menu-group">Muži</div>
+    <a class="menu-sub" href="muzi-extraliga.html">Extraliga</a>
+    <a class="menu-sub" href="muzi-1-liga.html">1. liga</a>
+    <div class="menu-group">Dorastenci</div>
+    <a class="menu-sub" href="starsi-dorastenci.html">Starší</a>
+    <a class="menu-sub" href="mladsi-dorastenci.html">Mladší</a>
+    <div class="menu-group">Žiaci</div>
+    <a class="menu-sub" href="starsi-ziaci.html">Starší</a>
+    <a class="menu-sub" href="mladsi-ziaci.html">Mladší</a>
     <a href="zeny.html">Ženy</a>
-    <a href="dorastenky.html">Dorastenky</a>
-    <a href="ziacky.html">Žiačky</a>
+    <div class="menu-group">Dorastenky</div>
+    <a class="menu-sub" href="starsie-dorastenky.html">Staršie</a>
+    <a class="menu-sub" href="mladsie-dorastenky.html">Mladšie</a>
+    <div class="menu-group">Žiačky</div>
+    <a class="menu-sub" href="starsie-ziacky.html">Staršie</a>
+    <a class="menu-sub" href="mladsie-ziacky-a.html">Mladšie A</a>
+    <a class="menu-sub" href="mladsie-ziacky-b.html">Mladšie B</a>
+    <a class="menu-sub" href="mladsie-ziacky-c.html">Mladšie C</a>
+    <div class="menu-group">Mini</div>
+    <a class="menu-sub" href="dievcata-mini.html">Dievčatá mini</a>
+    <a class="menu-sub" href="chlapci-mini.html">Chlapci mini</a>
     <a href="nabor.html">Nábor</a>
     <a href="treneri.html">Tréneri</a>
     <a href="klub.html">Klub</a>

@@ -360,6 +360,17 @@
   .legal-list{max-width:760px; padding-left:20px; font-size:15px; line-height:1.65; color:#2b2f38;}
   .legal-list li{margin-bottom:10px;}
   .legal .btn{color:#fff;}
+  .navbar .dropdown-menu{max-height:75vh; overflow-y:auto;}
+  .navbar .dropdown-menu li.dd-group{
+    padding:10px 16px 2px; font-size:11px; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase; color:#8a8573;
+  }
+  .navbar .dropdown-menu li.dd-item a{padding:7px 16px 7px 28px;}
+  .footer-col .menu-group{
+    font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:rgba(255,255,255,0.65); margin:10px 0 2px;
+  }
+  .footer-col a.menu-sub{padding-left:12px;}
 </style>
 </head>
 <body>
@@ -371,11 +382,11 @@
         <img src="logo.png" alt="Logo ŠKH Rohožník">
         <span>ŠKH Rohožník</span>
       </a>
-      <a class="logo-item" href="muzi.html">
+      <a class="logo-item" href="muzi-extraliga.html">
         <img src="zahoraci.png" alt="Logo HC Záhoráci">
         <span>HC Záhoráci</span>
       </a>
-      <a class="logo-item" href="ziaci.html">
+      <a class="logo-item" href="starsi-ziaci.html">
         <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
         <span>TJ Strojár Malacky</span>
       </a>
@@ -387,12 +398,27 @@
         <li class="has-dd">
           <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
           <ul class="dropdown-menu">
-            <li><a href="muzi.html">Muži</a></li>
-            <li><a href="dorastenci.html">Dorastenci</a></li>
-            <li><a href="ziaci.html">Žiaci</a></li>
+            <li class="dd-group">Muži</li>
+            <li class="dd-item"><a href="muzi-extraliga.html">Extraliga</a></li>
+            <li class="dd-item"><a href="muzi-1-liga.html">1. liga</a></li>
+            <li class="dd-group">Dorastenci</li>
+            <li class="dd-item"><a href="starsi-dorastenci.html">Starší</a></li>
+            <li class="dd-item"><a href="mladsi-dorastenci.html">Mladší</a></li>
+            <li class="dd-group">Žiaci</li>
+            <li class="dd-item"><a href="starsi-ziaci.html">Starší</a></li>
+            <li class="dd-item"><a href="mladsi-ziaci.html">Mladší</a></li>
             <li><a href="zeny.html">Ženy</a></li>
-            <li><a href="dorastenky.html">Dorastenky</a></li>
-            <li><a href="ziacky.html">Žiačky</a></li>
+            <li class="dd-group">Dorastenky</li>
+            <li class="dd-item"><a href="starsie-dorastenky.html">Staršie</a></li>
+            <li class="dd-item"><a href="mladsie-dorastenky.html">Mladšie</a></li>
+            <li class="dd-group">Žiačky</li>
+            <li class="dd-item"><a href="starsie-ziacky.html">Staršie</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-a.html">Mladšie A</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-b.html">Mladšie B</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-c.html">Mladšie C</a></li>
+            <li class="dd-group">Mini</li>
+            <li class="dd-item"><a href="dievcata-mini.html">Dievčatá mini</a></li>
+            <li class="dd-item"><a href="chlapci-mini.html">Chlapci mini</a></li>
           </ul>
         </li>
         <li><a href="nabor.html">Nábor</a></li>
@@ -413,12 +439,27 @@
   <div class="footer-col">
     <h4>Menu</h4>
     <a href="index.html">Domov</a>
-    <a href="muzi.html">Muži</a>
-    <a href="dorastenci.html">Dorastenci</a>
-    <a href="ziaci.html">Žiaci</a>
+    <div class="menu-group">Muži</div>
+    <a class="menu-sub" href="muzi-extraliga.html">Extraliga</a>
+    <a class="menu-sub" href="muzi-1-liga.html">1. liga</a>
+    <div class="menu-group">Dorastenci</div>
+    <a class="menu-sub" href="starsi-dorastenci.html">Starší</a>
+    <a class="menu-sub" href="mladsi-dorastenci.html">Mladší</a>
+    <div class="menu-group">Žiaci</div>
+    <a class="menu-sub" href="starsi-ziaci.html">Starší</a>
+    <a class="menu-sub" href="mladsi-ziaci.html">Mladší</a>
     <a href="zeny.html">Ženy</a>
-    <a href="dorastenky.html">Dorastenky</a>
-    <a href="ziacky.html">Žiačky</a>
+    <div class="menu-group">Dorastenky</div>
+    <a class="menu-sub" href="starsie-dorastenky.html">Staršie</a>
+    <a class="menu-sub" href="mladsie-dorastenky.html">Mladšie</a>
+    <div class="menu-group">Žiačky</div>
+    <a class="menu-sub" href="starsie-ziacky.html">Staršie</a>
+    <a class="menu-sub" href="mladsie-ziacky-a.html">Mladšie A</a>
+    <a class="menu-sub" href="mladsie-ziacky-b.html">Mladšie B</a>
+    <a class="menu-sub" href="mladsie-ziacky-c.html">Mladšie C</a>
+    <div class="menu-group">Mini</div>
+    <a class="menu-sub" href="dievcata-mini.html">Dievčatá mini</a>
+    <a class="menu-sub" href="chlapci-mini.html">Chlapci mini</a>
     <a href="nabor.html">Nábor</a>
     <a href="treneri.html">Tréneri</a>
     <a href="klub.html">Klub</a>
