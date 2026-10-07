@@ -427,6 +427,14 @@
   .sponsors-track img{flex:0 0 auto; margin-right:44px;}
   @keyframes sponsors-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
   @media (prefers-reduced-motion:reduce){.sponsors-track{animation:none; width:auto; flex-wrap:wrap; justify-content:center;}}
+
+  /* ---- Karta timu: velka fotka hore, vysledky pod nou ---- */
+  .cat-body{flex-direction:column; flex-wrap:nowrap; align-items:stretch; gap:24px;}
+  .team-photo{
+    flex:none; display:block; width:100%; max-width:980px; height:auto; max-height:640px;
+    aspect-ratio:auto; object-fit:contain; background:#f0ede3; margin:0 auto;
+  }
+  .cat-table-wrap{flex:none; width:100%; min-width:0;}
 </style>
 </head>
 <body>
