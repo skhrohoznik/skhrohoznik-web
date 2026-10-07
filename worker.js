@@ -101,6 +101,12 @@ function extractMatches(text) {
   return matches;
 }
 
+// "Voľno" je v rozpise zväzu kolo, v ktorom tím nehrá (nie je to skutočný zápas).
+function isBye(match) {
+  const bye = /^vo[ľl]no$/i;
+  return bye.test(match.teamHome.trim()) || bye.test(match.teamAway.trim());
+}
+
 function dateToObj(d) {
   const [day, month, year] = d.split(".").map(Number);
   return new Date(year, month - 1, day);
@@ -165,7 +171,7 @@ function cityForOpponent(name) {
 function toClubResults(matches, teamMatch) {
   const results = [];
   for (const match of matches) {
-    if (!match.played) continue;
+    if (!match.played || isBye(match)) continue;
     const homeIsClub = teamMatch.test(match.teamHome);
     const awayIsClub = teamMatch.test(match.teamAway);
     if (!homeIsClub && !awayIsClub) continue;
@@ -203,7 +209,7 @@ function toClubUpcoming(matches, teamMatch, limit) {
 
   const upcoming = [];
   for (const match of matches) {
-    if (match.played) continue;
+    if (match.played || isBye(match)) continue;
     const homeIsClub = teamMatch.test(match.teamHome);
     const awayIsClub = teamMatch.test(match.teamAway);
     if (!homeIsClub && !awayIsClub) continue;
