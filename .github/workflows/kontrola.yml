@@ -1,0 +1,20 @@
+name: Kontrola JSON
+
+# Pri každej zmene skontroluje oznamy.json, galeria.json, hero.json a sutaze.json.
+# Ak je v nich chyba, commit dostane na GitHube červený krížik a autor dostane e-mail
+# s presným miestom chyby (záložka Actions → posledný beh → "Skontrolovať JSON súbory").
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  kontrola:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Skontrolovať JSON súbory
+        run: node scripts/kontrola-json.mjs

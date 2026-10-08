@@ -6,3 +6,6 @@ worker.js
 netlify.toml
 netlify
 skhrohoznik-web.zip
+.github
+scripts
+node_modules

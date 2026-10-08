@@ -3,6 +3,12 @@
   "name": "skhrohoznik-web",
   "main": "worker.js",
   "compatibility_date": "2026-09-17",
+  // Pred každým nasadením sa skontrolujú JSON súbory (oznamy, galéria, banner, súťaže).
+  // Ak je v nich chyba, nasadenie sa zastaví a na webe ostane posledná funkčná verzia.
+  "build": {
+    "command": "node scripts/kontrola-json.mjs",
+    "watch_dir": "scripts"
+  },
   "observability": {
     "enabled": true
   },
