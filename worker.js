@@ -603,7 +603,9 @@ const FB_PAGE_SIZE = 25;          // príspevkov na jedno volanie Graph API
 const NEW_PAGES_PER_RUN = 3;      // koľko "strán" najnovších príspevkov sa kontroluje pri každom behu
 const BACKFILL_PAGES_PER_RUN = 1; // koľko strán starších príspevkov sa dosťahuje pri každom behu
 const MAX_ARCHIVE_PER_PAGE = 600; // horná hranica dosťahovania histórie pre jednu FB stránku
-const MAX_IMAGES_PER_RUN = 25;    // limit sťahovania fotiek za jeden beh (limit podpožiadaviek Workera)
+// Bezplatný Workers KV dovoľuje 1 000 zápisov za deň (pre celý účet). Cron beží 24x denne,
+// takže jeden beh smie zapísať najviac ~12 položiek (10 fotiek + feed + state) = max. ~290 zápisov/deň.
+const MAX_IMAGES_PER_RUN = 10;    // limit sťahovania (= zápisov) fotiek za jeden beh
 
 function fbPostsUrl(page, env) {
   const fields =
@@ -747,31 +749,70 @@ async function syncArchive(env) {
   return { items: feed.length, changed: anyChange };
 }
 
-async function handleArchivImg(env, pathname) {
+async function handleArchivImg(env, pathname, ctx) {
   if (!env.ARCHIV) return new Response("Not found", { status: 404 });
   const id = decodeURIComponent(pathname.slice("/archiv/img/".length));
   if (!/^[\w.\-]+$/.test(id)) return new Response("Not found", { status: 404 });
+  // fotka sa nemení - po prvom načítaní ju vydáva cache Cloudflare a KV sa už nečíta
+  const cacheKey = new Request("https://cache.skhrohoznik.sk/archiv/img/" + encodeURIComponent(id));
+  try {
+    const hit = await caches.default.match(cacheKey);
+    if (hit) return hit;
+  } catch (err) {
+    // cache nie je dostupná
+  }
   const { value, metadata } = await env.ARCHIV.getWithMetadata("img:" + id, { type: "arrayBuffer" });
   if (!value) return new Response("Not found", { status: 404 });
-  return new Response(value, {
+  const res = new Response(value, {
     headers: {
       "Content-Type": (metadata && metadata.ct) || "image/jpeg",
       "Cache-Control": "public, max-age=31536000, immutable",
     },
   });
+  try {
+    const p = caches.default.put(cacheKey, res.clone()).catch(() => {});
+    if (ctx) ctx.waitUntil(p);
+  } catch (err) {
+    // cache nie je dostupná
+  }
+  return res;
 }
 
+// Aktuality sa menia najviac raz za hodinu (cron) - odpoveď sa drží v cache Cloudflare,
+// aby každá návšteva úvodnej stránky nečítala KV.
+const AKTUALITY_CACHE_SEC = 10 * 60;
+
 async function handleAktuality(env, ctx) {
+  const cacheKey = new Request("https://cache.skhrohoznik.sk/aktuality.json");
+  try {
+    const hit = await caches.default.match(cacheKey);
+    if (hit) return hit;
+  } catch (err) {
+    // cache nie je dostupná
+  }
   let output = null;
+  let fromArchive = false;
 
   if (env.ARCHIV) {
     try {
       const feed = await readFeed(env);
       if (feed.length) {
         output = feed.map(({ id, t, ...rest }) => rest);
+        fromArchive = true;
       } else if (ctx) {
-        // archív je prázdny (prvé spustenie) - naplň ho na pozadí
-        ctx.waitUntil(syncArchive(env).catch(() => {}));
+        // archív je prázdny (prvé spustenie) - naplň ho na pozadí, ale najviac raz za 30 minút,
+        // inak by každá návšteva spustila synchronizáciu so zápismi do KV
+        const lockKey = new Request("https://cache.skhrohoznik.sk/aktuality-sync-lock");
+        const locked = await caches.default.match(lockKey).catch(() => null);
+        if (!locked) {
+          ctx.waitUntil(
+            caches.default
+              .put(lockKey, new Response("1", { headers: { "Cache-Control": "public, max-age=1800" } }))
+              .catch(() => {})
+              .then(() => syncArchive(env))
+              .catch(() => {})
+          );
+        }
       }
     } catch (err) {
       output = null;
@@ -793,13 +834,23 @@ async function handleAktuality(env, ctx) {
     output = fbItems;
   }
 
-  return new Response(JSON.stringify(output), {
+  const res = new Response(JSON.stringify(output), {
     status: 200,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "public, max-age=900",
+      "Cache-Control": "public, max-age=" + AKTUALITY_CACHE_SEC,
     },
   });
+  // do cache len odpoveď z archívu (záložné živé sťahovanie z FB sa skúsi znova pri ďalšej návšteve)
+  if (fromArchive) {
+    try {
+      const p = caches.default.put(cacheKey, res.clone()).catch(() => {});
+      if (ctx) ctx.waitUntil(p);
+    } catch (err) {
+      // cache nie je dostupná
+    }
+  }
+  return res;
 }
 
 export default {
@@ -815,7 +866,7 @@ export default {
       return handleLogo(request, ctx);
     }
     if (url.pathname.startsWith("/archiv/img/")) {
-      return handleArchivImg(env, url.pathname);
+      return handleArchivImg(env, url.pathname, ctx);
     }
     // všetko ostatné (HTML, obrázky, ...) obslúži statický súborový systém
     return env.ASSETS.fetch(request);
