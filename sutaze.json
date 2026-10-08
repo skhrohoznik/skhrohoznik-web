@@ -83,6 +83,20 @@
             "nazov": "Základná časť",
             "url": "https://www.slovakhandball.sk/competition?id=154400"
           }
+        ],
+        "2025/2026": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=91549"
+          },
+          {
+            "nazov": "Final 4 - 3.miesto",
+            "url": "https://www.slovakhandball.sk/competition?id=91549&part=319479"
+          },
+          {
+            "nazov": "Final 4",
+            "url": "https://www.slovakhandball.sk/competition?id=91549&part=318001"
+          }
         ]
       }
     },
@@ -94,6 +108,16 @@
           {
             "nazov": "Základná časť",
             "url": "https://www.slovakhandball.sk/competition?id=158787&part=366588"
+          }
+        ],
+        "2025/2026": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=93299&part=195384"
+          },
+          {
+            "nazov": "Semifinále - Skupina B",
+            "url": "https://www.slovakhandball.sk/competition?id=93299&part=326511"
           }
         ]
       }
@@ -125,6 +149,12 @@
       "tim": "boys",
       "sezony": {
         "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=158788&part=366264"
+          }
+        ],
+        "2025/2026": [
           {
             "nazov": "Základná časť",
             "url": "https://www.slovakhandball.sk/competition?id=158788&part=366264"
