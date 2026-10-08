@@ -107,6 +107,17 @@
             "nazov": "Základná časť",
             "url": "https://www.slovakhandball.sk/competition?id=158786&part=366691"
           }
+        ],
+        ,
+        "2025/2026": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=93298&part=195376"
+          },
+          {
+            "nazov": "Semifinále - Skupina B",
+            "url": "https://www.slovakhandball.sk/competition?id=93298&part=326496"
+          }
         ]
       }
     },
