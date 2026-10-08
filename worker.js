@@ -139,6 +139,80 @@ function extractStandings(text) {
   });
 }
 
+// --- Logá tímov ---
+// Na stránke súťaže je pred názvom tímu (v tabuľke aj v rozpise) obrázok s logom klubu:
+//   <img src="https://www.slovakhandball.sk/files/club-logos/....png"> <strong>Názov tímu</strong>
+// Vráti mapu "názov tímu" -> adresa loga na našom webe (/logo/files/...), ktorú obsluhuje
+// handleLogo - návštevník sa tak so zväzovým webom priamo nespája.
+const LOGO_PATH_RE = /^\/files\/(?:club-logos|club)\/[A-Za-z0-9._-]+\.(?:png|jpe?g|webp|gif|svg)$/i;
+
+function extractLogos(html) {
+  const logos = {};
+  const add = (rawTeam, rawSrc) => {
+    const team = rawTeam.replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+    if (!team || logos[team]) return;
+    let url;
+    try {
+      url = new URL(rawSrc.replace(/&amp;/g, "&"), "https://www.slovakhandball.sk");
+    } catch (err) {
+      return;
+    }
+    if (!/(^|\.)slovakhandball\.sk$/i.test(url.hostname) || !LOGO_PATH_RE.test(url.pathname)) return;
+    logos[team] = "/logo" + url.pathname;
+  };
+  const between = "(?:\\s|<(?!\\/?strong\\b)[^>]*>)*";
+  // logo pred názvom (tabuľka, hostia v rozpise)
+  const before = new RegExp('<img\\b[^>]*\\bsrc="([^"]+)"[^>]*>' + between + "<strong[^>]*>((?:(?!<\\/?strong\\b)[^])*?)<\\/strong>", "gi");
+  // logo za názvom domácich v rozpise:  <strong>Domáci</strong> <img src=...> 28:24
+  const after = new RegExp("<strong[^>]*>((?:(?!<\\/?strong\\b)[^])*?)<\\/strong>" + between + '<img\\b[^>]*\\bsrc="([^"]+)"[^>]*>' + between + "\\d{1,2}:\\d{1,2}", "gi");
+  let m;
+  while ((m = before.exec(html)) !== null) add(m[2], m[1]);
+  while ((m = after.exec(html)) !== null) add(m[1], m[2]);
+  return logos;
+}
+
+// /logo/files/club-logos/xyz.png -> stiahne logo zo slovakhandball.sk a uloží ho do cache (30 dní)
+const LOGO_CACHE_SEC = 30 * 24 * 60 * 60;
+async function handleLogo(request, ctx) {
+  const path = new URL(request.url).pathname.replace(/^\/logo/, "");
+  if (!LOGO_PATH_RE.test(path)) return new Response("Not found", { status: 404 });
+
+  const cacheKey = new Request("https://cache.skhrohoznik.sk/logo" + path);
+  try {
+    const hit = await caches.default.match(cacheKey);
+    if (hit) return hit;
+  } catch (err) {
+    // cache nie je dostupná
+  }
+  let upstream;
+  try {
+    upstream = await fetch("https://www.slovakhandball.sk" + path, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
+    });
+  } catch (err) {
+    return new Response("Logo nie je dostupné", { status: 502 });
+  }
+  const type = upstream.headers.get("Content-Type") || "";
+  if (!upstream.ok || !/^image\//i.test(type)) return new Response("Not found", { status: 404 });
+
+  const res = new Response(upstream.body, {
+    headers: {
+      "Content-Type": type,
+      "Cache-Control": "public, max-age=" + LOGO_CACHE_SEC,
+      // SVG nesmie spúšťať skripty, aj keby ho niekto otvoril priamo
+      "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+  try {
+    const p = caches.default.put(cacheKey, res.clone()).catch(() => {});
+    if (ctx) ctx.waitUntil(p);
+  } catch (err) {
+    // cache nie je dostupná
+  }
+  return res;
+}
+
 // Z tabuliek vyberie tú, v ktorej hrá náš tím, a označí jeho riadok.
 function toClubStandings(tables, teamMatch) {
   const table = (tables || []).find((t) => t.some((r) => teamMatch.test(r.team)));
@@ -326,7 +400,7 @@ function sortSeasonsDesc(seasons) {
 // Na adrese *.workers.dev cache nefunguje - vtedy sa jednoducho sťahuje zakaždým.
 const PHASE_FRESH_SEC = 30 * 60;
 const PHASE_BACKUP_SEC = 7 * 24 * 60 * 60;
-const PHASE_CACHE_VERSION = "2"; // zvýš, ak sa zmení formát uložených dát
+const PHASE_CACHE_VERSION = "3"; // zvýš, ak sa zmení formát uložených dát
 
 function phaseCacheKey(compUrl, kind) {
   return new Request(
@@ -366,8 +440,9 @@ async function loadPhaseData(compUrl, ctx) {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
     });
     if (!res.ok) throw new Error("slovakhandball.sk vrátil chybu " + res.status);
-    const text = htmlToMarkerText(await res.text());
-    const data = { matches: extractMatches(text), tables: extractStandings(text) };
+    const html = await res.text();
+    const text = htmlToMarkerText(html);
+    const data = { matches: extractMatches(text), tables: extractStandings(text), logos: extractLogos(html) };
     cachePutJson(freshKey, data, PHASE_FRESH_SEC, ctx);
     // prázdny rozpis (napr. nová súťaž) neprepisuje zálohu so zápasmi
     if (data.matches.length) cachePutJson(backupKey, data, PHASE_BACKUP_SEC, ctx);
@@ -381,12 +456,17 @@ async function loadPhaseData(compUrl, ctx) {
 
 async function loadPhase(comp, teamMatch, ctx) {
   try {
-    const { matches, tables } = await loadPhaseData(comp.url, ctx);
+    const { matches, tables, logos = {} } = await loadPhaseData(comp.url, ctx);
+    const logoOf = (team) => logos[team] || null;
+    const clubName = Object.keys(logos).find((t) => teamMatch.test(t));
+    const withLogo = (m) => ({ ...m, opponentLogo: logoOf(m.opponent) });
+    const standings = toClubStandings(tables, teamMatch);
     return {
       nazov: comp.nazov || "Súťaž",
-      results: toClubResults(matches, teamMatch),
-      upcoming: toClubUpcoming(matches, teamMatch, 4),
-      standings: toClubStandings(tables, teamMatch),
+      clubLogo: clubName ? logos[clubName] : null,
+      results: toClubResults(matches, teamMatch).map(withLogo),
+      upcoming: toClubUpcoming(matches, teamMatch, 4).map(withLogo),
+      standings: standings ? standings.map((r) => ({ ...r, logo: logoOf(r.team) })) : null,
     };
   } catch (err) {
     return { nazov: comp.nazov || "Súťaž", error: String(err) };
@@ -725,6 +805,9 @@ export default {
     }
     if (url.pathname === "/aktuality.json") {
       return handleAktuality(env, ctx);
+    }
+    if (url.pathname.startsWith("/logo/")) {
+      return handleLogo(request, ctx);
     }
     if (url.pathname.startsWith("/archiv/img/")) {
       return handleArchivImg(env, url.pathname);

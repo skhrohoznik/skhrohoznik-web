@@ -448,15 +448,15 @@
     return new Date(parts[2], (parts[1] || 1) - 1, parts[0] || 1);
   }
 
-  function renderSchedule(key, results, upcoming, emptyText) {
+  function renderSchedule(key, results, upcoming, emptyText, clubLogo) {
     const tbody = document.getElementById('schedule-' + key);
     const note = document.querySelector('.standing-note[data-note="' + key + '"]');
     const meta = CATEGORY_META[key];
     if (!tbody || !meta) return;
     tbody.innerHTML = '';
     const rows = [];
-    (results || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: true, score: m.score, result: m.result, awayCity: m.awayCity, detailUrl: m.detailUrl }));
-    (upcoming || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, home: m.home, played: false, time: m.time, awayCity: m.awayCity }));
+    (results || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, opponentLogo: m.opponentLogo, home: m.home, played: true, score: m.score, result: m.result, awayCity: m.awayCity, detailUrl: m.detailUrl }));
+    (upcoming || []).forEach(m => rows.push({ date: m.date, opponent: m.opponent, opponentLogo: m.opponentLogo, home: m.home, played: false, time: m.time, awayCity: m.awayCity }));
     if (rows.length === 0) {
       if (note) note.textContent = emptyText || 'Zatiaľ žiadne naplánované ani odohrané zápasy v tejto sezóne.';
       return;
@@ -465,7 +465,10 @@
     rows.sort((a, b) => parseSkDate(a.date) - parseSkDate(b.date));
     rows.forEach(m => {
       const tr = document.createElement('tr');
-      const matchLabel = m.home ? (meta.teamLabel + ' – ' + m.opponent) : (m.opponent + ' – ' + meta.teamLabel);
+      const logo = window.teamLogoHtml || function () { return ''; };
+      const ours = '<span class="tm">' + logo(clubLogo) + meta.teamLabel + '</span>';
+      const opp = '<span class="tm">' + logo(m.opponentLogo) + m.opponent + '</span>';
+      const matchLabel = m.home ? (ours + ' – ' + opp) : (opp + ' – ' + ours);
       const timeOrScore = m.played
         ? (m.score + (m.detailUrl ? ' <a class="match-detail-link" href="' + m.detailUrl + '" target="_blank" rel="noopener">Detail</a>' : ''))
         : (m.time ? (m.time + ' h') : 'čas bude upresnený');
@@ -510,7 +513,7 @@
       Array.prototype.forEach.call(tabs.children, (b, idx) => b.classList.toggle('active', idx === i));
       if (!p) { renderSchedule(key, [], [], 'Pre túto sezónu zatiaľ nie je zadaná žiadna súťaž.'); return; }
       if (p.error) { renderSchedule(key, [], [], 'Rozpis sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.'); return; }
-      renderSchedule(key, p.results, p.upcoming);
+      renderSchedule(key, p.results, p.upcoming, null, p.clubLogo);
     }
 
     function apply(data, initial) {
