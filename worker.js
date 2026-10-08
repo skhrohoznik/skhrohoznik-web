@@ -380,6 +380,10 @@ async function loadConfig(env, request) {
     for (const t of Object.values(cfg.timy)) {
       t.teamMatch = t.tim_regex ? new RegExp(t.tim_regex, "i") : TEAM_PRESETS[t.tim] || GIRLS_TEAM;
       t.sezony = t.sezony || {};
+      // vlastné logo tímu (súbor v repozitári), napr. "logo": "strojar-malacky.jpg"
+      t.ownLogo = typeof t.logo === "string" && /^[A-Za-z0-9._\/-]+\.(png|jpe?g|webp|svg)$/i.test(t.logo) && !t.logo.includes("..")
+        ? "/" + t.logo.replace(/^\/+/, "")
+        : null;
     }
     return cfg;
   } catch (err) {
@@ -454,7 +458,7 @@ async function loadPhaseData(compUrl, ctx) {
   }
 }
 
-async function loadPhase(comp, teamMatch, ctx) {
+async function loadPhase(comp, teamMatch, ctx, ownLogo) {
   try {
     const { matches, tables, logos = {} } = await loadPhaseData(comp.url, ctx);
     const logoOf = (team) => logos[team] || null;
@@ -463,10 +467,11 @@ async function loadPhase(comp, teamMatch, ctx) {
     const standings = toClubStandings(tables, teamMatch);
     return {
       nazov: comp.nazov || "Súťaž",
-      clubLogo: clubName ? logos[clubName] : null,
+      // vlastné logo z sutaze.json ("logo") má prednosť pred logom zo zväzu
+      clubLogo: ownLogo || (clubName ? logos[clubName] : null),
       results: toClubResults(matches, teamMatch).map(withLogo),
       upcoming: toClubUpcoming(matches, teamMatch, 4).map(withLogo),
-      standings: standings ? standings.map((r) => ({ ...r, logo: logoOf(r.team) })) : null,
+      standings: standings ? standings.map((r) => ({ ...r, logo: (r.ours && ownLogo) || logoOf(r.team) })) : null,
     };
   } catch (err) {
     return { nazov: comp.nazov || "Súťaž", error: String(err) };
@@ -489,7 +494,7 @@ async function handleVysledky(request, env, ctx) {
       .filter(([key]) => !wantedTeams.length || wantedTeams.includes(key))
       .map(async ([key, team]) => {
         const comps = (team.sezony && team.sezony[season]) || [];
-        const phases = await Promise.all(comps.map((c) => loadPhase(c, team.teamMatch, ctx)));
+        const phases = await Promise.all(comps.map((c) => loadPhase(c, team.teamMatch, ctx, team.ownLogo)));
         const ok = phases.filter((p) => !p.error);
         const entry = {
           season,

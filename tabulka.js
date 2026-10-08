@@ -8,10 +8,12 @@
     });
   }
 
-  // Logo tímu ako <img>. Adresy /logo/... obsluhuje worker (logá sú zo slovakhandball.sk).
+  // Logo tímu ako <img>. Adresy /logo/... obsluhuje worker (logá sú zo slovakhandball.sk),
+  // vlastné logá tímov (pole "logo" v sutaze.json) sú súbory priamo v repozitári.
   // Ak sa logo nenačíta, obrázok sa jednoducho skryje.
   window.teamLogoHtml = function (src) {
-    if (!src || !/^\/logo\//.test(src)) return "";
+    // povolené sú len adresy na našom webe (/logo/... zo zväzu alebo vlastné logo, napr. /strojar-malacky.jpg)
+    if (!src || !/^\/[A-Za-z0-9._\/-]+$/.test(src) || src.indexOf("..") !== -1) return "";
     return '<img class="team-logo" src="' + esc(src) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">';
   };
 

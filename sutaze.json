@@ -1,5 +1,5 @@
 {
-  "_navod": "Sezóny: pod \"sezony\" pridaj novú sezónu (napr. \"2027/2028\") so zoznamom fáz súťaže (každá fáza má \"nazov\" a \"url\" zo slovakhandball.sk). Viac fáz v jednej sezóne (základná časť, nadstavba, play-off) sa na stránke tímu zobrazí ako záložky. \"aktualna_sezona\" je sezóna, ktorá sa zobrazí ako prvá. \"tim\" = jedna z hodnôt girls, boys, zahoraci_a, zahoraci_b (ako je tím pomenovaný v rozpise zväzu); alebo \"tim_regex\" s vlastným vzorom názvu tímu.",
+  "_navod": "Sezóny: pod \"sezony\" pridaj novú sezónu (napr. \"2027/2028\") so zoznamom fáz súťaže (každá fáza má \"nazov\" a \"url\" zo slovakhandball.sk). Viac fáz v jednej sezóne (základná časť, nadstavba, play-off) sa na stránke tímu zobrazí ako záložky. \"aktualna_sezona\" je sezóna, ktorá sa zobrazí ako prvá. \"tim\" = jedna z hodnôt girls, boys, zahoraci_a, zahoraci_b (ako je tím pomenovaný v rozpise zväzu); alebo \"tim_regex\" s vlastným vzorom názvu tímu. Voliteľne \"logo\": názov súboru s logom v repozitári (napr. \"strojar-malacky.jpg\") - použije sa namiesto loga zo zväzu, ak je tam nesprávne.",
   "aktualna_sezona": "2026/2027",
   "timy": {
     "muzi_a": {
@@ -143,6 +143,7 @@
     "ziaci_st": {
       "nazov": "Starší žiaci",
       "tim": "boys",
+      "logo": "strojar-malacky.jpg",
       "sezony": {
         "2026/2027": [
           {
@@ -187,6 +188,7 @@
     "ziaci_ml": {
       "nazov": "Mladší žiaci",
       "tim": "boys",
+      "logo": "strojar-malacky.jpg",
       "sezony": {
         "2026/2027": [
           {
@@ -251,6 +253,7 @@
     "chlapci_mini": {
       "nazov": "Chlapci mini",
       "tim": "boys",
+      "logo": "strojar-malacky.jpg",
       "sezony": {}
     }
   }

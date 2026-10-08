@@ -210,6 +210,12 @@ function skontrolujFotky(subor, kde, fotky) {
         } else if (t.tim !== undefined && !PRESETY.includes(t.tim)) {
           chyba(s, `${kde}: "tim" musí byť jedno z: ${PRESETY.join(", ")}`);
         }
+        if (t.logo !== undefined) {
+          if (!jeText(t.logo) || !/^[A-Za-z0-9._\/-]+\.(png|jpe?g|webp|svg)$/i.test(t.logo) || t.logo.includes(".."))
+            chyba(s, `${kde}: "logo" má byť názov obrázka bez medzier a diakritiky, napr. "strojar-malacky.jpg"`);
+          else if (!existsSync(t.logo.replace(/^\/+/, "")))
+            chyba(s, `${kde}: logo "${t.logo}" v repozitári neexistuje`);
+        }
         for (const [sezona, fazy] of Object.entries(t.sezony || {})) {
           if (!/^\d{4}\/\d{4}$/.test(sezona)) chyba(s, `${kde}: sezóna "${sezona}" má byť v tvare "2026/2027"`);
           if (!Array.isArray(fazy)) {
