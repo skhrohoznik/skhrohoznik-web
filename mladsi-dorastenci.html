@@ -377,6 +377,19 @@
             </thead>
             <tbody id="schedule-dorast_ml_ch"></tbody>
           </table>
+          <div class="table-label" id="standings-label-dorast_ml_ch" hidden>Tabuľka</div>
+          <table class="results standings" id="standings-dorast_ml_ch" hidden>
+            <thead>
+              <tr>
+                <th class="st-rank">P</th>
+                <th>Tím</th>
+                <th class="st-num" title="Zápasy">Z</th>
+                <th class="st-num">Skóre</th>
+                <th class="st-num" title="Body">B</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
           </div>
           </div>
         </div>
@@ -425,6 +438,7 @@
   })();
 </script>
 
+<script src="tabulka.js"></script>
 <script>
   const CATEGORY_META = {
     dorast_ml_ch: { teamLabel: "Malacky", liga: "1. liga mladší dorastenci", venue: "Šport Aréna Malacky" },
@@ -480,7 +494,7 @@
     const tabs = document.getElementById('phase-tabs');
     let info = null;
 
-    function failText(msg) { if (note) note.textContent = msg; }
+    function failText(msg) { if (note) note.textContent = msg; if (window.renderStandings) renderStandings(key, null); }
 
     function pickPhase(phases) {
       const ok = phases.map((p, i) => ({ p, i })).filter(x => !x.p.error);
@@ -493,6 +507,7 @@
 
     function showPhase(i) {
       const p = info.phases[i];
+      if (window.renderStandings) renderStandings(key, p && !p.error ? p.standings : null);
       Array.prototype.forEach.call(tabs.children, (b, idx) => b.classList.toggle('active', idx === i));
       if (!p) { renderSchedule(key, [], [], 'Pre túto sezónu zatiaľ nie je zadaná žiadna súťaž.'); return; }
       if (p.error) { renderSchedule(key, [], [], 'Rozpis sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.'); return; }

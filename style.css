@@ -214,3 +214,11 @@ main.page{display:block; max-width:1500px;}
   .navbar.on-hero .dropdown-menu li a, .navbar.on-hero .dropdown-menu li.dd-item a{background:rgba(255,255,255,.1); color:#fff!important;}
   .navbar.on-hero .dropdown-menu li a:hover, .navbar.on-hero .dropdown-menu li a.current{background:var(--red)!important; color:#fff!important;}
 }
+
+/* ---- Tabuľka súťaže na stránkach kategórií (tabulka.js) ---- */
+table.results.standings[hidden], .table-label[hidden]{display:none;}
+table.results.standings .st-rank{width:2.5em; white-space:nowrap;}
+table.results.standings .st-num{text-align:right; white-space:nowrap; width:1%; padding-left:14px;}
+table.results.standings .st-pts{font-weight:700;}
+table.results.standings tr.ours td{font-weight:700; background:rgba(214,38,44,0.07);}
+table.results.standings tr.ours td:first-child{box-shadow:inset 3px 0 0 var(--red);}

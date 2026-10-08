@@ -101,6 +101,51 @@ function extractMatches(text) {
   return matches;
 }
 
+// --- Tabuľka súťaže ---
+// Na stránke súťaže je tabuľka so stĺpcami P (poradie), Tím, Z (zápasy), Skóre, B (body).
+// Po prevode na text vyzerá riadok takto:  1. ![logo] **Názov tímu** 5 159:133 **8**
+// Stránka obsahuje tú istú tabuľku viackrát a pri súťažiach so skupinami viac tabuliek -
+// nová tabuľka začína tam, kde poradie znova klesne (napr. na 1.).
+function extractStandings(text) {
+  const re =
+    /(?:^|\s)(\d{1,3})\.\s+(?:!\[[^\]]*\]\s*)*\*\*([^*]+?)\*\*\s+((?:\d{1,3}\s+){1,5})(\d{1,4}\s*:\s*\d{1,4})\s+(?:\*\*\s*)?(-?\d{1,3})(?:\s*\*\*)?/g;
+  const tables = [];
+  let current = null;
+  let lastRank = Infinity;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const rank = Number(m[1]);
+    if (!current || rank <= lastRank) {
+      current = [];
+      tables.push(current);
+    }
+    lastRank = rank;
+    current.push({
+      rank,
+      team: m[2].trim(),
+      played: Number(m[3].trim().split(/\s+/)[0]),
+      score: m[4].replace(/\s+/g, ""),
+      points: Number(m[5]),
+    });
+  }
+  // rovnaké tabuľky (opakované na stránke) stačí mať raz
+  const seen = new Set();
+  return tables.filter((t) => {
+    if (t.length < 2) return false;
+    const key = JSON.stringify(t);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+// Z tabuliek vyberie tú, v ktorej hrá náš tím, a označí jeho riadok.
+function toClubStandings(tables, teamMatch) {
+  const table = (tables || []).find((t) => t.some((r) => teamMatch.test(r.team)));
+  if (!table) return null;
+  return table.map((r) => (teamMatch.test(r.team) ? { ...r, ours: true } : r));
+}
+
 // "Voľno" je v rozpise zväzu kolo, v ktorom tím nehrá (nie je to skutočný zápas).
 function isBye(match) {
   const bye = /^vo[ľl]no$/i;
@@ -276,12 +321,12 @@ function sortSeasonsDesc(seasons) {
 // Zápasy jednej súťaže sa po stiahnutí uložia do cache Cloudflare:
 //  - "čerstvá" kópia platí PHASE_FRESH_SEC - dovtedy sa zväzový web vôbec nevolá,
 //  - "záložná" kópia platí PHASE_BACKUP_SEC - použije sa, keď je slovakhandball.sk nedostupný.
-// Ukladajú sa surové zápasy (nie výsledky/najbližšie zápasy), tie sa počítajú pri každej požiadavke,
-// aby sa odohraný zápas nezobrazoval ako "najbližší".
+// Ukladajú sa surové zápasy a tabuľky (nie výsledky/najbližšie zápasy), tie sa počítajú pri každej
+// požiadavke, aby sa odohraný zápas nezobrazoval ako "najbližší".
 // Na adrese *.workers.dev cache nefunguje - vtedy sa jednoducho sťahuje zakaždým.
 const PHASE_FRESH_SEC = 30 * 60;
 const PHASE_BACKUP_SEC = 7 * 24 * 60 * 60;
-const PHASE_CACHE_VERSION = "1"; // zvýš, ak sa zmení formát uložených dát
+const PHASE_CACHE_VERSION = "2"; // zvýš, ak sa zmení formát uložených dát
 
 function phaseCacheKey(compUrl, kind) {
   return new Request(
@@ -310,7 +355,7 @@ function cachePutJson(key, data, maxAge, ctx) {
   }
 }
 
-async function loadPhaseMatches(compUrl, ctx) {
+async function loadPhaseData(compUrl, ctx) {
   const freshKey = phaseCacheKey(compUrl, "fresh");
   const fresh = await cacheGetJson(freshKey);
   if (fresh) return fresh;
@@ -321,11 +366,12 @@ async function loadPhaseMatches(compUrl, ctx) {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
     });
     if (!res.ok) throw new Error("slovakhandball.sk vrátil chybu " + res.status);
-    const matches = extractMatches(htmlToMarkerText(await res.text()));
-    cachePutJson(freshKey, matches, PHASE_FRESH_SEC, ctx);
+    const text = htmlToMarkerText(await res.text());
+    const data = { matches: extractMatches(text), tables: extractStandings(text) };
+    cachePutJson(freshKey, data, PHASE_FRESH_SEC, ctx);
     // prázdny rozpis (napr. nová súťaž) neprepisuje zálohu so zápasmi
-    if (matches.length) cachePutJson(backupKey, matches, PHASE_BACKUP_SEC, ctx);
-    return matches;
+    if (data.matches.length) cachePutJson(backupKey, data, PHASE_BACKUP_SEC, ctx);
+    return data;
   } catch (err) {
     const backup = await cacheGetJson(backupKey);
     if (backup) return backup;
@@ -335,11 +381,12 @@ async function loadPhaseMatches(compUrl, ctx) {
 
 async function loadPhase(comp, teamMatch, ctx) {
   try {
-    const matches = await loadPhaseMatches(comp.url, ctx);
+    const { matches, tables } = await loadPhaseData(comp.url, ctx);
     return {
       nazov: comp.nazov || "Súťaž",
       results: toClubResults(matches, teamMatch),
       upcoming: toClubUpcoming(matches, teamMatch, 4),
+      standings: toClubStandings(tables, teamMatch),
     };
   } catch (err) {
     return { nazov: comp.nazov || "Súťaž", error: String(err) };
