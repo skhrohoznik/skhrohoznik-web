@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://skhrohoznik.sk/sitemap.xml
