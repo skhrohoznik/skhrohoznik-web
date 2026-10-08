@@ -222,3 +222,25 @@ table.results.standings .st-num{text-align:right; white-space:nowrap; width:1%; 
 table.results.standings .st-pts{font-weight:700;}
 table.results.standings tr.ours td{font-weight:700; background:rgba(214,38,44,0.07);}
 table.results.standings tr.ours td:first-child{box-shadow:inset 3px 0 0 var(--red);}
+
+/* ---- Rozpis zápasov na mobile: každý zápas ako karta ---- */
+/* stĺpce: 1 dátum, 2 zápas, 3 čas/výsledok, 4 miesto */
+@media (max-width:640px){
+  .cat-table-wrap table.results:not(.standings) thead{display:none;}
+  .cat-table-wrap table.results:not(.standings),
+  .cat-table-wrap table.results:not(.standings) tbody{display:block;}
+  .cat-table-wrap table.results:not(.standings) tr{
+    display:grid; grid-template-columns:1fr auto; column-gap:12px; row-gap:3px;
+    grid-template-areas:"date res" "match match" "place place";
+    padding:12px 2px; border-bottom:1px solid var(--line);
+  }
+  .cat-table-wrap table.results:not(.standings) tr:last-child{border-bottom:none;}
+  .cat-table-wrap table.results:not(.standings) td{padding:0; border:none;}
+  .cat-table-wrap table.results:not(.standings) td:nth-child(1){
+    grid-area:date; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;
+  }
+  .cat-table-wrap table.results:not(.standings) td:nth-child(2){grid-area:match; font-size:15px; font-weight:600; line-height:1.3;}
+  .cat-table-wrap table.results:not(.standings) td:nth-child(3){grid-area:res; text-align:right; font-weight:700; white-space:nowrap;}
+  .cat-table-wrap table.results:not(.standings) td:nth-child(4){grid-area:place; font-size:12px; color:#6b6455;}
+  .cat-table-wrap table.results:not(.standings) td:nth-child(4):empty{display:none;}
+}
