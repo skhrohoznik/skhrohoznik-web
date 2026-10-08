@@ -272,13 +272,70 @@ function sortSeasonsDesc(seasons) {
   return seasons.slice().sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
 }
 
-async function loadPhase(comp, teamMatch) {
+// --- Medzipamäť (cache) zápasov zo slovakhandball.sk ---
+// Zápasy jednej súťaže sa po stiahnutí uložia do cache Cloudflare:
+//  - "čerstvá" kópia platí PHASE_FRESH_SEC - dovtedy sa zväzový web vôbec nevolá,
+//  - "záložná" kópia platí PHASE_BACKUP_SEC - použije sa, keď je slovakhandball.sk nedostupný.
+// Ukladajú sa surové zápasy (nie výsledky/najbližšie zápasy), tie sa počítajú pri každej požiadavke,
+// aby sa odohraný zápas nezobrazoval ako "najbližší".
+// Na adrese *.workers.dev cache nefunguje - vtedy sa jednoducho sťahuje zakaždým.
+const PHASE_FRESH_SEC = 30 * 60;
+const PHASE_BACKUP_SEC = 7 * 24 * 60 * 60;
+const PHASE_CACHE_VERSION = "1"; // zvýš, ak sa zmení formát uložených dát
+
+function phaseCacheKey(compUrl, kind) {
+  return new Request(
+    "https://cache.skhrohoznik.sk/zapasy/" + kind + "/" + PHASE_CACHE_VERSION + "?u=" + encodeURIComponent(compUrl)
+  );
+}
+
+async function cacheGetJson(key) {
   try {
-    const res = await fetch(comp.url, {
+    const hit = await caches.default.match(key);
+    return hit ? await hit.json() : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function cachePutJson(key, data, maxAge, ctx) {
+  try {
+    const res = new Response(JSON.stringify(data), {
+      headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=" + maxAge },
+    });
+    const p = caches.default.put(key, res).catch(() => {});
+    if (ctx) ctx.waitUntil(p);
+  } catch (err) {
+    // cache nie je dostupná - nevadí
+  }
+}
+
+async function loadPhaseMatches(compUrl, ctx) {
+  const freshKey = phaseCacheKey(compUrl, "fresh");
+  const fresh = await cacheGetJson(freshKey);
+  if (fresh) return fresh;
+
+  const backupKey = phaseCacheKey(compUrl, "backup");
+  try {
+    const res = await fetch(compUrl, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
     });
-    const html = await res.text();
-    const matches = extractMatches(htmlToMarkerText(html));
+    if (!res.ok) throw new Error("slovakhandball.sk vrátil chybu " + res.status);
+    const matches = extractMatches(htmlToMarkerText(await res.text()));
+    cachePutJson(freshKey, matches, PHASE_FRESH_SEC, ctx);
+    // prázdny rozpis (napr. nová súťaž) neprepisuje zálohu so zápasmi
+    if (matches.length) cachePutJson(backupKey, matches, PHASE_BACKUP_SEC, ctx);
+    return matches;
+  } catch (err) {
+    const backup = await cacheGetJson(backupKey);
+    if (backup) return backup;
+    throw err;
+  }
+}
+
+async function loadPhase(comp, teamMatch, ctx) {
+  try {
+    const matches = await loadPhaseMatches(comp.url, ctx);
     return {
       nazov: comp.nazov || "Súťaž",
       results: toClubResults(matches, teamMatch),
@@ -292,7 +349,7 @@ async function loadPhase(comp, teamMatch) {
 // /vysledky                       -> všetky tímy, aktuálna sezóna
 // /vysledky?tim=zeny,sz           -> len vybrané tímy
 // /vysledky?sezona=2025/2026      -> iná sezóna
-async function handleVysledky(request, env) {
+async function handleVysledky(request, env, ctx) {
   const url = new URL(request.url);
   const cfg = await loadConfig(env, request);
   const wantedTeams = (url.searchParams.get("tim") || "")
@@ -305,7 +362,7 @@ async function handleVysledky(request, env) {
       .filter(([key]) => !wantedTeams.length || wantedTeams.includes(key))
       .map(async ([key, team]) => {
         const comps = (team.sezony && team.sezony[season]) || [];
-        const phases = await Promise.all(comps.map((c) => loadPhase(c, team.teamMatch)));
+        const phases = await Promise.all(comps.map((c) => loadPhase(c, team.teamMatch, ctx)));
         const ok = phases.filter((p) => !p.error);
         const entry = {
           season,
@@ -617,7 +674,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/vysledky") {
-      return handleVysledky(request, env);
+      return handleVysledky(request, env, ctx);
     }
     if (url.pathname === "/aktuality.json") {
       return handleAktuality(env, ctx);
