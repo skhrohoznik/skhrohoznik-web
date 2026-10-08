@@ -141,7 +141,7 @@
       '<h2 id="ck-title">Cookies a externý obsah</h2>' +
       '<p class="ck-intro-only">Tento web si pamätá len tvoju voľbu a meria návštevnosť anonymne bez cookies. ' +
       'Mapy Google a Facebook stránky načítame až s tvojím súhlasom, pretože tieto služby môžu ukladať cookies ' +
-      'a spracúvať tvoje údaje. Viac v <a href="ochrana-udajov.html">Ochrane údajov</a>.</p>' +
+      'a spracúvať tvoje údaje. Viac v <a href="/ochrana-udajov.html">Ochrane údajov</a>.</p>' +
       '<div class="ck-settings">' +
         '<div class="ck-row"><div><strong>Nevyhnutné</strong><span class="ck-desc">Zapamätanie tvojej voľby v úložisku prehliadača, aby sa banner nezobrazoval opakovane.</span></div><span class="ck-always">Vždy zapnuté</span></div>' +
         '<div class="ck-row"><div><strong>Štatistika návštevnosti</strong><span class="ck-desc">Cloudflare Web Analytics: bez cookies a bez osobných údajov, slúži na anonymné počty návštev.</span></div><span class="ck-always">Bez cookies</span></div>' +
@@ -200,7 +200,7 @@
     var wrap = document.createElement('div');
     wrap.className = 'ck-footer-links';
     var a1 = document.createElement('a');
-    a1.href = 'ochrana-udajov.html'; a1.textContent = 'Ochrana údajov';
+    a1.href = '/ochrana-udajov.html'; a1.textContent = 'Ochrana údajov';
     var sep = document.createTextNode(' · ');
     var a2 = document.createElement('a');
     a2.href = '#'; a2.textContent = 'Nastavenia cookies';
