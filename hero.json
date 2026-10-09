@@ -4,7 +4,7 @@
   "interval_sekundy": 5,
   "fotky": [
     { "foto": "hero-akcia.jpg", "pozicia": "center 12%" },
-    { "foto": "CP7A5741.jpg",   "pozicia": "center 10%" },
+    { "foto": "hero/CP7A5741.jpg",   "pozicia": "center 10%" },
     { "foto": "muzi.jpg",       "pozicia": "center top" },
     { "foto": "akcia2.jpg",     "pozicia": "center top" },
     { "foto": "oslava.jpg",     "pozicia": "center 15%" },
