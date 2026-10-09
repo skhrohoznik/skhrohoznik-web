@@ -510,6 +510,8 @@ async function handleVysledky(request, env, ctx) {
           upcoming.sort((a, b) => dateToObj(a.date) - dateToObj(b.date));
           entry.results = results;
           entry.upcoming = upcoming.slice(0, 2);
+          const withLogo = ok.find((p) => p.clubLogo);
+          entry.clubLogo = withLogo ? withLogo.clubLogo : null;
         }
         output[key] = entry;
       })

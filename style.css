@@ -251,3 +251,57 @@ table.results .tm{white-space:nowrap;}
 @media (max-width:640px){
   table.results .tm{white-space:normal;}
 }
+
+/* ---- Hlavička stránky tímu: fotka + názov + najbližší zápas ---- */
+.team-head{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:28px; align-items:stretch; margin:4px 0 8px;}
+.team-head.no-photo{grid-template-columns:1fr;}
+.team-head.no-photo .next-match{max-width:640px;}
+.team-head-photo{margin:0; position:relative; background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10);}
+.team-head-photo img{display:block; width:100%; height:100%; max-height:520px; object-fit:cover; cursor:zoom-in;}
+.team-head-photo .zoom-hint{
+  position:absolute; right:10px; bottom:10px; background:rgba(22,26,34,0.78); color:#fff;
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:6px 10px; pointer-events:none;
+}
+.team-head-info{display:flex; flex-direction:column; gap:14px; min-width:0;}
+.team-head-kicker{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--red);}
+.team-head-info .page-title{margin:0; line-height:1.05;}
+.team-head-jump{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink); text-decoration:none; border-bottom:2px solid var(--red); align-self:flex-start; padding-bottom:2px;}
+.team-head-jump:hover{color:var(--red);}
+
+.next-match{background:#fff; border:2px solid var(--ink); padding:18px 18px 16px; display:flex; flex-direction:column; gap:14px;}
+.next-match[hidden]{display:none;}
+.nm-top{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;}
+.nm-kicker{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#6b6455;}
+.nm-when{font-family:'Archivo Black', sans-serif; font-size:15px; text-transform:uppercase; color:var(--ink);}
+.nm-teams{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px; text-align:center;}
+.nm-team{display:flex; flex-direction:column; align-items:center; gap:8px; min-width:0; font-weight:700; font-size:14px; line-height:1.25;}
+.nm-team.ours{color:var(--ink);}
+.nm-logo{width:64px; height:64px; object-fit:contain; display:block;}
+.nm-initials[hidden]{display:none;}
+.nm-initials{
+  width:64px; height:64px; border-radius:50%; background:var(--cream); border:2px solid var(--line);
+  display:flex; align-items:center; justify-content:center; font-family:'Archivo Black', sans-serif; font-size:18px; color:#6b6455;
+}
+.nm-vs{font-family:'Archivo Black', sans-serif; font-size:22px; color:var(--red); white-space:nowrap;}
+.nm-vs.score{font-size:28px; color:var(--ink);}
+.nm-vs.score.win{color:#166534;}
+.nm-vs.score.loss{color:var(--red);}
+.nm-where{font-size:13px; color:#5c5648; text-align:center; border-top:1px solid var(--line); padding-top:10px;}
+.nm-where strong{color:var(--ink);}
+
+@media (max-width:900px){
+  .team-head{grid-template-columns:1fr; gap:18px;}
+  .team-head-photo img{max-height:none; height:auto; object-fit:contain;}
+  /* mobil: názov → fotka → najbližší zápas */
+  .team-head{gap:0;}
+  .team-head-info{display:contents;}
+  .team-head-kicker{order:1; margin-bottom:6px;}
+  .team-head-info .page-title{order:2; margin-bottom:16px;}
+  .team-head-photo{order:3; margin-bottom:16px;}
+  .next-match{order:4; margin-bottom:14px;}
+  .team-head-jump{order:5;}
+}
+@media (max-width:640px){
+  .nm-logo,.nm-initials{width:52px; height:52px;}
+  .nm-team{font-size:13px;}
+}

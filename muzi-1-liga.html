@@ -348,17 +348,26 @@
 
 <main class="page">
 <div class="page-content">
-    <h1 class="page-title">Muži — 1. liga</h1>
-    <p class="page-intro">HC Záhoráci. Rozpis zápasov a výsledky.</p>
     <nav class="team-switch" aria-label="Prepnúť tím"><a href="muzi-extraliga.html">Muži Extraliga</a><a href="muzi-1-liga.html" class="current" aria-current="page">Muži 1. liga</a><a href="zeny.html">Ženy</a><a href="starsi-dorastenci.html">Starší dorastenci</a><a href="starsie-dorastenky.html">Staršie dorastenky</a><a href="mladsi-dorastenci.html">Mladší dorastenci</a><a href="mladsie-dorastenky.html">Mladšie dorastenky</a><a href="starsi-ziaci.html">Starší žiaci</a><a href="starsie-ziacky.html">Staršie žiačky</a><a href="mladsi-ziaci.html">Mladší žiaci</a><a href="mladsie-ziacky-a.html">Mladšie žiačky A</a><a href="mladsie-ziacky-b.html">Mladšie žiačky B</a><a href="mladsie-ziacky-c.html">Mladšie žiačky C</a><a href="dievcata-mini.html">Dievčatá mini</a><a href="chlapci-mini.html">Chlapci mini</a></nav>
 
-    <section class="block">
-      <div class="section-head"><h2>Výsledky a najbližšie zápasy</h2></div>
+    <section class="team-head">
+      <figure class="team-head-photo">
+        <img class="team-hero-img" src="tim-muzi-b.jpg" alt="Tím HC Záhoráci Muži B, sezóna 2025/2026">
+        <span class="zoom-hint">Zväčšiť</span>
+      </figure>
+      <div class="team-head-info">
+        <span class="team-head-kicker">HC Záhoráci · 1. liga</span>
+        <h1 class="page-title">Muži — 1. liga</h1>
+        <div class="next-match" id="next-match-muzi_b" hidden></div>
+        <a class="team-head-jump" href="#zapasy">Rozpis zápasov a tabuľka ↓</a>
+      </div>
+    </section>
+
+    <section class="block" id="zapasy">
+      <div class="section-head"><h2>Zápasy a tabuľka</h2></div>
       <div class="category-grid">
 <div class="category-card" id="muzi_b">
-          <h3>Muži B (1. liga)</h3>
           <div class="cat-body">
-          <img class="team-photo" src="tim-muzi-b.jpg" alt="Tím HC Záhoráci Muži B, sezóna 2025/2026">
           <div class="cat-table-wrap">
           <div class="season-bar" id="season-bar" hidden>
           <label id="season-select-wrap" hidden>Sezóna <select id="season-select"></select></label>
@@ -497,7 +506,7 @@
     const tabs = document.getElementById('phase-tabs');
     let info = null;
 
-    function failText(msg) { if (note) note.textContent = msg; if (window.renderStandings) renderStandings(key, null); }
+    function failText(msg) { if (note) note.textContent = msg; if (window.renderStandings) renderStandings(key, null); if (window.renderNextMatch) renderNextMatch(key, null); }
 
     function pickPhase(phases) {
       const ok = phases.map((p, i) => ({ p, i })).filter(x => !x.p.error);
@@ -511,6 +520,7 @@
     function showPhase(i) {
       const p = info.phases[i];
       if (window.renderStandings) renderStandings(key, p && !p.error ? p.standings : null);
+      if (window.renderNextMatch) renderNextMatch(key, p && !p.error ? p : null, CATEGORY_META[key]);
       Array.prototype.forEach.call(tabs.children, (b, idx) => b.classList.toggle('active', idx === i));
       if (!p) { renderSchedule(key, [], [], 'Pre túto sezónu zatiaľ nie je zadaná žiadna súťaž.'); return; }
       if (p.error) { renderSchedule(key, [], [], 'Rozpis sa nepodarilo načítať automaticky. Skúste neskôr, alebo sledujte priamo na slovakhandball.sk.'); return; }
@@ -593,7 +603,7 @@
       overlayImg.src = '';
     }
 
-    document.querySelectorAll('.team-photo').forEach(function(img){
+    document.querySelectorAll('.team-photo, .team-hero-img').forEach(function(img){
       img.addEventListener('click', function(){
         openLightbox(img.getAttribute('src'), img.getAttribute('alt'));
       });
