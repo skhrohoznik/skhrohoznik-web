@@ -28,7 +28,7 @@
   .intro{
     position:relative; overflow:hidden;
     width:100%;
-    min-height: 580px;
+    min-height: 720px;
     display:flex; flex-direction:column; justify-content:flex-end;
     border-top: none;
     border-bottom: 3px solid var(--ink);
@@ -121,8 +121,14 @@
   }
 
   /* ---- ZÁPASY POD BANNEROM: karty najbližších zápasov / výsledkov ---- */
-  .matches-band{background:var(--ink); color:#fff; border-bottom:3px solid var(--ink);}
-  .matches-inner{max-width:1500px; margin:0 auto; padding:26px 40px 30px;}
+  /* pás leží na spodku bannera (hero), pod kartami je stmavenie fotky */
+  .matches-band{
+    position:relative; z-index:3; color:#fff;
+    background:linear-gradient(rgba(10,10,14,0) 0%, rgba(10,10,14,.55) 45%, rgba(10,10,14,.82) 100%);
+  }
+  .matches-inner{max-width:1500px; margin:0 auto; padding:30px 40px 26px;}
+  .matches-head h2{text-shadow:0 2px 10px rgba(0,0,0,.6);}
+  .matches-switch{background:rgba(10,10,14,.35); backdrop-filter:blur(3px);}
   .matches-head{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; flex-wrap:wrap;}
   .matches-head h2{color:#fff; font-size:22px; margin:0;}
   .matches-switch{display:flex; border:2px solid #fff;}
@@ -136,7 +142,7 @@
     overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px; -webkit-overflow-scrolling:touch;
     scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.35) transparent;
   }
-  .matches-empty{color:#c9ccd3; font-size:14px; padding:12px 0;}
+  .matches-empty{color:#eef0f4; font-size:14px; padding:12px 0; text-shadow:0 1px 6px rgba(0,0,0,.6);}
   .mc{
     scroll-snap-align:start; background:#fff; color:var(--ink); text-decoration:none; display:flex; flex-direction:column; gap:8px;
     padding:14px 16px 12px; border-top:4px solid var(--red); min-width:0; position:relative; transition:transform .15s;
@@ -159,7 +165,7 @@
   .mc-badge{position:absolute; right:16px; bottom:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#6b6455;}
   .mc.win .mc-badge{color:#166534;}
   @media (max-width:900px){
-    .matches-inner{padding:22px 20px 24px;}
+    .matches-inner{padding:24px 20px 20px;}
     .matches-row{grid-auto-columns:78%;}
   }
 </style>
@@ -236,20 +242,20 @@
     <p>Spoločný projekt troch hádzanárskych klubov z regiónu Záhorie — ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky. Spolupracujeme na rozvoji hádzanej od najmladších kategórií až po najvyššiu súťaž.</p>
   </div>
   <div class="intro-dots" id="hero-dots"></div>
+  <section class="matches-band" id="zapasy">
+    <div class="matches-inner">
+      <div class="matches-head">
+        <h2>Zápasy</h2>
+        <div class="matches-switch" role="tablist">
+          <button type="button" class="active" data-view="upcoming" role="tab" aria-selected="true">Najbližšie</button>
+          <button type="button" data-view="results" role="tab" aria-selected="false">Výsledky</button>
+        </div>
+      </div>
+      <div class="matches-row" id="matches-row"><div class="matches-empty">Načítavam zápasy…</div></div>
+    </div>
+  </section>
 </div>
 
-<section class="matches-band" id="zapasy">
-  <div class="matches-inner">
-    <div class="matches-head">
-      <h2>Zápasy</h2>
-      <div class="matches-switch" role="tablist">
-        <button type="button" class="active" data-view="upcoming" role="tab" aria-selected="true">Najbližšie</button>
-        <button type="button" data-view="results" role="tab" aria-selected="false">Výsledky</button>
-      </div>
-    </div>
-    <div class="matches-row" id="matches-row"><div class="matches-empty">Načítavam zápasy…</div></div>
-  </div>
-</section>
 
 <main class="page">
 <div class="page-content">
