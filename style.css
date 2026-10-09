@@ -341,3 +341,47 @@ table.results .tm{white-space:nowrap;}
   .navbar li.has-dd > .dd-btn{position:relative;}
   .navbar li.has-dd > .dd-btn::after{content:""; position:absolute; left:-16px; right:-16px; top:100%; height:40px;}
 }
+
+
+/* ---- Farby klubov na stránkach tímov (body data-club) ----
+   Záhoráci = zelená (muži, dorastenci), TJ Strojár = modrá (žiaci, chlapci mini),
+   ŠKH Rohožník = červená so žltou (ženy, dorastenky, žiačky, dievčatá mini). */
+body[data-club="zahoraci"]{--accent:#1E7B2E; --accent-dark:#145A21; --accent-soft:rgba(30,123,46,.10); --accent-2:#8BD100;}
+body[data-club="strojar"] {--accent:#0B4F9C; --accent-dark:#083B75; --accent-soft:rgba(11,79,156,.09); --accent-2:#5B9BD5;}
+body[data-club="rohoznik"]{--accent:#D6262C; --accent-dark:#A81C21; --accent-soft:rgba(214,38,44,.08); --accent-2:#F2B705;}
+
+/* pruh pod hlavným menu vo farbe klubu */
+body[data-club] .navbar{border-bottom-color:var(--accent);}
+body[data-club] .navbar nav .dd-btn.current,
+body[data-club] .navbar nav > ul > li.has-dd > button.dd-btn{color:var(--ink);}
+body[data-club] .navbar nav > ul > li:hover > button.dd-btn,
+body[data-club] .navbar nav > ul > li.open > button.dd-btn{border-bottom-color:var(--accent); background:var(--accent-soft);}
+body[data-club] .navbar .dd-btn.current{color:var(--accent);}
+body[data-club] .navbar .dropdown-menu li a.current{background:var(--accent); color:#fff;}
+
+/* prepínač tímov: aktívny tím vo farbe klubu, pri každom tíme farebný prúžok jeho klubu */
+body[data-club] .team-switch a{border-left-width:5px;}
+body[data-club] .team-switch a[href^="muzi-"], body[data-club] .team-switch a[href$="-dorastenci.html"]{border-left-color:#1E7B2E;}
+body[data-club] .team-switch a[href$="-ziaci.html"], body[data-club] .team-switch a[href="chlapci-mini.html"]{border-left-color:#0B4F9C;}
+body[data-club] .team-switch a[href="zeny.html"], body[data-club] .team-switch a[href$="-dorastenky.html"],
+body[data-club] .team-switch a[href*="-ziacky"], body[data-club] .team-switch a[href="dievcata-mini.html"]{border-left-color:#D6262C;}
+body[data-club] .team-switch a:hover{background:var(--accent-soft); color:var(--accent-dark); border-color:var(--accent);}
+body[data-club] .team-switch a.current{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+/* hlavička tímu */
+body[data-club] .team-head-kicker{color:var(--accent);}
+body[data-club] .team-head-jump{border-bottom-color:var(--accent);}
+body[data-club] .team-head-jump:hover{color:var(--accent);}
+body[data-club] .team-head-photo{border-bottom:5px solid var(--accent);}
+body[data-club] .next-match{border-top:6px solid var(--accent);}
+body[data-club] .nm-vs{color:var(--accent);}
+body[data-club="rohoznik"] .nm-kicker{color:var(--accent-dark);}
+
+/* rozpis a tabuľka */
+body[data-club] .section-head h2{box-shadow:inset 0 -6px 0 var(--accent-soft);}
+body[data-club] .phase-tabs button.active{background:var(--accent); border-color:var(--accent);}
+body[data-club] .phase-tabs button:hover:not(.active){background:var(--accent-soft);}
+body[data-club] table.results th{border-bottom-color:var(--accent);}
+body[data-club] table.results.standings tr.ours td{background:var(--accent-soft);}
+body[data-club] table.results.standings tr.ours td:first-child{box-shadow:inset 4px 0 0 var(--accent);}
+body[data-club] .match-detail-link:hover{color:var(--accent); border-bottom-color:var(--accent);}
