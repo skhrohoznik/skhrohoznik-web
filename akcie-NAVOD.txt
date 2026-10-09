@@ -1,0 +1,17 @@
+Ako pridať akciu do kalendára
+
+Zápasy sa do kalendára dopĺňajú samé zo slovakhandball.sk. Klubové akcie (turnaje, nábor, oslavy,
+brigády...) sa zapisujú do súboru akcie.json - každá akcia je jeden záznam:
+
+{
+  "datum": "31.10.2026",          povinné, deň akcie
+  "do": "01.11.2026",             nepovinné, posledný deň viacdňovej akcie
+  "cas": "09:00",                 nepovinné
+  "nazov": "Turnaj starších žiačok",   povinné
+  "miesto": "ŠH Rohožník",        nepovinné
+  "popis": "Krátky popis akcie.", nepovinné
+  "klub": "rohoznik",             nepovinné: rohoznik, zahoraci, strojar (farba v kalendári); bez neho je akcia spoločná
+  "odkaz": "oznamy.html"          nepovinné, kam vedie "Viac"
+},
+
+Každý záznam okrem posledného musí končiť čiarkou. Pred nasadením sa súbor skontroluje automaticky.
