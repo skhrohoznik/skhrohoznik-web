@@ -136,21 +136,15 @@ main.page{
 @media (max-width:900px){
   main.page{padding:32px 20px;}
 }
-.sponsors-band{width:100%; background:#fff; border-top:3px solid var(--ink);}
+.sponsors-band{width:100%; background:var(--cream); border-top:3px solid var(--ink);}
 .sponsors-inner{max-width:1200px; margin:0 auto; padding:32px 40px 36px;}
 .sponsors-label{
   font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
   color:#6b6455; margin-bottom:18px; text-align:center;
 }
 .sponsors-logos{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:20px;}
-.sponsors-logos img{
-  height:48px; width:auto; object-fit:contain; opacity:0.9; transition:opacity .15s ease;
-}
-.sponsors-logos img:hover{opacity:1;}
 @media (max-width:640px){
   .sponsors-inner{padding:24px 20px 28px;}
-  .sponsors-logos{gap:14px;}
-  .sponsors-logos img{height:36px;}
 }
 .navbar .dropdown-menu{max-height:75vh; overflow-y:auto;}
 .navbar .dropdown-menu li.dd-group{
@@ -166,15 +160,34 @@ main.page{
 /* ---- Bez bocneho panela: obsah na celu sirku ---- */
 main.page{display:block; max-width:1500px;}
 .site-footer{background:var(--ink); color:rgba(255,255,255,0.8); font-size:12px; text-align:center; padding:16px 20px;}
-/* ---- Sponzori: jeden riadok, automaticky posuvny ---- */
-.sponsors-logos{display:block; overflow:hidden; position:relative;
-  -webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
-          mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);}
-.sponsors-track{display:flex; flex-wrap:nowrap; align-items:center; width:max-content; animation:sponsors-scroll 70s linear infinite;}
-.sponsors-logos:hover .sponsors-track{animation-play-state:paused;}
-.sponsors-track img{flex:0 0 auto; margin-right:44px;}
-@keyframes sponsors-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-@media (prefers-reduced-motion:reduce){.sponsors-track{animation:none; width:auto; flex-wrap:wrap; justify-content:center;}}
+/* ---- Partneri: rovnaké dlaždice, logá vyvážené podľa tvaru (sponsors.js), plynulé posúvanie ---- */
+.sponsors-inner{max-width:1500px;}
+.sponsors-logos{
+  --tile-w:176px; --tile-h:84px;
+  display:block; overflow:hidden; position:relative; padding:4px 0; cursor:grab; touch-action:pan-y;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent);
+          mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent);
+}
+.sponsors-logos.dragging{cursor:grabbing;}
+.sponsors-track{display:flex; flex-wrap:nowrap; align-items:center; gap:16px; width:max-content; will-change:transform;}
+/* dlaždica: pevná veľkosť (šírka a výška vrátane okrajov), logo sa do nej vmestí */
+.sponsors-track img{
+  flex:0 0 auto; box-sizing:border-box; width:var(--tile-w); height:var(--tile-h); padding:14px 18px;
+  object-fit:contain; background:#fff; border:1px solid var(--line);
+  user-select:none; -webkit-user-drag:none; transition:border-color .15s, box-shadow .15s;
+}
+.sponsors-track img:hover{border-color:#cfc9b8; box-shadow:0 4px 14px rgba(22,26,34,0.08);}
+@media (max-width:640px){
+  .sponsors-logos{--tile-w:136px; --tile-h:68px;}
+  .sponsors-track{gap:12px;}
+  .sponsors-track img{padding:10px 12px;}
+}
+/* bez animácií: logá v mriežke, bez posúvania */
+@media (prefers-reduced-motion:reduce){
+  .sponsors-logos{-webkit-mask-image:none; mask-image:none; cursor:default;}
+  .sponsors-track{width:auto; flex-wrap:wrap; justify-content:center;}
+  .sponsors-track img[aria-hidden="true"]{display:none;}
+}
 /* ---- Aktualna stranka v menu (zvyraznena, ale stale zobrazena) ---- */
 .navbar nav a.current, .navbar .dd-btn.current{color:var(--red);}
 .navbar .dropdown-menu li a.current{color:var(--red); background:rgba(214,38,44,0.08);}
