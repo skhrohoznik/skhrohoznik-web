@@ -142,6 +142,10 @@
     overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px; -webkit-overflow-scrolling:touch;
     scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.35) transparent;
   }
+  .matches-row{cursor:grab;}
+  .matches-row.dragging{cursor:grabbing; scroll-snap-type:none; user-select:none;}
+  .matches-row.dragging .mc{pointer-events:none;}
+  .mc img{-webkit-user-drag:none; user-select:none;}
   .matches-empty{color:#eef0f4; font-size:14px; padding:12px 0; text-shadow:0 1px 6px rgba(0,0,0,.6);}
   .mc{
     scroll-snap-align:start; background:#fff; color:var(--ink); text-decoration:none; display:flex; flex-direction:column; gap:8px;
@@ -462,6 +466,42 @@
   }
 
   document.querySelectorAll(".matches-switch button").forEach(b => b.addEventListener("click", () => showMatches(b.dataset.view)));
+
+  // Posúvanie kariet zápasov potiahnutím myšou (na mobile funguje posúvanie prstom samo)
+  (function () {
+    const row = document.getElementById("matches-row");
+    if (!row) return;
+    let down = false, startX = 0, startScroll = 0, moved = 0;
+    row.addEventListener("pointerdown", e => {
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      down = true; moved = 0; startX = e.clientX; startScroll = row.scrollLeft;
+    });
+    window.addEventListener("pointermove", e => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(dx));
+      if (moved > 3) { e.preventDefault(); row.classList.add("dragging"); }
+      row.scrollLeft = startScroll - dx;
+    });
+    function end() {
+      if (!down) return;
+      down = false;
+      const wasDrag = row.classList.contains("dragging");
+      row.classList.remove("dragging");
+      if (!wasDrag) return;
+      // po pustení dorovná na najbližšiu kartu
+      const card = row.querySelector(".mc");
+      if (card) {
+        const step = card.getBoundingClientRect().width + parseFloat(getComputedStyle(row).columnGap || 14);
+        row.scrollTo({ left: Math.round(row.scrollLeft / step) * step, behavior: "smooth" });
+      }
+    }
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+    // ak sa karty posúvali, nejde o kliknutie na kartu
+    row.addEventListener("click", e => { if (moved > 5) { e.preventDefault(); e.stopPropagation(); } }, true);
+    row.addEventListener("dragstart", e => e.preventDefault());
+  })();
 
   fetch('/vysledky')
     .then(r => r.json())
