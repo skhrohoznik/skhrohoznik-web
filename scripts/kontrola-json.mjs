@@ -159,6 +159,27 @@ function skontrolujFotky(subor, kde, fotky) {
   }
 }
 
+// --- akcie.json (klubové akcie v kalendári) ---
+if (existsSync("akcie.json")) {
+  const s = "akcie.json";
+  const d = nacitaj(s);
+  const DATUM = /^\d{1,2}\.\d{1,2}\.\d{4}$/;
+  if (d !== undefined) {
+    if (!Array.isArray(d)) chyba(s, "obsah má byť zoznam akcií v hranatých zátvorkách [ ... ]");
+    else
+      d.forEach((a, i) => {
+        const kde = `akcia č. ${i + 1}${a && a.nazov ? ` („${a.nazov}“)` : ""}`;
+        if (!a || typeof a !== "object") return chyba(s, `${kde}: záznam má byť v zložených zátvorkách { ... }`);
+        if (!jeText(a.nazov)) chyba(s, `${kde}: chýba "nazov"`);
+        if (!DATUM.test(a.datum || "")) chyba(s, `${kde}: "datum" má byť v tvare "31.10.2026"`);
+        if (a.do !== undefined && !DATUM.test(a.do)) chyba(s, `${kde}: "do" má byť v tvare "01.11.2026"`);
+        if (a.cas !== undefined && !/^\d{1,2}:\d{2}$/.test(a.cas)) chyba(s, `${kde}: "cas" má byť v tvare "09:00"`);
+        if (a.klub !== undefined && !["rohoznik", "zahoraci", "strojar"].includes(a.klub))
+          chyba(s, `${kde}: "klub" musí byť rohoznik, zahoraci alebo strojar (alebo ho vynechaj)`);
+      });
+  }
+}
+
 // --- galeria.json ---
 {
   const s = "galeria.json";

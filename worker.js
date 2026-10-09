@@ -458,6 +458,40 @@ async function loadPhaseData(compUrl, ctx) {
   }
 }
 
+// /kalendar -> všetky zápasy všetkých tímov v aktuálnej sezóne (odohrané aj budúce) pre stránku Kalendár
+async function handleKalendar(request, env, ctx) {
+  const cfg = await loadConfig(env, request);
+  const season = cfg.aktualna_sezona;
+  const out = [];
+  await Promise.all(
+    Object.entries(cfg.timy).map(async ([key, team]) => {
+      const comps = (team.sezony && team.sezony[season]) || [];
+      await Promise.all(
+        comps.map(async (comp) => {
+          try {
+            const { matches, logos = {} } = await loadPhaseData(comp.url, ctx);
+            const clubName = Object.keys(logos).find((t) => team.teamMatch.test(t));
+            const clubLogo = team.ownLogo || (clubName ? logos[clubName] : null);
+            const base = { tim: key, nazov: team.nazov || key, faza: comp.nazov || "", clubLogo };
+            for (const m of toClubResults(matches, team.teamMatch)) {
+              out.push({ ...base, ...m, played: true, opponentLogo: logos[m.opponent] || null });
+            }
+            for (const m of toClubUpcoming(matches, team.teamMatch, Infinity)) {
+              out.push({ ...base, ...m, played: false, opponentLogo: logos[m.opponent] || null });
+            }
+          } catch (err) {
+            // súťaž sa nepodarilo načítať - v kalendári jednoducho chýba
+          }
+        })
+      );
+    })
+  );
+  out.sort((a, b) => dateToObj(a.date) - dateToObj(b.date) || String(a.time || "").localeCompare(String(b.time || "")));
+  return new Response(JSON.stringify({ season, zapasy: out }), {
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=1800" },
+  });
+}
+
 async function loadPhase(comp, teamMatch, ctx, ownLogo) {
   try {
     const { matches, tables, logos = {} } = await loadPhaseData(comp.url, ctx);
@@ -860,6 +894,9 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === "/vysledky") {
       return handleVysledky(request, env, ctx);
+    }
+    if (url.pathname === "/kalendar") {
+      return handleKalendar(request, env, ctx);
     }
     if (url.pathname === "/aktuality.json") {
       return handleAktuality(env, ctx);

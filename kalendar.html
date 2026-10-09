@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sledujte nás — Hádzaná Záhorie</title>
+<title>Kalendár — Hádzaná Záhorie</title>
 <link rel="icon" type="image/png" href="skh.png">
-<link rel="canonical" href="https://skhrohoznik.sk/sledujte-nas.html">
-<meta name="description" content="Zostrihy zápasov, tréningy a novinky zo všetkých troch klubov na jednom mieste.">
+<link rel="canonical" href="https://skhrohoznik.sk/kalendar.html">
+<meta name="description" content="Kalendár zápasov a klubových akcií ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://skhrohoznik.sk/sledujte-nas.html">
+<meta property="og:url" content="https://skhrohoznik.sk/kalendar.html">
 <meta property="og:site_name" content="Hádzaná Záhorie">
-<meta property="og:title" content="Sledujte nás — Hádzaná Záhorie">
-<meta property="og:description" content="Zostrihy zápasov, tréningy a novinky zo všetkých troch klubov na jednom mieste.">
+<meta property="og:title" content="Kalendár — Hádzaná Záhorie">
+<meta property="og:description" content="Kalendár zápasov a klubových akcií ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky.">
 <meta property="og:image" content="https://skhrohoznik.sk/logo.png">
 <meta property="og:locale" content="sk_SK">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sledujte nás — Hádzaná Záhorie">
-<meta name="twitter:description" content="Zostrihy zápasov, tréningy a novinky zo všetkých troch klubov na jednom mieste.">
+<meta name="twitter:title" content="Kalendár — Hádzaná Záhorie">
+<meta name="twitter:description" content="Kalendár zápasov a klubových akcií ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky.">
 <meta name="twitter:image" content="https://skhrohoznik.sk/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -141,9 +141,6 @@
   .cards{
     display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
   }
-  @media (max-width:900px){
-    .cards{grid-template-columns:1fr;}
-  }
   .recruit{
     background:var(--red); color:#fff; padding:52px 40px;
     display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;
@@ -166,16 +163,40 @@
   .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
   .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
   .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
+  .albums{display:flex; flex-direction:column; gap:16px;}
+  .album{
+      background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10);
+    }
+  .album-toggle{
+      width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
+      background:none; border:none; cursor:pointer; padding:20px 22px; text-align:left;
+      font-family:inherit; color:var(--ink);
+    }
+  .album-toggle h3{
+      font-size:17px;
+    }
+  .album-toggle .album-count{
+      font-size:12px; font-weight:700; color:#6b6455; text-transform:none; letter-spacing:0; white-space:nowrap;
+    }
+  .album-toggle .album-right{display:flex; align-items:center; gap:14px; flex:0 0 auto;}
+  .album-toggle .album-arrow{
+      width:28px; height:28px; border:2px solid var(--ink); border-radius:50%;
+      display:flex; align-items:center; justify-content:center; font-size:13px; flex:0 0 auto;
+      transition:transform .2s ease;
+    }
+  .album.open .album-toggle .album-arrow{transform:rotate(180deg);}
+  .album.open .album-toggle{border-bottom:2px solid var(--ink);}
+  .album-body{display:none; padding:20px 22px 22px;}
+  .album.open .album-body{display:block;}
   .gallery-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
-  .gallery-grid div {
+  .gallery-grid .g-item {
       aspect-ratio: 1;
-      background: #fff;
+      background: #f0ede3;
       border: 1px solid var(--line);
-      box-shadow:0 4px 16px rgba(22,26,34,0.10);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -183,26 +204,119 @@
       font-size: 13px;
       font-weight: 600;
       text-align: center;
-      padding: 8px;
+      overflow: hidden;
     }
+  .gallery-grid .g-item img{
+      width:100%; height:100%; object-fit:cover; cursor:zoom-in; display:block;
+    }
+  .lightbox{
+      display:none; position:fixed; inset:0; background:rgba(14,39,73,0.92);
+      align-items:center; justify-content:center; z-index:1000; padding:30px; cursor:zoom-out;
+    }
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:100%; max-height:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4);}
+  @media (max-width:900px){
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    .album-toggle{padding:16px 18px;}
+    .album-body{padding:16px 18px 18px;}
+  }
   .video-card{
       background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); padding:20px; text-decoration:none; color:var(--ink);
       display:flex; align-items:center; gap:14px;
     }
   .video-card:hover{background:var(--ink); color:var(--cream);}
   .play{
-      width:46px; height:46px; border-radius:50%; background:#fff; color:#fff;
+      width:38px; height:38px; border-radius:50%; background:var(--red); color:#fff;
       flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:14px;
-      overflow:hidden;
     }
-  .play img{width:100%; height:100%; object-fit:cover;}
   .video-card .vt{font-weight:600; font-size:15px;}
   .video-card .vs{font-size:13px; opacity:0.7;}
   main{max-width:1200px;}
   .page-title{font-size:clamp(26px,4vw,38px); margin-bottom:12px;}
   .page-intro{color:#5c5648; font-size:15px; max-width:640px; margin-bottom:8px;}
-  .block{margin-top:44px;}
+  .block{margin-top:32px;}
+  /* ---- LIGHTBOX (listovanie) ---- */
+  .lightbox{cursor:default;}
+  .lightbox img{cursor:pointer; user-select:none;}
+  .lb-btn{position:absolute; background:rgba(255,255,255,0.14); color:#fff; border:none; cursor:pointer;
+    font-family:inherit; line-height:1; display:flex; align-items:center; justify-content:center; transition:background .15s;}
+  .lb-btn:hover{background:rgba(255,255,255,0.32);}
+  .lb-close{top:16px; right:16px; width:44px; height:44px; font-size:30px; border-radius:50%;}
+  .lb-prev,.lb-next{top:50%; transform:translateY(-50%); width:52px; height:80px; font-size:48px;}
+  .lb-prev{left:12px;} .lb-next{right:12px;}
+  .lb-counter{position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:13px; font-weight:700; letter-spacing:.05em;}
+  @media (max-width:640px){ .lb-prev,.lb-next{width:40px; height:64px; font-size:36px;} .lightbox{padding:16px;} }
+  /* ---- KALENDÁR ---- */
+  .kal{--rohoznik:#D6262C; --zahoraci:#1E7B2E; --strojar:#0B4F9C; --akcie:#F2B705;}
+  .kal-bar{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px;}
+  .kal-month{display:flex; align-items:center; gap:8px;}
+  .kal-month h2{font-size:clamp(20px,2.6vw,28px); min-width:230px; text-align:center; margin:0;}
+  .kal-nav{width:40px; height:40px; border:2px solid var(--ink); background:#fff; font-size:22px; line-height:1; cursor:pointer;}
+  .kal-nav:hover{background:var(--ink); color:#fff;}
+  .kal-today{margin-left:6px; border:2px solid var(--ink); background:#fff; font:inherit; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:10px 14px; cursor:pointer;}
+  .kal-today:hover{background:var(--ink); color:#fff;}
+  .kal-views{display:flex; border:2px solid var(--ink);}
+  .kal-views button{background:#fff; border:none; font:inherit; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:10px 16px; cursor:pointer;}
+  .kal-views button.active{background:var(--ink); color:#fff;}
+  .kal-filters{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .kal-filters button{display:inline-flex; align-items:center; gap:7px; background:#fff; border:1px solid var(--line); border-radius:999px; font:inherit; font-size:13px; font-weight:600; padding:7px 14px; cursor:pointer;}
+  .kal-filters button.active{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .dot{display:inline-block; width:10px; height:10px; border-radius:50%; flex:none;}
+  .dot.rohoznik{background:var(--rohoznik);} .dot.zahoraci{background:var(--zahoraci);} .dot.strojar{background:var(--strojar);} .dot.akcie{background:var(--akcie);}
+
+  .kal-grid{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); background:#fff; border:2px solid var(--ink);}
+  .kal-wd{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#6b6455; padding:10px 8px; border-bottom:2px solid var(--ink); background:var(--cream);}
+  .kal-cell{min-height:118px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:6px; display:flex; flex-direction:column; gap:4px; cursor:pointer; min-width:0; background:#fff; text-align:left; font:inherit; color:inherit;}
+  .kal-cell:nth-child(7n){border-right:none;}
+  .kal-cell.out{background:#faf8f3; color:#b1ab9c;}
+  .kal-cell.today .kal-num{background:var(--red); color:#fff;}
+  .kal-cell.sel{outline:3px solid var(--ink); outline-offset:-3px;}
+  .kal-cell:hover{background:#fbfaf6;}
+  .kal-num{align-self:flex-start; font-weight:700; font-size:13px; min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+  .kal-ev{display:block; font-size:12px; line-height:1.25; padding:3px 6px; border-left:4px solid var(--c); background:color-mix(in srgb, var(--c) 10%, #fff); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .kal-ev.home{background:var(--c); color:#fff;}
+  .kal-ev.akcia{--c:var(--akcie); background:#fff6d6; color:var(--ink); font-weight:700;}
+  .kal-ev b{font-weight:700;}
+  .kal-more{font-size:11px; font-weight:700; color:#6b6455; padding-left:4px;}
+  .rohoznik{--c:var(--rohoznik);} .zahoraci{--c:var(--zahoraci);} .strojar{--c:var(--strojar);}
+
+  .kal-legend{display:flex; flex-wrap:wrap; gap:16px; font-size:12px; color:#6b6455; margin-top:10px;}
+  .kal-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .kal-legend i{display:inline-block; width:22px; height:12px;}
+
+  .kal-day{margin-top:18px;}
+  .kal-day h3, .kal-list h3{font-size:16px; text-transform:uppercase; margin:22px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--ink);}
+  .kal-day h3:first-child, .kal-list h3:first-child{margin-top:0;}
+  .kal-item{display:grid; grid-template-columns:62px 1fr auto; gap:14px; align-items:center; background:#fff; border:1px solid var(--line); border-left:5px solid var(--c); padding:12px 14px; margin-bottom:8px; color:inherit; text-decoration:none;}
+  .kal-item.akcia{--c:var(--akcie);}
+  a.kal-item:hover{box-shadow:0 4px 14px rgba(22,26,34,.08);}
+  .kal-time{font-family:'Archivo Black', sans-serif; font-size:15px;}
+  .kal-cat{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--c); margin-bottom:4px;}
+  .kal-item.akcia .kal-cat{color:#9a7400;}
+  .kal-teams{display:flex; align-items:center; flex-wrap:wrap; gap:6px 8px; font-size:15px; font-weight:600;}
+  .kal-teams > span{display:inline-flex; align-items:center; gap:6px;}
+  .kal-teams img{width:24px; height:24px; object-fit:contain; flex:none;}
+  .kal-teams .ours{font-weight:800;}
+  .kal-place{font-size:12px; color:#6b6455; margin-top:4px;}
+  .kal-desc{font-size:13px; color:#5c5648; margin-top:4px;}
+  .kal-score{font-family:'Archivo Black', sans-serif; font-size:18px; white-space:nowrap;}
+  .kal-score.win{color:#166534;} .kal-score.loss{color:var(--red);}
+  .kal-badge{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 8px; border:1px solid var(--line); white-space:nowrap;}
+  .kal-note{font-size:13px; color:#6b6455; margin-top:12px;}
+  .kal-empty{background:#fff; border:1px dashed var(--line); padding:18px; color:#6b6455; font-size:14px;}
+
+  @media (max-width:760px){
+    .kal-month h2{min-width:0; flex:1;}
+    .kal-cell{min-height:56px; padding:4px; align-items:center;}
+    .kal-wd{padding:8px 0; text-align:center; font-size:10px;}
+    .kal-ev, .kal-more{display:none;}
+    .kal-dots{display:flex; gap:3px; flex-wrap:wrap; justify-content:center;}
+    .kal-item{grid-template-columns:48px 1fr; }
+    .kal-item .kal-right{grid-column:2;}
+  }
+  @media (min-width:761px){ .kal-dots{display:none;} }
 </style>
+<link rel="stylesheet" href="news.css">
 </head>
 <body>
 
@@ -228,7 +342,7 @@
         <li><a href="index.html">Domov</a></li>
         <li><a href="aktuality.html">Aktuality</a></li>
         <li><a href="oznamy.html">Oznamy</a></li>
-        <li><a href="kalendar.html">Kalendár</a></li>
+        <li><a href="kalendar.html" class="current" aria-current="page">Kalendár</a></li>
         <li class="has-dd">
           <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
           <ul class="dropdown-menu">
@@ -260,7 +374,7 @@
         <li><a href="treneri.html">Tréneri</a></li>
         <li><a href="klub.html">Klub</a></li>
         <li><a href="kontakty.html">Kontakty</a></li>
-        <li><a href="sledujte-nas.html" class="current" aria-current="page">Sledujte nás</a></li>
+        <li><a href="sledujte-nas.html">Sledujte nás</a></li>
         <li><a href="gallery.html">Galéria</a></li>
         <li><a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a></li>
       </ul>
@@ -270,93 +384,43 @@
 
 <main class="page">
 <div class="page-content">
-    <h1 class="page-title">Sledujte nás</h1>
-    <p class="page-intro">Zostrihy zápasov, tréningy a novinky zo všetkých troch klubov na jednom mieste.</p>
+    <h1 class="page-title">Kalendár</h1>
+    <p class="page-intro">Všetky zápasy našich tímov a klubové akcie na jednom mieste. Zápasy sa dopĺňajú automaticky zo slovakhandball.sk.</p>
 
-    <section class="block">
-      <div class="section-head"><h2>YouTube</h2></div>
-      <div class="cards">
-        <a class="video-card" href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener">
-          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
-          <div>
-            <div class="vt">ŠKH Rohožník</div>
-          </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/@hczahoraci9848" target="_blank" rel="noopener">
-          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
-          <div>
-            <div class="vt">HC Záhoráci</div>
-          </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/@handballmalacky1975" target="_blank" rel="noopener">
-          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
-          <div>
-            <div class="vt">TJ Strojár Malacky</div>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <section class="block">
-      <div class="section-head"><h2>Instagram</h2></div>
-      <div class="cards">
-        <a class="video-card" href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener">
-          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
-          <div>
-            <div class="vt">ŠKH Rohožník</div>
-          </div>
-        </a>
-        <a class="video-card" href="https://www.instagram.com/hc_zahoraci/" target="_blank" rel="noopener">
-          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
-          <div>
-            <div class="vt">HC Záhoráci</div>
-          </div>
-        </a>
-        <a class="video-card" href="https://www.instagram.com/handballmalacky/" target="_blank" rel="noopener">
-          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
-          <div>
-            <div class="vt">TJ Strojár Malacky</div>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <section class="block">
-      <div class="section-head"><h2>Facebook</h2></div>
-      <div class="fb-wrap">
-        <div class="fb-item">
-          <span class="fb-label">ŠKH Rohožník</span>
-          <div class="fb-page"
-            data-href="https://www.facebook.com/skhrohoznik.sk/"
-            data-tabs="timeline" data-width="360" data-height="400"
-            data-small-header="false" data-adapt-container-width="true"
-            data-hide-cover="false" data-show-facepile="true">
-          </div>
+    <section class="block kal">
+      <div class="kal-bar">
+        <div class="kal-month">
+          <button type="button" class="kal-nav" id="kal-prev" aria-label="Predchádzajúci mesiac">‹</button>
+          <h2 id="kal-title">Kalendár</h2>
+          <button type="button" class="kal-nav" id="kal-next" aria-label="Nasledujúci mesiac">›</button>
+          <button type="button" class="kal-today" id="kal-today">Dnes</button>
         </div>
-        <div class="fb-item">
-          <span class="fb-label">HC Záhoráci</span>
-          <div class="fb-page"
-            data-href="https://www.facebook.com/hczahoraci/"
-            data-tabs="timeline" data-width="360" data-height="400"
-            data-small-header="false" data-adapt-container-width="true"
-            data-hide-cover="false" data-show-facepile="true">
-          </div>
-        </div>
-        <div class="fb-item">
-          <span class="fb-label">Handball Malacky</span>
-          <div class="fb-page"
-            data-href="https://www.facebook.com/handballmalacky/"
-            data-tabs="timeline" data-width="360" data-height="400"
-            data-small-header="false" data-adapt-container-width="true"
-            data-hide-cover="false" data-show-facepile="true">
-          </div>
+        <div class="kal-views" role="tablist">
+          <button type="button" data-view="mesiac" class="active">Mesiac</button>
+          <button type="button" data-view="zoznam">Zoznam</button>
         </div>
       </div>
-    </section>
-    <div id="fb-root"></div>
+      <div class="kal-filters" id="kal-filters">
+        <button type="button" class="active" data-f="vsetko">Všetko</button>
+        <button type="button" data-f="rohoznik"><i class="dot rohoznik"></i>ŠKH Rohožník</button>
+        <button type="button" data-f="zahoraci"><i class="dot zahoraci"></i>HC Záhoráci</button>
+        <button type="button" data-f="strojar"><i class="dot strojar"></i>TJ Strojár</button>
+        <button type="button" data-f="akcie"><i class="dot akcie"></i>Klubové akcie</button>
+      </div>
 
+      <div class="kal-grid" id="kal-grid" aria-live="polite"></div>
+      <div class="kal-day" id="kal-day" hidden></div>
+      <div class="kal-list" id="kal-list" hidden></div>
+      <p class="kal-note" id="kal-note">Načítavam zápasy…</p>
+    </section>
   </div>
   </main>
+
+<div class="lightbox" id="lightbox">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script src="kalendar.js"></script>
 
 
 <div class="sponsors-band">
@@ -399,6 +463,7 @@
 </script>
 
 
+
 <script>
   (function(){
     var toggle = document.getElementById('nav-toggle');
@@ -416,6 +481,7 @@
   })();
 </script>
 <script src="cookies.js" defer></script>
+<script src="lightbox.js" defer></script>
 <!-- Cloudflare Web Analytics -->
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c7352b5a92454699beeeae323e83f2f6"}'></script>
 <!-- End Cloudflare Web Analytics -->
