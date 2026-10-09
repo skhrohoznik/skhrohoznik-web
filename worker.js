@@ -458,7 +458,7 @@ async function loadPhaseData(compUrl, ctx) {
   }
 }
 
-// /kalendar -> všetky zápasy všetkých tímov v aktuálnej sezóne (odohrané aj budúce) pre stránku Kalendár
+// /zapasy.json -> všetky zápasy všetkých tímov v aktuálnej sezóne (odohrané aj budúce) pre stránku Kalendár
 async function handleKalendar(request, env, ctx) {
   const cfg = await loadConfig(env, request);
   const season = cfg.aktualna_sezona;
@@ -895,7 +895,7 @@ export default {
     if (url.pathname === "/vysledky") {
       return handleVysledky(request, env, ctx);
     }
-    if (url.pathname === "/kalendar") {
+    if (url.pathname === "/zapasy.json") {
       return handleKalendar(request, env, ctx);
     }
     if (url.pathname === "/aktuality.json") {

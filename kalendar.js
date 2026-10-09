@@ -1,5 +1,5 @@
 /* Kalendár zápasov a klubových akcií.
-   Zápasy: /kalendar (worker ich berie zo slovakhandball.sk), akcie: akcie.json (upravuje sa na GitHube). */
+   Zápasy: /zapasy.json (worker ich berie zo slovakhandball.sk), akcie: akcie.json (upravuje sa na GitHube). */
 (function () {
   // ku ktorému klubu patrí tím (farba) a kam vedie odkaz
   var TEAMS = {
@@ -61,7 +61,7 @@
 
   // ---- načítanie dát ----
   function loadMatches() {
-    return fetch("/kalendar").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    return fetch("/zapasy.json").then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) {
         (data.zapasy || []).forEach(function (m) {
           var t = TEAMS[m.tim]; var d = parseDate(m.date);
