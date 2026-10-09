@@ -69,67 +69,6 @@
     border-bottom:3px solid var(--ink); padding-bottom:12px;
   }
   .section-head h2{font-size:clamp(22px,3vw,30px);}
-  /* ---- HOME: category tabs with results/upcoming ---- */
-  .results-band{width:100%; background:#fff; border-bottom:3px solid var(--ink);}
-  .results-inner{width:100%; padding:0 18px 40px;}
-  .cat-tabs{display:flex; flex-wrap:wrap;}
-  .cat-tab{
-    flex:1 1 0; min-width:100px;
-    padding:14px 6px; border:none; border-right:1px solid var(--line); background:#fff; cursor:pointer;
-    font-family:'Archivo Black', sans-serif; font-weight:400; font-size:11px; line-height:1.25;
-    text-transform:uppercase; letter-spacing:0.01em; color:var(--ink); text-align:center;
-    border-bottom:3px solid transparent;
-  }
-  .cat-tab:last-child{border-right:none;}
-  .cat-tab.active{border-bottom-color:var(--red); background:rgba(214,38,44,0.05);}
-  .results-label{
-    font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;
-    color:#6b6455; margin:22px 0 4px;
-  }
-  @media (max-width:640px){
-    .cat-tab{flex:1 1 45%; min-width:0; border-bottom:1px solid var(--line); padding:12px 10px; font-size:11px;}
-    .results-inner{padding:20px 20px 28px;}
-  }
-  .cat-panel{display:none;}
-  .cat-panel.active{display:block;}
-  .cat-single h3{
-    font-family:'Archivo Black', sans-serif; font-weight:400; font-size:18px; text-transform:uppercase;
-    margin-bottom:16px;
-  }
-  .cat-cols{display:flex; flex-wrap:wrap; gap:28px;}
-  .cat-cols > div{flex:1 1 260px;}
-  .cat-empty{font-size:13px; color:#6b6455;}
-  .cat-more{
-    margin-top:18px; display:inline-block; font-size:12px; font-weight:700; text-transform:uppercase;
-    letter-spacing:0.03em; color:var(--red); text-decoration:underline; text-underline-offset:3px;
-  }
-  .upcoming{display:flex; flex-wrap:wrap; gap:10px;}
-  .upcoming-card{
-    border:2px solid var(--ink); padding:12px 16px; font-size:13px;
-    display:flex; flex-direction:column; gap:2px; min-width:190px;
-  }
-  .upcoming-card .uc-date{
-    font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:11px; color:var(--red);
-  }
-  .upcoming-card .uc-match{font-size:14px;}
-  .upcoming-card .uc-time{color:#6b6455; font-size:12px;}
-  .cat-subhead{
-    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;
-    color:#6b6455; margin:14px 0 8px;
-  }
-  .cat-subhead:first-of-type{margin-top:0;}
-  .results-row{display:flex; flex-wrap:wrap; gap:10px;}
-  .last-result{
-    border:2px solid var(--ink); padding:12px 16px; font-size:13px;
-    display:flex; flex-direction:column; gap:2px; min-width:190px;
-  }
-  .last-result .lr-date{
-    font-weight:700; text-transform:uppercase; letter-spacing:0.03em; font-size:11px; color:#6b6455;
-  }
-  .last-result .lr-match{font-size:14px; display:flex; justify-content:space-between; gap:8px; align-items:baseline;}
-  .last-result .lr-score{font-weight:700;}
-  .last-result.win .lr-score{color:#166534;}
-  .last-result.loss .lr-score{color:var(--red);}
   .news-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px;}
   .news-card{background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); overflow:hidden;}
   .news-card .news-photos{display:flex; border-bottom:2px solid var(--ink);}
@@ -157,17 +96,6 @@
     font-size:13px; padding:12px 28px;
   }
   .news-loadmore-btn:hover{background:var(--ink); color:#fff;}
-  .next-match{
-    background:var(--blue); color:#fff; border:2px solid var(--ink);
-    padding:32px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;
-  }
-  .next-match .nm-label{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--yellow); margin-bottom:10px;}
-  .next-match .nm-teams{font-size:clamp(18px,2.4vw,26px); font-family:'Archivo Black', sans-serif; text-transform:uppercase;}
-  .next-match .nm-meta{margin-top:10px; font-size:14px; color:#DDE4F1;}
-  .next-match .nm-cat{
-    flex:0 0 auto; background:#fff; color:var(--blue); font-weight:700; font-size:13px;
-    text-transform:uppercase; letter-spacing:0.04em; padding:10px 18px; border:2px solid var(--ink);
-  }
   /* ---- LIGHTBOX (listovanie) ---- */
   .lightbox{cursor:default;}
   .lightbox img{cursor:pointer; user-select:none;}
@@ -191,22 +119,7 @@
   @media (max-width:900px){
     .navbar nav.open{background:rgba(15,15,20,.92); border-radius:6px;}
   }
-  /* ---- KATEGORIE VYSLEDKOV NA HERO FOTKE ---- */
-  .intro .cat-tabs{
-    position:relative; z-index:3; width:100%; margin:0; padding:34px 18px 18px; gap:6px; justify-content:center; align-items:stretch;
-    background:linear-gradient(rgba(10,10,14,0), rgba(10,10,14,.72));
-  }
-  .intro .cat-tab{
-    flex:1 1 0; min-width:0; background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.5)!important; border-radius:5px;
-    padding:12px 4px; font-size:11px; line-height:1.25; backdrop-filter:blur(3px);
-  }
-  .intro .cat-tab:hover{background:rgba(255,255,255,.3);}
-  .intro .cat-tab.active{background:var(--red); border-color:var(--red)!important; color:#fff;}
-  .results-band .results-inner{padding-top:8px;}
-  @media (max-width:1100px){
-    .intro .cat-tabs{flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; -webkit-overflow-scrolling:touch; padding:30px 14px 14px;}
-    .intro .cat-tab{flex:0 0 auto; padding:11px 14px; font-size:12px; white-space:nowrap;}
-  }
+
   /* ---- ZÁPASY POD BANNEROM: karty najbližších zápasov / výsledkov ---- */
   .matches-band{background:var(--ink); color:#fff; border-bottom:3px solid var(--ink);}
   .matches-inner{max-width:1500px; margin:0 auto; padding:26px 40px 30px;}
