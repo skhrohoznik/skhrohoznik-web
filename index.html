@@ -207,6 +207,48 @@
     .intro .cat-tabs{flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; -webkit-overflow-scrolling:touch; padding:30px 14px 14px;}
     .intro .cat-tab{flex:0 0 auto; padding:11px 14px; font-size:12px; white-space:nowrap;}
   }
+  /* ---- ZÁPASY POD BANNEROM: karty najbližších zápasov / výsledkov ---- */
+  .matches-band{background:var(--ink); color:#fff; border-bottom:3px solid var(--ink);}
+  .matches-inner{max-width:1500px; margin:0 auto; padding:26px 40px 30px;}
+  .matches-head{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; flex-wrap:wrap;}
+  .matches-head h2{color:#fff; font-size:22px; margin:0;}
+  .matches-switch{display:flex; border:2px solid #fff;}
+  .matches-switch button{
+    background:transparent; color:#fff; border:none; cursor:pointer; font:inherit; font-size:12px; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.05em; padding:8px 16px;
+  }
+  .matches-switch button.active{background:#fff; color:var(--ink);}
+  .matches-row{
+    display:grid; grid-auto-flow:column; grid-auto-columns:minmax(250px, 1fr); gap:14px;
+    overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px; -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.35) transparent;
+  }
+  .matches-empty{color:#c9ccd3; font-size:14px; padding:12px 0;}
+  .mc{
+    scroll-snap-align:start; background:#fff; color:var(--ink); text-decoration:none; display:flex; flex-direction:column; gap:8px;
+    padding:14px 16px 12px; border-top:4px solid var(--red); min-width:0; position:relative; transition:transform .15s;
+  }
+  .mc:hover{transform:translateY(-2px);}
+  .mc.win{border-top-color:#16a34a;}
+  .mc.loss{border-top-color:#9ca3af;}
+  .mc-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:2px;}
+  .mc-cat{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--red); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .mc-when{font-size:12px; font-weight:700; color:#5c5648; white-space:nowrap;}
+  .mc-row{display:flex; align-items:center; gap:10px; min-width:0; font-size:14px;}
+  .mc-row.ours .mc-name{font-weight:700;}
+  .mc-logo,.mc-ini{flex:none; width:30px; height:30px;}
+  .mc-logo{display:block; object-fit:contain;}
+  .mc-ini{border-radius:50%; background:var(--cream); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#6b6455;}
+  .mc-ini[hidden]{display:none;}
+  .mc-name{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .mc-score{font-family:'Archivo Black', sans-serif; font-size:18px; font-weight:400;}
+  .mc-where{font-size:12px; color:#6b6455; border-top:1px solid var(--line); padding-top:8px; margin-top:2px;}
+  .mc-badge{position:absolute; right:16px; bottom:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#6b6455;}
+  .mc.win .mc-badge{color:#166534;}
+  @media (max-width:900px){
+    .matches-inner{padding:22px 20px 24px;}
+    .matches-row{grid-auto-columns:78%;}
+  }
 </style>
 <link rel="stylesheet" href="news.css">
 <script src="news.js"></script>
@@ -281,122 +323,20 @@
     <p>Spoločný projekt troch hádzanárskych klubov z regiónu Záhorie — ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky. Spolupracujeme na rozvoji hádzanej od najmladších kategórií až po najvyššiu súťaž.</p>
   </div>
   <div class="intro-dots" id="hero-dots"></div>
-    <div class="cat-tabs" id="cat-tabs">
-      <button type="button" class="cat-tab active" data-panel="panel-muzi_a">Muži Extraliga</button>
-      <button type="button" class="cat-tab" data-panel="panel-muzi_b">Muži 1. liga</button>
-      <button type="button" class="cat-tab" data-panel="panel-zeny">Ženy</button>
-      <button type="button" class="cat-tab" data-panel="panel-dorast_st_ch">Starší dorastenci</button>
-      <button type="button" class="cat-tab" data-panel="panel-dorast_st">Staršie dorastenky</button>
-      <button type="button" class="cat-tab" data-panel="panel-dorast_ml_ch">Mladší dorastenci</button>
-      <button type="button" class="cat-tab" data-panel="panel-dorast_ml">Mladšie dorastenky</button>
-      <button type="button" class="cat-tab" data-panel="panel-ziaci_st">Starší žiaci</button>
-      <button type="button" class="cat-tab" data-panel="panel-sz">Staršie žiačky</button>
-      <button type="button" class="cat-tab" data-panel="panel-ziaci_ml">Mladší žiaci</button>
-      <button type="button" class="cat-tab" data-panel="panel-mza">Mladšie žiačky A</button>
-      <button type="button" class="cat-tab" data-panel="panel-mzb">Mladšie žiačky B</button>
-    </div>
 </div>
 
-<div class="results-band">
-  <div class="results-inner">
-    
-    <div class="cat-panel" id="panel-zeny">
-      <div class="cat-cols">
-        <div id="home-result-zeny"></div>
-        <div class="upcoming" id="home-upcoming-zeny"><div class="cat-empty">Načítavam…</div></div>
+<section class="matches-band" id="zapasy">
+  <div class="matches-inner">
+    <div class="matches-head">
+      <h2>Zápasy</h2>
+      <div class="matches-switch" role="tablist">
+        <button type="button" class="active" data-view="upcoming" role="tab" aria-selected="true">Najbližšie</button>
+        <button type="button" data-view="results" role="tab" aria-selected="false">Výsledky</button>
       </div>
-      <a class="cat-more" href="zeny.html">Všetky výsledky →</a>
     </div>
-
-    <div class="cat-panel" id="panel-dorast_st">
-      <div class="cat-cols">
-        <div id="home-result-dorast_st"></div>
-        <div class="upcoming" id="home-upcoming-dorast_st"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="starsie-dorastenky.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-dorast_ml">
-      <div class="cat-cols">
-        <div id="home-result-dorast_ml"></div>
-        <div class="upcoming" id="home-upcoming-dorast_ml"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="mladsie-dorastenky.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-sz">
-      <div class="cat-cols">
-        <div id="home-result-sz"></div>
-        <div class="upcoming" id="home-upcoming-sz"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="starsie-ziacky.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-mza">
-      <div class="cat-cols">
-        <div id="home-result-mza"></div>
-        <div class="upcoming" id="home-upcoming-mza"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="mladsie-ziacky-a.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-mzb">
-      <div class="cat-cols">
-        <div id="home-result-mzb"></div>
-        <div class="upcoming" id="home-upcoming-mzb"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="mladsie-ziacky-b.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel active" id="panel-muzi_a">
-      <div class="cat-cols">
-        <div id="home-result-muzi_a"></div>
-        <div class="upcoming" id="home-upcoming-muzi_a"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="muzi-extraliga.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-muzi_b">
-      <div class="cat-cols">
-        <div id="home-result-muzi_b"></div>
-        <div class="upcoming" id="home-upcoming-muzi_b"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="muzi-1-liga.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-dorast_st_ch">
-      <div class="cat-cols">
-        <div id="home-result-dorast_st_ch"></div>
-        <div class="upcoming" id="home-upcoming-dorast_st_ch"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="starsi-dorastenci.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-dorast_ml_ch">
-      <div class="cat-cols">
-        <div id="home-result-dorast_ml_ch"></div>
-        <div class="upcoming" id="home-upcoming-dorast_ml_ch"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="mladsi-dorastenci.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-ziaci_ml">
-      <div class="cat-cols">
-        <div id="home-result-ziaci_ml"></div>
-        <div class="upcoming" id="home-upcoming-ziaci_ml"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="mladsi-ziaci.html">Všetky výsledky →</a>
-    </div>
-
-    <div class="cat-panel" id="panel-ziaci_st">
-      <div class="cat-cols">
-        <div id="home-result-ziaci_st"></div>
-        <div class="upcoming" id="home-upcoming-ziaci_st"><div class="cat-empty">Načítavam…</div></div>
-      </div>
-      <a class="cat-more" href="starsi-ziaci.html">Všetky výsledky →</a>
-    </div>
+    <div class="matches-row" id="matches-row"><div class="matches-empty">Načítavam zápasy…</div></div>
   </div>
-</div>
+</section>
 
 <main class="page">
 <div class="page-content">
@@ -520,104 +460,106 @@
       .catch(() => { /* ostane predvolený banner */ });
   })();
 
-  (function(){
-    const tabs = document.querySelectorAll('.cat-tab');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.panel).classList.add('active');
-      });
-    });
-  })();
 
   NewsFeed.render({url:'/oznamy.json', grid:'oznamy-grid', section:'oznamy-section', compact:true, linkTo:'oznamy.html', hideWhenEmpty:true});
   NewsFeed.render({url:'/aktuality.json', grid:'news-grid', section:'aktuality-section', compact:true, linkTo:'aktuality.html', hideWhenEmpty:true});
-  const CATEGORY_LABELS = {
-    zeny: "Ženy",
-    dorast_st: "Staršie dorastenky",
-    dorast_ml: "Mladšie dorastenky",
-    sz: "Staršie žiačky",
-    mza: "Mladšie žiačky A",
-    mzb: "Mladšie žiačky B",
-    muzi_a: "Muži Extraliga",
-    muzi_b: "Muži 1. liga",
-    dorast_st_ch: "Starší dorastenci",
-    dorast_ml_ch: "Mladší dorastenci",
-    ziaci_st: "Starší žiaci",
-    ziaci_ml: "Mladší žiaci",
+  // ---- Zápasy na úvodnej stránke: najbližšie zápasy a posledné výsledky všetkých tímov ----
+  const TEAMS = {
+    muzi_a:       { label: "Muži Extraliga",     club: "Malacky",  href: "muzi-extraliga.html",     venue: "Šport Aréna Malacky" },
+    muzi_b:       { label: "Muži 1. liga",       club: "Malacky",  href: "muzi-1-liga.html",        venue: "Šport Aréna Malacky" },
+    zeny:         { label: "Ženy",               club: "Rohožník", href: "zeny.html",               venue: "Šport Aréna Malacky" },
+    dorast_st_ch: { label: "Starší dorastenci",  club: "Malacky",  href: "starsi-dorastenci.html",  venue: "Šport Aréna Malacky" },
+    dorast_st:    { label: "Staršie dorastenky", club: "Rohožník", href: "starsie-dorastenky.html", venue: "Šport Aréna Malacky" },
+    dorast_ml_ch: { label: "Mladší dorastenci",  club: "Malacky",  href: "mladsi-dorastenci.html",  venue: "Šport Aréna Malacky" },
+    dorast_ml:    { label: "Mladšie dorastenky", club: "Rohožník", href: "mladsie-dorastenky.html", venue: "Šport Aréna Malacky" },
+    ziaci_st:     { label: "Starší žiaci",       club: "Malacky",  href: "starsi-ziaci.html",       venue: "Šport Aréna Malacky" },
+    sz:           { label: "Staršie žiačky",     club: "Rohožník", href: "starsie-ziacky.html",     venue: "ŠH Rohožník" },
+    ziaci_ml:     { label: "Mladší žiaci",       club: "Malacky",  href: "mladsi-ziaci.html",       venue: "Šport Aréna Malacky" },
+    mza:          { label: "Mladšie žiačky A",   club: "Rohožník", href: "mladsie-ziacky-a.html",   venue: "ŠH Rohožník" },
+    mzb:          { label: "Mladšie žiačky B",   club: "Rohožník", href: "mladsie-ziacky-b.html",   venue: "ŠH Rohožník" },
+    mzc:          { label: "Mladšie žiačky C",   club: "Rohožník", href: "mladsie-ziacky-c.html",   venue: "ŠH Rohožník" },
   };
-
-  const CATEGORY_CLUB = {
-    zeny: "Rohožník", dorast_st: "Rohožník", dorast_ml: "Rohožník",
-    sz: "Rohožník", mza: "Rohožník", mzb: "Rohožník",
-    muzi_a: "Malacky", muzi_b: "Malacky",
-    dorast_st_ch: "Malacky", dorast_ml_ch: "Malacky",
-    ziaci_st: "Malacky", ziaci_ml: "Malacky",
-  };
+  const MAX_CARDS = 12;
 
   function dateToObj(d) {
-    const [day, month, year] = d.split(".").map(Number);
+    const [day, month, year] = String(d).split(".").map(Number);
     return new Date(year, month - 1, day);
   }
-
-  function renderHomeUpcoming(key, upcoming) {
-    const box = document.getElementById('home-upcoming-' + key);
-    if (!box) return;
-    if (!upcoming || !Array.isArray(upcoming) || upcoming.length === 0) {
-      box.innerHTML = '<div class="cat-empty">Zatiaľ žiadny naplánovaný zápas.</div>';
-      return;
-    }
-    const clubName = CATEGORY_CLUB[key] || 'Naši';
-    box.innerHTML = '<div class="cat-subhead">Najbližšie zápasy</div>';
-    upcoming.slice(0, 2).forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'upcoming-card';
-      const matchLabel = m.home ? (clubName + ' – ' + m.opponent) : (m.opponent + ' – ' + clubName);
-      const timeLabel = m.time ? m.time : 'čas bude upresnený';
-      card.innerHTML = '<span class="uc-date">' + m.date + '</span>' + '<span class="uc-match">' + matchLabel + '</span>' + '<span class="uc-time">' + timeLabel + '</span>';
-      box.appendChild(card);
-    });
+  function escH(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  const WD = ["Ne", "Po", "Ut", "St", "Št", "Pi", "So"];
+  function shortDate(d) {
+    const dt = dateToObj(d);
+    if (isNaN(dt)) return escH(d);
+    return WD[dt.getDay()] + " " + dt.getDate() + "." + (dt.getMonth() + 1) + ".";
+  }
+  function logoHtml(src, name) {
+    const ini = escH(String(name).replace(/^(HK|HC|TJ|ŠKH|MŠK|ŠŠK|DHK-\d+|HKM|ŠK)\s+/i, "").split(/\s+/).slice(0, 2).map(w => w.charAt(0)).join("").toUpperCase());
+    const fb = '<span class="mc-ini"' + (src ? " hidden" : "") + ">" + ini + "</span>";
+    if (!src || !/^\/[A-Za-z0-9._\/-]+$/.test(src)) return fb;
+    return '<img class="mc-logo" src="' + escH(src) + '" alt="" loading="lazy" onerror="this.nextElementSibling.hidden=false;this.remove()">' + fb;
   }
 
-  function renderHomeResult(key, results) {
-    const box = document.getElementById('home-result-' + key);
-    if (!box) return;
-    if (!results || !Array.isArray(results) || results.length === 0) {
-      box.innerHTML = '';
-      return;
+  let MATCHES = { upcoming: [], results: [] };
+
+  function card(m, played) {
+    const t = TEAMS[m.key];
+    const ours = { name: t.club, logo: m.clubLogo };
+    const opp = { name: m.opponent, logo: m.opponentLogo };
+    const home = m.home ? ours : opp, away = m.home ? opp : ours;
+    let sh = "", sa = "", cls = "";
+    if (played) {
+      const sc = String(m.score).split(":").map(x => x.trim());
+      sh = sc[0] || ""; sa = sc[1] || "";
+      cls = m.result === "Výhra" ? " win" : (m.result === "Prehra" ? " loss" : "");
     }
-    const clubName = CATEGORY_CLUB[key] || 'Naši';
-    const recent = results.slice(-2).reverse();
-    const label = recent.length > 1 ? 'Posledné výsledky' : 'Posledný výsledok';
-    let html = '<div class="cat-subhead">' + label + '</div><div class="results-row">';
-    recent.forEach(m => {
-      const opponentLabel = m.home ? (clubName + ' – ' + m.opponent) : (m.opponent + ' – ' + clubName);
-      const resultClass = m.result === 'Výhra' ? 'win' : (m.result === 'Prehra' ? 'loss' : '');
-      html +=
-        '<div class="last-result ' + resultClass + '">' +
-          '<span class="lr-date">' + m.date + '</span>' +
-          '<span class="lr-match"><span>' + opponentLabel + '</span><span class="lr-score">' + m.score + '</span></span>' +
-        '</div>';
-    });
-    html += '</div>';
-    box.innerHTML = html;
+    const when = shortDate(m.date) + (played ? "" : " · " + (m.time ? escH(m.time) : "čas upresníme"));
+    const place = m.home ? t.venue : (m.awayCity || "");
+    const row = (team, score, isOurs) =>
+      '<div class="mc-row' + (isOurs ? " ours" : "") + '">' + logoHtml(team.logo, team.name) +
+      '<span class="mc-name">' + escH(team.name) + "</span>" + (played ? '<b class="mc-score">' + escH(score) + "</b>" : "") + "</div>";
+    return '<a class="mc' + cls + '" href="' + t.href + '">' +
+      '<div class="mc-top"><span class="mc-cat">' + escH(t.label) + '</span><span class="mc-when">' + when + "</span></div>" +
+      row(home, sh, home === ours) + row(away, sa, away === ours) +
+      (place ? '<div class="mc-where">' + (m.home ? "Doma · " : "Vonku · ") + escH(place) + "</div>" : "") +
+      (played ? '<div class="mc-badge">' + escH(m.result || "") + "</div>" : "") +
+      "</a>";
   }
+
+  function showMatches(view) {
+    const row = document.getElementById("matches-row");
+    const list = MATCHES[view] || [];
+    document.querySelectorAll(".matches-switch button").forEach(b => {
+      const on = b.dataset.view === view;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    row.scrollLeft = 0;
+    row.innerHTML = list.length
+      ? list.map(m => card(m, view === "results")).join("")
+      : '<div class="matches-empty">' + (view === "results" ? "Zatiaľ žiadne odohrané zápasy." : "Zatiaľ žiadne naplánované zápasy.") + "</div>";
+  }
+
+  document.querySelectorAll(".matches-switch button").forEach(b => b.addEventListener("click", () => showMatches(b.dataset.view)));
 
   fetch('/vysledky')
     .then(r => r.json())
     .then(data => {
-      Object.keys(CATEGORY_LABELS).forEach(key => {
-        renderHomeResult(key, data[key] && data[key].results);
-        renderHomeUpcoming(key, data[key] && data[key].upcoming);
+      const up = [], res = [];
+      Object.keys(TEAMS).forEach(key => {
+        const d = data[key];
+        if (!d) return;
+        (d.upcoming || []).forEach(m => up.push(Object.assign({ key, clubLogo: d.clubLogo }, m)));
+        (d.results || []).slice(-2).forEach(m => res.push(Object.assign({ key, clubLogo: d.clubLogo }, m)));
       });
+      up.sort((a, b) => dateToObj(a.date) - dateToObj(b.date) || String(a.time).localeCompare(String(b.time)));
+      res.sort((a, b) => dateToObj(b.date) - dateToObj(a.date));
+      MATCHES = { upcoming: up.slice(0, MAX_CARDS), results: res.slice(0, MAX_CARDS) };
+      showMatches(up.length ? "upcoming" : "results");
     })
     .catch(() => {
-      Object.keys(CATEGORY_LABELS).forEach(key => {
-        const b = document.getElementById('home-upcoming-' + key);
-        if (b) b.innerHTML = '<div class="cat-empty">Výsledky sa nepodarilo načítať.</div>';
-      });
+      document.getElementById("matches-row").innerHTML = '<div class="matches-empty">Zápasy sa nepodarilo načítať.</div>';
     });
 </script>
 
