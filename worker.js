@@ -889,6 +889,28 @@ async function handleAktuality(env, ctx) {
   return res;
 }
 
+// Statické súbory. Stránky sa obsluhujú priamo pod adresou s ".html" (html_handling: "none"
+// vo wrangler.jsonc) - presne tak, ako sú v odkazoch, v sitemap.xml aj v kanonických adresách,
+// aby Google nenarážal na presmerovania.
+//  - "/" zobrazí úvodnú stránku (index.html),
+//  - adresa bez koncovky ("/zeny" alebo "/zeny/") sa trvalo (301) presmeruje na "/zeny.html".
+async function serveStatic(request, env, url) {
+  const res = await env.ASSETS.fetch(request);
+  if (res.status !== 404) return res;
+  const path = url.pathname;
+  if (path === "/") {
+    return env.ASSETS.fetch(new Request(new URL("/index.html", url), request));
+  }
+  if ((request.method === "GET" || request.method === "HEAD") && !/\.[a-z0-9]+$/i.test(path)) {
+    const target = path.replace(/\/+$/, "") + ".html";
+    if (target !== ".html" && target !== "/.html") {
+      const probe = await env.ASSETS.fetch(new Request(new URL(target, url), { method: "HEAD" }));
+      if (probe.ok) return Response.redirect(new URL(target + url.search, url).toString(), 301);
+    }
+  }
+  return res;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -908,7 +930,7 @@ export default {
       return handleArchivImg(env, url.pathname, ctx);
     }
     // všetko ostatné (HTML, obrázky, ...) obslúži statický súborový systém
-    return env.ASSETS.fetch(request);
+    return serveStatic(request, env, url);
   },
   async scheduled(event, env, ctx) {
     ctx.waitUntil(syncArchive(env));
