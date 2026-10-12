@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2 % z daní — Hádzaná Záhorie</title>
+<link rel="icon" type="image/png" href="skh.png">
+<link rel="canonical" href="https://skhrohoznik.sk/2-percenta.html">
+<meta name="description" content="Darujte 2 % z daní klubom ŠKH Rohožník, HC Záhoráci alebo TJ Strojár Malacky. Predvyplnené tlačivá na stiahnutie.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://skhrohoznik.sk/2-percenta.html">
+<meta property="og:site_name" content="Hádzaná Záhorie">
+<meta property="og:title" content="2 % z daní — Hádzaná Záhorie">
+<meta property="og:description" content="Darujte 2 % z daní klubom ŠKH Rohožník, HC Záhoráci alebo TJ Strojár Malacky. Predvyplnené tlačivá na stiahnutie.">
+<meta property="og:image" content="https://skhrohoznik.sk/logo.png">
+<meta property="og:locale" content="sk_SK">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2 % z daní — Hádzaná Záhorie">
+<meta name="twitter:description" content="Darujte 2 % z daní klubom ŠKH Rohožník, HC Záhoráci alebo TJ Strojár Malacky. Predvyplnené tlačivá na stiahnutie.">
+<meta name="twitter:image" content="https://skhrohoznik.sk/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 12px;
+    }
+  .category-card {
+      border: 1px solid var(--line);
+      box-shadow:0 4px 16px rgba(22,26,34,0.10);
+      padding: 20px;
+      background: #fff;
+    }
+  .category-card h3 {
+      font-family: 'Archivo Black', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--ink);
+    }
+  .team-photo{
+      width:100%; aspect-ratio:16/10; object-fit:cover; margin-bottom:14px; border:1px solid var(--line);
+    }
+  .upcoming {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+  .upcoming-card {
+      border: 2px solid var(--ink);
+      padding: 12px 16px;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 200px;
+    }
+  .upcoming-card .uc-date {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      font-size: 11px;
+      color: var(--red);
+    }
+  .upcoming-card .uc-match {
+      font-size: 14px;
+    }
+  .upcoming-card .uc-time {
+      color: #6b6455;
+      font-size: 12px;
+    }
+  .standing-note {
+      font-size: 13px;
+      color: #6b6455;
+      margin-top: -4px;
+      margin-bottom: 20px;
+    }
+  table.results {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+  table.results th {
+      text-align: left;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      color: #6b6455;
+      padding: 6px 8px;
+      border-bottom: 2px solid var(--ink);
+    }
+  table.results td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--line);
+    }
+  table.results tr:last-child td {
+      border-bottom: none;
+    }
+  .score {
+      font-weight: 700;
+    }
+  .win {
+      color: #166534;
+    }
+  .loss {
+      color: var(--red);
+    }
+  .group-label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #6b7482;
+      margin: 28px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+  .contact-card{
+    background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); padding:26px;
+  }
+  .contact-card h2{font-size:19px; margin-bottom:20px;}
+  .role{margin-bottom:18px;}
+  .role:last-child{margin-bottom:0;}
+  .role-label{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;
+    color:var(--red); margin-bottom:4px;
+  }
+  .role-name{font-size:16px; font-weight:600;}
+  .role-phone{font-size:14px; margin-top:2px;}
+  .role-phone a{text-decoration:underline; text-underline-offset:3px;}
+  .role-phone.tba{color:#6b6455; font-style:italic;}
+  .contact-card .pending{color:#6b6455; font-style:italic; font-size:14px;}
+  .cards{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+  }
+  .recruit{
+    background:var(--red); color:#fff; padding:52px 40px;
+    display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;
+  }
+  .recruit h2{font-size:clamp(24px,3.5vw,34px); max-width:520px;}
+  .recruit p{margin-top:12px; max-width:480px; color:#FDE3E3; font-size:15px;}
+  .recruit .btn{background:#fff; color:var(--red); flex:0 0 auto;}
+  .btn{
+    display:inline-block; padding:13px 26px; font-weight:600;
+    text-decoration:none; font-size:14px; letter-spacing:0.02em;
+    border:2px solid transparent; transition:transform .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--red); color:#fff;}
+  .map-frame{
+    width:100%; aspect-ratio:4/3; border:2px solid var(--ink); filter:grayscale(0.15);
+  }
+  .maps-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:24px;}
+  .map-item p{margin-bottom:10px; color:#6b6455; font-size:14px; font-weight:600;}
+  .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
+  .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
+  .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
+  .albums{display:flex; flex-direction:column; gap:16px;}
+  .album{
+      background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10);
+    }
+  .album-toggle{
+      width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
+      background:none; border:none; cursor:pointer; padding:20px 22px; text-align:left;
+      font-family:inherit; color:var(--ink);
+    }
+  .album-toggle h3{
+      font-size:17px;
+    }
+  .album-toggle .album-count{
+      font-size:12px; font-weight:700; color:#6b6455; text-transform:none; letter-spacing:0; white-space:nowrap;
+    }
+  .album-toggle .album-right{display:flex; align-items:center; gap:14px; flex:0 0 auto;}
+  .album-toggle .album-arrow{
+      width:28px; height:28px; border:2px solid var(--ink); border-radius:50%;
+      display:flex; align-items:center; justify-content:center; font-size:13px; flex:0 0 auto;
+      transition:transform .2s ease;
+    }
+  .album.open .album-toggle .album-arrow{transform:rotate(180deg);}
+  .album.open .album-toggle{border-bottom:2px solid var(--ink);}
+  .album-body{display:none; padding:20px 22px 22px;}
+  .album.open .album-body{display:block;}
+  .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+  .gallery-grid .g-item {
+      aspect-ratio: 1;
+      background: #f0ede3;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b6455;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      overflow: hidden;
+    }
+  .gallery-grid .g-item img{
+      width:100%; height:100%; object-fit:cover; cursor:zoom-in; display:block;
+    }
+  .lightbox{
+      display:none; position:fixed; inset:0; background:rgba(14,39,73,0.92);
+      align-items:center; justify-content:center; z-index:1000; padding:30px; cursor:zoom-out;
+    }
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:100%; max-height:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4);}
+  @media (max-width:900px){
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    .album-toggle{padding:16px 18px;}
+    .album-body{padding:16px 18px 18px;}
+  }
+  .video-card{
+      background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10); padding:20px; text-decoration:none; color:var(--ink);
+      display:flex; align-items:center; gap:14px;
+    }
+  .video-card:hover{background:var(--ink); color:var(--cream);}
+  .play{
+      width:38px; height:38px; border-radius:50%; background:var(--red); color:#fff;
+      flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:14px;
+    }
+  .video-card .vt{font-weight:600; font-size:15px;}
+  .video-card .vs{font-size:13px; opacity:0.7;}
+  main{max-width:1200px;}
+  .page-title{font-size:clamp(26px,4vw,38px); margin-bottom:12px;}
+  .page-intro{color:#5c5648; font-size:15px; max-width:640px; margin-bottom:8px;}
+  .block{margin-top:32px;}
+  /* ---- LIGHTBOX (listovanie) ---- */
+  .lightbox{cursor:default;}
+  .lightbox img{cursor:pointer; user-select:none;}
+  .lb-btn{position:absolute; background:rgba(255,255,255,0.14); color:#fff; border:none; cursor:pointer;
+    font-family:inherit; line-height:1; display:flex; align-items:center; justify-content:center; transition:background .15s;}
+  .lb-btn:hover{background:rgba(255,255,255,0.32);}
+  .lb-close{top:16px; right:16px; width:44px; height:44px; font-size:30px; border-radius:50%;}
+  .lb-prev,.lb-next{top:50%; transform:translateY(-50%); width:52px; height:80px; font-size:48px;}
+  .lb-prev{left:12px;} .lb-next{right:12px;}
+  .lb-counter{position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:13px; font-weight:700; letter-spacing:.05em;}
+  @media (max-width:640px){ .lb-prev,.lb-next{width:40px; height:64px; font-size:36px;} .lightbox{padding:16px;} }
+  /* ---- 2 % Z DANÍ ---- */
+  .dp-lead{max-width:760px; font-size:16px; line-height:1.6;}
+  .dp-clubs{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px;}
+  .dp-club{--c:var(--red); background:#fff; border:1px solid var(--line); border-top:6px solid var(--c); box-shadow:0 4px 16px rgba(22,26,34,0.08); padding:24px 22px 22px; display:flex; flex-direction:column; align-items:flex-start;}
+  .dp-club.zahoraci{--c:#1E7B2E;} .dp-club.strojar{--c:#0B4F9C;} .dp-club.rohoznik{--c:#D6262C;}
+  .dp-club img{width:72px; height:72px; object-fit:contain; border-radius:50%; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.12); margin-bottom:14px;}
+  .dp-club h3{font-size:20px; text-transform:uppercase; margin:0 0 4px; color:var(--c);}
+  .dp-name{font-size:14px; color:#5c5648; margin:0 0 10px;}
+  .dp-ico{font-size:14px; margin:0 0 6px;}
+  .dp-who{font-size:13px; color:#6b6455; margin:0 0 18px; flex:1;}
+  .dp-btn{display:inline-flex; align-items:center; gap:8px; background:var(--c); color:#fff; text-decoration:none; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.04em; padding:12px 18px;}
+  .dp-btn::before{content:"↓"; font-size:16px;}
+  .dp-btn:hover{filter:brightness(.9);}
+  .dp-note{font-size:14px; color:#5c5648; margin-top:16px; max-width:760px;}
+  .dp-note a{color:var(--red);}
+  .dp-sum{display:flex; flex-wrap:wrap; align-items:stretch; gap:10px;}
+  .dp-part{flex:1 1 150px; background:#fff; border:1px solid var(--line); padding:16px 14px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:2px;}
+  .dp-pct{font-family:'Archivo Black', sans-serif; font-size:30px; color:var(--red); line-height:1.1;}
+  .dp-part > span:not(.dp-pct){font-weight:700; text-transform:uppercase; font-size:13px; letter-spacing:.04em;}
+  .dp-part small{font-size:12px; color:#6b6455; margin-top:4px;}
+  .dp-total{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .dp-total .dp-pct{color:#fff; font-size:26px;}
+  .dp-total small{color:rgba(255,255,255,.75);}
+  .dp-plus{align-self:center; font-family:'Archivo Black', sans-serif; font-size:26px; color:#6b6455;}
+  .dp-steps{counter-reset:k; list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px; max-width:860px;}
+  .dp-steps li{counter-increment:k; position:relative; background:#fff; border:1px solid var(--line); padding:16px 18px 16px 64px; font-size:15px; line-height:1.55;}
+  .dp-steps li::before{content:counter(k); position:absolute; left:16px; top:14px; width:34px; height:34px; border-radius:50%; background:var(--red); color:#fff; font-family:'Archivo Black', sans-serif; display:flex; align-items:center; justify-content:center;}
+  @media (max-width:640px){ .dp-plus{display:none;} .dp-part{flex-basis:40%;} .dp-part:first-child, .dp-total{flex-basis:100%;} }
+</style>
+<link rel="stylesheet" href="news.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="navbar-inner">
+    <div class="logos">
+      <a class="logo-item" href="index.html">
+        <img src="logo.png" alt="Logo ŠKH Rohožník">
+        <span>ŠKH Rohožník</span>
+      </a>
+      <a class="logo-item" href="muzi-extraliga.html">
+        <img src="zahoraci.png" alt="Logo HC Záhoráci">
+        <span>HC Záhoráci</span>
+      </a>
+      <a class="logo-item" href="starsi-ziaci.html">
+        <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
+        <span>TJ Strojár Malacky</span>
+      </a>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" type="button">MENU</button>
+    <nav id="nav-menu">
+      <ul>
+        <li><a href="index.html">Domov</a></li>
+        <li><a href="aktuality.html">Aktuality</a></li>
+        <li><a href="oznamy.html">Oznamy</a></li>
+        <li><a href="kalendar.html">Kalendár</a></li>
+        <li class="has-dd">
+          <button type="button" class="dd-btn">Kategórie <span class="car">▾</span></button>
+          <ul class="dropdown-menu">
+            <li class="dd-group">Muži</li>
+            <li class="dd-item"><a href="muzi-extraliga.html">Extraliga</a></li>
+            <li class="dd-item"><a href="muzi-1-liga.html">1. liga</a></li>
+            <li class="dd-solo"><a href="zeny.html">Ženy</a></li>
+            <li class="dd-group">Dorastenci</li>
+            <li class="dd-item"><a href="starsi-dorastenci.html">Starší</a></li>
+            <li class="dd-item"><a href="mladsi-dorastenci.html">Mladší</a></li>
+            <li class="dd-group">Dorastenky</li>
+            <li class="dd-item"><a href="starsie-dorastenky.html">Staršie</a></li>
+            <li class="dd-item"><a href="mladsie-dorastenky.html">Mladšie</a></li>
+            <li class="dd-group">Žiaci</li>
+            <li class="dd-item"><a href="starsi-ziaci.html">Starší</a></li>
+            <li class="dd-item"><a href="mladsi-ziaci.html">Mladší</a></li>
+            <li class="dd-break" aria-hidden="true"></li>
+            <li class="dd-group">Žiačky</li>
+            <li class="dd-item"><a href="starsie-ziacky.html">Staršie</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-a.html">Mladšie A</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-b.html">Mladšie B</a></li>
+            <li class="dd-item"><a href="mladsie-ziacky-c.html">Mladšie C</a></li>
+            <li class="dd-group">Mini</li>
+            <li class="dd-item"><a href="dievcata-mini.html">Dievčatá mini</a></li>
+            <li class="dd-item"><a href="chlapci-mini.html">Chlapci mini</a></li>
+          </ul>
+        </li>
+        <li><a href="nabor.html">Nábor</a></li>
+        <li><a href="2-percenta.html" class="current" aria-current="page">2 % z daní</a></li>
+        <li><a href="treneri.html">Tréneri</a></li>
+        <li><a href="klub.html">Klub</a></li>
+        <li><a href="kontakty.html">Kontakty</a></li>
+        <li><a href="sledujte-nas.html">Sledujte nás</a></li>
+        <li><a href="gallery.html">Galéria</a></li>
+        <li><a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+<div class="page-content">
+    <h1 class="page-title">2 % z daní</h1>
+    <p class="page-intro dp-lead">Milí rodičia, športovci a fanúšikovia,<br>
+      máme tu pre Vás jednoduchý prehľad, ako a komu môžete darovať svoje 2&nbsp;%, 3&nbsp;%, alebo dokonca až 6&nbsp;% či 7&nbsp;% z daní – bez toho, aby ste prišli o možnosť darovať aj rodičom. Vyberte si klub, ktorému chcete svoje 2&nbsp;% z daní darovať.</p>
+
+    <section class="block">
+      <div class="section-head"><h2>Vyberte si klub</h2></div>
+      <div class="dp-clubs">
+        <div class="dp-club rohoznik">
+          <img src="logo.png" alt="Logo ŠKH Rohožník">
+          <h3>ŠKH Rohožník</h3>
+          <p class="dp-name">Športový klub hádzanej Rohožník</p>
+          <p class="dp-ico">IČO: <strong>34003169</strong></p>
+          <p class="dp-who">Ženy, dorastenky, žiačky a dievčatá mini</p>
+          <a class="dp-btn" href="dokumenty/2-percenta-skh-rohoznik.pdf" download>Stiahnuť tlačivo (PDF)</a>
+        </div>
+        <div class="dp-club zahoraci">
+          <img src="zahoraci.png" alt="Logo HC Záhoráci">
+          <h3>HC Záhoráci</h3>
+          <p class="dp-name">Hádzaná Malacky</p>
+          <p class="dp-ico">IČO: <strong>54112397</strong></p>
+          <p class="dp-who">Muži a dorastenci</p>
+          <a class="dp-btn" href="dokumenty/2-percenta-hc-zahoraci.pdf" download>Stiahnuť tlačivo (PDF)</a>
+        </div>
+        <div class="dp-club strojar">
+          <img src="strojar-malacky.jpg" alt="Logo TJ Strojár Malacky">
+          <h3>TJ Strojár Malacky</h3>
+          <p class="dp-name">Telovýchovná jednota Strojár Malacky</p>
+          <p class="dp-ico">IČO: <strong>17642639</strong></p>
+          <p class="dp-who">Žiaci a chlapci mini</p>
+          <a class="dp-btn" href="dokumenty/2-percenta-tj-strojar-malacky.pdf" download>Stiahnuť tlačivo (PDF)</a>
+        </div>
+      </div>
+      <p class="dp-note">Tlačivá sú už predvyplnené údajmi klubu (IČO a názov). Dajú sa vyplniť priamo v počítači a potom vytlačiť.</p>
+    </section>
+
+    <section class="block">
+      <div class="section-head"><h2>Koľko môžete darovať</h2></div>
+      <div class="dp-sum">
+        <div class="dp-part"><span class="dp-pct">2 %</span><span>klubu</span><small>alebo 3 %, ak ste v danom roku odpracovali aspoň 40 hodín ako dobrovoľník (s potvrdením)</small></div>
+        <div class="dp-plus">+</div>
+        <div class="dp-part"><span class="dp-pct">2 %</span><span>mame</span><small>ak poberá dôchodok</small></div>
+        <div class="dp-plus">+</div>
+        <div class="dp-part"><span class="dp-pct">2 %</span><span>otcovi</span><small>ak poberá dôchodok</small></div>
+        <div class="dp-plus">=</div>
+        <div class="dp-part dp-total"><span class="dp-pct">až 6 – 7 %</span><span>spolu</span><small>darovanie klubu neuberá z percent pre rodičov</small></div>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="section-head"><h2>Ako na to</h2></div>
+      <ol class="dp-steps">
+        <li><strong>Ak ste zamestnanec</strong>, požiadajte zamestnávateľa o vykonanie ročného zúčtovania a o vystavenie <em>Potvrdenia o zaplatení dane</em>.</li>
+        <li><strong>Stiahnite si tlačivo</strong> klubu, ktorý chcete podporiť, a doplňte svoje údaje, zaplatenú daň a sumu 2 % (resp. 3 %). V časti III môžete zároveň uviesť aj svojich rodičov.</li>
+        <li><strong>Podajte vyhlásenie spolu s potvrdením</strong> na daňový úrad podľa trvalého bydliska – osobne, poštou alebo elektronicky – najneskôr <strong>do 30. apríla</strong>.</li>
+        <li><strong>Ak si daňové priznanie podávate sami</strong>, tlačivo nepotrebujete. Údaje klubu (IČO a názov) uvediete priamo v daňovom priznaní v lehote na jeho podanie (spravidla do 31. marca).</li>
+      </ol>
+      <p class="dp-note">Ďakujeme! Každé 2 % pomáhajú našim deťom a mládeži – na tréningy, turnaje, dresy a dopravu na zápasy. Viac o percentách pre rodičov nájdete na stránke <a href="https://podpora.financnasprava.sk/236465-Pouk%C3%A1zanie-podielu-zaplatenej-dane-pre-rodi%C4%8Da" target="_blank" rel="noopener">Finančnej správy</a>.</p>
+    </section>
+  </div>
+  </main>
+
+<div class="lightbox" id="lightbox">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+
+
+<div class="sponsors-band">
+  <div class="sponsors-inner">
+    <div class="sponsors-label">Naši partneri</div>
+    <div class="sponsors-logos">
+<div class="sponsors-track">
+      <img src="sponsors/extraliga-handball.png" alt="Slovenská Handballová Extraliga">
+      <img src="sponsors/szh.png" alt="Slovenský zväz hádzanej">
+      <img src="sponsors/erwood.png" alt="ER WOOD">
+      <img src="sponsors/alfimex.png" alt="Alfimex">
+      <img src="sponsors/hilek.png" alt="Hílek">
+      <img src="sponsors/npe.png" alt="NPE">
+      <img src="sponsors/sytiq.png" alt="Sytiq">
+      <img src="sponsors/homegym.png" alt="Home Gym">
+      <img src="sponsors/bizektrans.png" alt="Bízek Trans">
+      <img src="sponsors/mattoni.png" alt="Mattoni">
+      <img src="sponsors/oliveto.png" alt="Oliveto">
+      <img src="sponsors/mcdonalds.png" alt="McDonald's">
+      <img src="sponsors/malacky-erb.png" alt="Mesto Malacky">
+      <img src="sponsors/csob-leasing.png" alt="ČSOB Leasing">
+      <img src="sponsors/malacky-mesto.png" alt="Malacky – dobré miesto pre život">
+      <img src="sponsors/kobu.png" alt="KO&BU">
+      <img src="sponsors/danucem.png" alt="Danucem">
+      <img src="sponsors/x-logo.png" alt="X">
+      <img src="sponsors/autosave.png" alt="Autosave">
+      <img src="sponsors/nemocnicna.png" alt="Nemocničná">
+      <img src="sponsors/sportbar-arena.png" alt="Šport Bar Aréna Malacky">
+</div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col footer-brand">
+      <div class="footer-logos">
+        <img src="/logo.png" alt="ŠKH Rohožník" loading="lazy"><img src="/zahoraci.png" alt="HC Záhoráci" loading="lazy"><img src="/strojar-malacky.jpg" alt="TJ Strojár Malacky" loading="lazy">
+      </div>
+      <div class="footer-title">Hádzaná Záhorie</div>
+      <p>Spoločný projekt klubov ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky.</p>
+      <a class="footer-cta" href="/nabor.html">Chceš hrať hádzanú? Nábor →</a>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-h">Kontakty</div>
+      <ul class="footer-list">
+        <li><strong>ŠKH Rohožník</strong><a href="mailto:info@skhrohoznik.sk">info@skhrohoznik.sk</a><a href="tel:+421902576937">+421 902 576 937</a></li>
+        <li><strong>HC Záhoráci</strong><a href="mailto:info@hczahoraci.sk">info@hczahoraci.sk</a></li>
+        <li><strong>TJ Strojár Malacky</strong><a href="mailto:info@handballmalacky.sk">info@handballmalacky.sk</a><a href="tel:+421948877481">+421 948 877 481</a></li>
+      </ul>
+      <a class="footer-more" href="/kontakty.html">Všetky kontakty →</a>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-h">Kde hráme</div>
+      <ul class="footer-list footer-halls">
+        <li><a href="https://www.google.com/maps?q=48.4337889,17.0283744" target="_blank" rel="noopener"><strong>Šport Aréna Malacky</strong><span>Malacky · mapa ↗</span></a></li>
+        <li><a href="https://www.google.com/maps?q=48.457725,17.162437" target="_blank" rel="noopener"><strong>Športová hala Rohožník</strong><span>Rohožník · mapa ↗</span></a></li>
+        <li><a href="https://www.google.com/maps?q=%C5%A0portov%C3%A1%20hala%20Malina" target="_blank" rel="noopener"><strong>Športová hala Malina</strong><span>Malacky · mapa ↗</span></a></li>
+        <li><a href="https://www.google.com/maps?q=F548%2BV3%20Roho%C5%BEn%C3%ADk" target="_blank" rel="noopener"><strong>Vonkajšie ihrisko</strong><span>Rohožník · mapa ↗</span></a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-h">Sledujte nás</div>
+      <ul class="footer-social">
+        <li><span>ŠKH Rohožník</span>
+          <a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener" aria-label="ŠKH Rohožník na Facebooku"><svg viewBox="0 0 24 24"><path d="M14 8V6.5c0-.8.2-1.2 1.4-1.2H17V2.2C16.5 2.1 15.4 2 14.3 2 11.8 2 10.2 3.5 10.2 6.3V8H7.5v3.4h2.7V22H14V11.4h2.8l.4-3.4H14z"/></svg></a>
+          <a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener" aria-label="ŠKH Rohožník na Instagrame"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM20.9 7c-.1-1.6-.4-3-1.6-4.2S16.6 1.2 15 1.1C13.4 1 10.6 1 9 1.1 7.4 1.2 6 1.5 4.8 2.7S3.2 5.4 3.1 7C3 8.6 3 15.4 3.1 17c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 4.4.1 6 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-8.4.2-10zm-2.1 12.2a3.3 3.3 0 0 1-1.9 1.9c-1.3.5-4.4.4-5.9.4s-4.6.1-5.9-.4a3.3 3.3 0 0 1-1.9-1.9c-.5-1.3-.4-4.4-.4-5.9s-.1-4.6.4-5.9a3.3 3.3 0 0 1 1.9-1.9C6.4 4.9 9.5 5 11 5s4.6-.1 5.9.4a3.3 3.3 0 0 1 1.9 1.9c.5 1.3.4 4.4.4 5.9s.1 4.6-.4 5.9z"/></svg></a>
+          <a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener" aria-label="ŠKH Rohožník na YouTube"><svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg></a>
+        </li>
+        <li><span>HC Záhoráci</span>
+          <a href="https://www.facebook.com/hczahoraci/" target="_blank" rel="noopener" aria-label="HC Záhoráci na Facebooku"><svg viewBox="0 0 24 24"><path d="M14 8V6.5c0-.8.2-1.2 1.4-1.2H17V2.2C16.5 2.1 15.4 2 14.3 2 11.8 2 10.2 3.5 10.2 6.3V8H7.5v3.4h2.7V22H14V11.4h2.8l.4-3.4H14z"/></svg></a>
+          <a href="https://www.instagram.com/hc_zahoraci/" target="_blank" rel="noopener" aria-label="HC Záhoráci na Instagrame"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM20.9 7c-.1-1.6-.4-3-1.6-4.2S16.6 1.2 15 1.1C13.4 1 10.6 1 9 1.1 7.4 1.2 6 1.5 4.8 2.7S3.2 5.4 3.1 7C3 8.6 3 15.4 3.1 17c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 4.4.1 6 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-8.4.2-10zm-2.1 12.2a3.3 3.3 0 0 1-1.9 1.9c-1.3.5-4.4.4-5.9.4s-4.6.1-5.9-.4a3.3 3.3 0 0 1-1.9-1.9c-.5-1.3-.4-4.4-.4-5.9s-.1-4.6.4-5.9a3.3 3.3 0 0 1 1.9-1.9C6.4 4.9 9.5 5 11 5s4.6-.1 5.9.4a3.3 3.3 0 0 1 1.9 1.9c.5 1.3.4 4.4.4 5.9s.1 4.6-.4 5.9z"/></svg></a>
+          <a href="https://www.youtube.com/@hczahoraci9848" target="_blank" rel="noopener" aria-label="HC Záhoráci na YouTube"><svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg></a>
+        </li>
+        <li><span>TJ Strojár Malacky</span>
+          <a href="https://www.facebook.com/handballmalacky/" target="_blank" rel="noopener" aria-label="TJ Strojár Malacky na Facebooku"><svg viewBox="0 0 24 24"><path d="M14 8V6.5c0-.8.2-1.2 1.4-1.2H17V2.2C16.5 2.1 15.4 2 14.3 2 11.8 2 10.2 3.5 10.2 6.3V8H7.5v3.4h2.7V22H14V11.4h2.8l.4-3.4H14z"/></svg></a>
+          <a href="https://www.instagram.com/handballmalacky/" target="_blank" rel="noopener" aria-label="TJ Strojár Malacky na Instagrame"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM20.9 7c-.1-1.6-.4-3-1.6-4.2S16.6 1.2 15 1.1C13.4 1 10.6 1 9 1.1 7.4 1.2 6 1.5 4.8 2.7S3.2 5.4 3.1 7C3 8.6 3 15.4 3.1 17c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 4.4.1 6 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-8.4.2-10zm-2.1 12.2a3.3 3.3 0 0 1-1.9 1.9c-1.3.5-4.4.4-5.9.4s-4.6.1-5.9-.4a3.3 3.3 0 0 1-1.9-1.9c-.5-1.3-.4-4.4-.4-5.9s-.1-4.6.4-5.9a3.3 3.3 0 0 1 1.9-1.9C6.4 4.9 9.5 5 11 5s4.6-.1 5.9.4a3.3 3.3 0 0 1 1.9 1.9c.5 1.3.4 4.4.4 5.9s.1 4.6-.4 5.9z"/></svg></a>
+          <a href="https://www.youtube.com/@handballmalacky1975" target="_blank" rel="noopener" aria-label="TJ Strojár Malacky na YouTube"><svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg></a>
+        </li>
+      </ul>
+      <div class="footer-quick"><a href="/kalendar.html">Kalendár</a><a href="/2-percenta.html">2 % z daní</a><a href="/oznamy.html">Oznamy</a><a href="/gallery.html">Galéria</a><a href="https://www.klubovymerch.sk/kategoria/skh-rohoznik-tj-strojar-malacky" target="_blank" rel="noopener">Fanshop ↗</a></div>
+    </div>
+  </div>
+  <div class="footer-bottom">© Hádzaná Záhorie — ŠKH Rohožník · HC Záhoráci · TJ Strojár Malacky</div>
+</footer>
+<script>
+  (function(){
+    var t=document.querySelector('.sponsors-track'); if(!t) return;
+    Array.prototype.slice.call(t.children).forEach(function(n){var c=n.cloneNode(true); c.setAttribute('aria-hidden','true'); c.alt=''; t.appendChild(c);});
+  })();
+</script>
+
+
+
+<script>
+  (function(){
+    var toggle = document.getElementById('nav-toggle');
+    var menu = document.getElementById('nav-menu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', function(){ menu.classList.toggle('open'); });
+    }
+    document.querySelectorAll('.navbar .dd-btn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        var li = btn.closest('li');
+        li.classList.toggle('open');
+      });
+    });
+  })();
+</script>
+<script src="cookies.js" defer></script>
+<script src="lightbox.js" defer></script>
+<!-- Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c7352b5a92454699beeeae323e83f2f6"}'></script>
+<!-- End Cloudflare Web Analytics -->
+<script src="sponsors.js"></script>
+</body>
+</html>
