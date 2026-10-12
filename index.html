@@ -44,6 +44,43 @@
     background:linear-gradient(90deg, rgba(10,10,12,0.62) 0%, rgba(10,10,12,0.25) 22%, rgba(10,10,12,0.05) 50%, rgba(10,10,12,0.78) 100%);
   }
   .intro .slide.active{opacity:1;}
+  /* animované logo ako jeden zo snímkov banera (hero.json: { "animacia": "logo" }) */
+  .intro .slide-anim{
+    --roh:#D6262C; --zah:#2E9E3E; --str:#1C63C2;
+    background:
+      radial-gradient(55% 60% at 50% 40%, rgba(255,255,255,.08), transparent 70%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 2px, transparent 2px 48px),
+      #161A22;
+  }
+  .intro .slide-anim::after{background:linear-gradient(180deg, transparent 70%, rgba(10,10,12,.55) 100%);}
+  .intro-content{transition:opacity .5s ease;}
+  .intro.anim-on .intro-content{opacity:0; pointer-events:none;}
+  .ha-stage{position:absolute; left:0; right:0; top:80px; height:60%; container-type:size; z-index:1;}
+  .ha-box{
+    position:relative; margin:0 auto; height:auto; aspect-ratio:16/9;
+    width:min(100cqw, calc(100cqh * 16 / 9)); top:50%; translate:0 -50%;
+    container-type:inline-size; color:#F4F1EA;
+  }
+  .ha-floor{position:absolute; left:8%; right:8%; top:60%; height:2px; background:rgba(255,255,255,.10); opacity:0;}
+  .ha-logos{position:absolute; left:0; right:0; top:10%; display:flex; justify-content:center; gap:5%;}
+  .ha-logo{
+    width:17%; aspect-ratio:1; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 max(3px,.5cqw) var(--c), 0 10px 30px rgba(0,0,0,.45); transform:scale(0); opacity:0;
+  }
+  .ha-logo img{width:82%; height:82%; object-fit:contain; border-radius:50%;}
+  .ha-logo.roh{--c:var(--roh);} .ha-logo.zah{--c:var(--zah);} .ha-logo.str{--c:var(--str);}
+  .ha-ball{position:absolute; width:7.5%; aspect-ratio:1; left:-10%; top:20%; translate:-50% -100%; will-change:left,top,transform;}
+  .ha-ball svg{width:100%; height:100%; display:block; filter:drop-shadow(0 6px 10px rgba(0,0,0,.5));}
+  .ha-shadow{position:absolute; top:60%; width:7%; height:1.4%; translate:-50% -50%; border-radius:50%; background:rgba(0,0,0,.55); filter:blur(3px); opacity:0;}
+  .ha-title{position:absolute; left:0; right:0; top:63%; text-align:center; line-height:1.05; font-family:'Archivo Black','Arial Black',Impact,sans-serif; font-size:6.4cqw; white-space:nowrap;}
+  .ha-title .ha-w{display:inline-block; overflow:hidden; vertical-align:bottom;}
+  .ha-title .ha-w span{display:inline-block; letter-spacing:.01em; text-transform:uppercase; transform:translateY(110%); opacity:0;}
+  .ha-title .ha-w:last-child span{color:transparent; -webkit-text-stroke:max(1px,.2cqw) #F4F1EA;}
+  .ha-stripe{position:absolute; left:50%; top:81%; width:46%; height:1.1%; min-height:3px; translate:-50% 0; display:flex; gap:1.2%;}
+  .ha-stripe i{flex:1; transform:scaleX(0); transform-origin:left;}
+  .ha-stripe i:nth-child(1){background:var(--roh);} .ha-stripe i:nth-child(2){background:var(--zah);} .ha-stripe i:nth-child(3){background:var(--str);}
+  @container (max-width:520px){ .ha-tag{letter-spacing:.08em !important;} }
+  .ha-tag{position:absolute; left:0; right:0; top:85%; text-align:center; font-size:clamp(8px,1.6cqw,15px); white-space:nowrap; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#A9ADB8; opacity:0;}
   .intro-content{
     position:relative; z-index:2; width:100%; max-width:none; margin:0; padding:120px 24px 10px;
   }
@@ -382,47 +419,72 @@
   <img id="lightbox-img" src="" alt="">
 </div>
 
+<script src="hero-anim.js"></script>
 <script>
   // Banner (hero): fotky, nadpis a text sa berú zo súboru hero.json
   (function(){
     const hero = document.getElementById('hero');
     const dotsWrap = document.getElementById('hero-dots');
     let slides = hero.querySelectorAll('.slide');
-    let current = 0, timer = null;
+    let current = 0, timer = null, interval = 5;
+    const anim = window.HeroLogoAnim;
 
+    function isAnim(el) { return el && el.classList.contains('slide-anim'); }
+    function schedule() {
+      clearTimeout(timer);
+      if (slides.length < 2) return;
+      const ms = isAnim(slides[current]) && anim ? Math.max(interval * 1000, anim.duration) : interval * 1000;
+      timer = setTimeout(() => show((current + 1) % slides.length), ms);
+    }
     function show(i) {
-      slides[current].classList.remove('active');
+      const prev = slides[current];
+      prev.classList.remove('active');
       if (dotsWrap.children[current]) dotsWrap.children[current].classList.remove('active');
       current = i;
-      slides[current].classList.add('active');
+      const cur = slides[current];
+      cur.classList.add('active');
       if (dotsWrap.children[current]) dotsWrap.children[current].classList.add('active');
+      hero.classList.toggle('anim-on', isAnim(cur));
+      if (isAnim(cur) && anim) anim.play(cur);
+      if (isAnim(prev) && prev !== cur && anim) setTimeout(() => { if (!prev.classList.contains('active')) anim.stop(prev); }, 1300);
+      schedule();
     }
     function start(seconds) {
+      interval = seconds || 5;
       dotsWrap.innerHTML = '';
-      slides.forEach((_, i) => {
+      slides.forEach((s, i) => {
         const dot = document.createElement('button');
         dot.type = 'button';
-        dot.setAttribute('aria-label', 'Fotka ' + (i + 1));
+        dot.setAttribute('aria-label', isAnim(s) ? 'Animované logo' : 'Fotka ' + (i + 1));
         if (i === current) dot.className = 'active';
         dot.addEventListener('click', () => show(i));
         dotsWrap.appendChild(dot);
       });
-      if (timer) clearInterval(timer);
-      if (slides.length > 1) timer = setInterval(() => show((current + 1) % slides.length), (seconds || 5) * 1000);
+      if (isAnim(slides[current])) show(current); else schedule();
     }
+    window.addEventListener('resize', () => {
+      if (anim) hero.querySelectorAll('.slide-anim').forEach(el => anim.fit(el));
+    });
 
     start(5);
 
     fetch('/hero.json', { cache: 'no-cache' })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(cfg => {
-        const list = (cfg.fotky || []).map(f => typeof f === 'string' ? { foto: f } : f).filter(f => f && f.foto);
+        const list = (cfg.fotky || []).map(f => typeof f === 'string' ? { foto: f } : f).filter(f => f && (f.foto || (f.animacia === 'logo' && anim)));
         if (list.length) {
           hero.querySelectorAll('.slide').forEach(el => el.remove());
           const content = hero.querySelector('.intro-content');
           list.forEach((f, i) => {
             const d = document.createElement('div');
             d.className = 'slide' + (i === 0 ? ' active' : '');
+            if (f.animacia) {
+              d.classList.add('slide-anim');
+              d.setAttribute('aria-hidden', 'true');
+              anim.build(d, cfg.nadpis);
+              hero.insertBefore(d, content);
+              return;
+            }
             d.style.backgroundImage = "url('" + String(f.foto).replace(/'/g, "%27") + "')";
             d.style.backgroundPosition = f.pozicia || 'center 15%';
             hero.insertBefore(d, content);

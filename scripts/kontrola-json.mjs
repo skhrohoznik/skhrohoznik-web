@@ -133,6 +133,12 @@ function skontrolujFotky(subor, kde, fotky) {
     return;
   }
   for (const f of fotky) {
+    if (f && typeof f === "object" && f.animacia !== undefined) {
+      // animované logo v banneri: { "animacia": "logo" }
+      if (subor !== "hero.json") chyba(subor, `${kde}: "animacia" sa dá použiť len v hero.json`);
+      else if (f.animacia !== "logo") chyba(subor, `${kde}: "animacia" môže byť len "logo"`);
+      continue;
+    }
     const cesta = typeof f === "string" ? f : f && f.foto;
     if (!jeText(cesta)) {
       chyba(subor, `${kde}: prázdny názov fotky`);
