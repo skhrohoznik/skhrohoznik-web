@@ -68,6 +68,8 @@
       '<div class="nm-top"><span class="nm-kicker">' + (up ? "Najbližší zápas" : "Posledný zápas") + "</span>" +
       '<span class="nm-when">' + esc(when) + "</span></div>" +
       '<div class="nm-teams">' + team(home) + middle + team(away) + "</div>" +
+      (up && window.Odpocet ? '<div class="nm-countdown"><span>Začiatok o</span><span data-odpocet="' +
+        esc(window.Odpocet.fromSk(m.date, m.time)) + '"></span></div>' : "") +
       (place ? '<div class="nm-where">' + (m.home ? "Domáci zápas · " : "Vonku · ") + "<strong>" + esc(place) + "</strong></div>" : "");
     box.hidden = false;
   };
