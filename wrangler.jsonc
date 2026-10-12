@@ -17,7 +17,14 @@
     "binding": "ASSETS",
     "not_found_handling": "404-page",
     // stránky sa obsluhujú priamo ako /stranka.html (bez presmerovania na /stranka) - kvôli Googlu
-    "html_handling": "none"
+    "html_handling": "none",
+    // Všetko okrem bežných súborov (stránky, obrázky, štýly, skripty, PDF) ide najprv do worker.js.
+    // Bez toho prehliadač pri zadaní skhrohoznik.sk dostal namiesto úvodnej stránky stránku 404.
+    "run_worker_first": [
+      "/*",
+      "!/*.html", "!/*.css", "!/*.js", "!/*.jpg", "!/*.jpeg", "!/*.png", "!/*.webp",
+      "!/*.gif", "!/*.ico", "!/*.pdf", "!/*.txt", "!/*.xml", "!/*.woff2"
+    ]
   },
   "kv_namespaces": [
     {
