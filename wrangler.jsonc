@@ -18,10 +18,10 @@
     "not_found_handling": "404-page",
     // stránky sa obsluhujú priamo ako /stranka.html (bez presmerovania na /stranka) - kvôli Googlu
     "html_handling": "none",
-    // Úvodná adresa (/) ide vždy najprv do worker.js - bez toho prehliadač pri zadaní
-    // skhrohoznik.sk dostal stránku 404. (Dlhší zoznam pravidiel spôsoboval pri nasadení
-    // časový limit v Cloudflare; staré adresy bez .html rieši skript v 404.html.)
-    "run_worker_first": ["/"]
+    // Adresy, ktoré obsluhuje worker.js (úvodná stránka, výsledky, kalendár, aktuality, logá, archív).
+    // Pri zmene adries vo worker.js ich treba doplniť aj sem, inak vrátia stránku 404.
+    // Staré adresy bez .html (napr. /zeny) presmeruje skript v 404.html.
+    "run_worker_first": ["/", "/vysledky", "/zapasy.json", "/aktuality.json", "/logo/*", "/archiv/*"]
   },
   "kv_namespaces": [
     {
