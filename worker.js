@@ -914,6 +914,10 @@ async function serveStatic(request, env, url) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    // stránka Klub bola zlúčená so stránkou Kontakty (haly sú v sekcii #haly)
+    if (url.pathname === "/klub.html" || url.pathname === "/klub") {
+      return Response.redirect(new URL("/kontakty.html#haly", url).toString(), 301);
+    }
     if (url.pathname === "/vysledky") {
       return handleVysledky(request, env, ctx);
     }
