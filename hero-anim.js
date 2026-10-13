@@ -41,9 +41,9 @@
     if (!hero || !stage) return;
     var band = hero.querySelector('.matches-band'), dots = hero.querySelector('.intro-dots');
     var nav = document.querySelector('.navbar');
-    var top = nav ? nav.offsetHeight + 8 : 70;
+    var top = nav ? nav.offsetHeight + 2 : 70;
     var bottomEl = dots || band;
-    var bottom = bottomEl ? hero.clientHeight - bottomEl.offsetTop + 4 : 40;
+    var bottom = bottomEl ? hero.clientHeight - bottomEl.offsetTop : 40;
     stage.style.top = top + 'px';
     stage.style.height = Math.max(180, hero.clientHeight - top - bottom) + 'px';
   }
