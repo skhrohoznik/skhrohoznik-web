@@ -131,10 +131,11 @@
   .role{margin-bottom:18px;}
   .role:last-child{margin-bottom:0;}
   /* fotka trénera: súbor treneri/meno-priezvisko.jpg (bez diakritiky); kým nie je nahraný, ukáže sa silueta */
-  .role{display:grid; grid-template-columns:64px 1fr; column-gap:14px; align-items:center;}
-  .role > :not(.role-photo){grid-column:2;}
-  .role-photo{grid-column:1; grid-row:1 / span 3; width:64px; height:64px; border-radius:50%; overflow:hidden;
-    background:#efeadf url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='24' r='12' fill='%23b9b2a2'/%3E%3Cpath d='M10 60c2-13 11-20 22-20s20 7 22 20z' fill='%23b9b2a2'/%3E%3C/svg%3E") center/100% no-repeat; border:2px solid var(--line);}
+  .role{display:grid; grid-template-columns:1fr 96px; column-gap:16px; align-items:center;}
+  .role > :not(.role-photo){grid-column:1;}
+  .role-photo{grid-column:2; grid-row:1 / span 3; width:96px; height:96px; border-radius:50%; overflow:hidden;
+    background:#efeadf url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='24' r='12' fill='%23b9b2a2'/%3E%3Cpath d='M10 60c2-13 11-20 22-20s20 7 22 20z' fill='%23b9b2a2'/%3E%3C/svg%3E") center/100% no-repeat; border:3px solid var(--line);}
+  @media (max-width:420px){ .role{grid-template-columns:1fr 80px;} .role-photo{width:80px; height:80px;} }
   .role-photo img{width:100%; height:100%; object-fit:cover; display:block;}
   .role-label{
     font-size:11px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;
