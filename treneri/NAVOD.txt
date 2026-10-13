@@ -1,0 +1,31 @@
+Fotky trénerov a vedúcich na stránke Tréneri
+=============================================
+
+Fotku stačí nahrať do tohto priečinka (treneri/) pod presným názvom zo zoznamu nižšie.
+Na stránke sa ukáže sama, nič iné netreba meniť. Kým fotka nie je nahraná, zobrazí sa sivá silueta.
+
+- formát .jpg, názov malými písmenami bez diakritiky (presne ako nižšie)
+- najlepšie štvorcová fotka tváre, aspoň 200 x 200 bodov (ukáže sa v krúžku)
+
+Názvy súborov:
+  tomas-stachovic.jpg              Tomáš Stachovič
+  milan-mikulcak.jpg               Milan Mikulčák
+  tomas-balaz.jpg                  Tomáš Baláž
+  vladimir-pavlik.jpg              Vladimír Pavlík
+  ondrej-sakar.jpg                 Ondrej Sakar
+  tomas-obzera.jpg                 Tomáš Obžera
+  pavol-stachovic.jpg              Pavol Stachovič
+  martin-moravcik.jpg              Martin Moravčík
+  lazar-gugolj.jpg                 Lazar Gugolj
+  jakub-janos.jpg                  Jakub Jánoš
+  vladimir-niznansky.jpg           Vladimír Nižňanský
+  peter-kovac.jpg                  Peter Kováč
+  marek-bozsoky.jpg                Marek Bozsóky
+  patrik-walter.jpg                Patrik Walter
+  vladimir-pavlik-ml.jpg           Vladimír Pavlík ml.
+  ladislav-topolcany.jpg           Ladislav Topolčány
+  jozef-majersky.jpg               Jozef Majerský
+  lubos-hurban.jpg                 Ľuboš Hurban
+  martin-sraga.jpg                 Martin Šraga
+  robo-balaz.jpg                   Robo Baláž
+  vojto-planka.jpg                 Vojto Planka

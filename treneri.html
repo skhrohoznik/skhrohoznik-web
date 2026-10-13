@@ -130,6 +130,12 @@
   .contact-card h2{font-size:19px; margin-bottom:20px;}
   .role{margin-bottom:18px;}
   .role:last-child{margin-bottom:0;}
+  /* fotka trénera: súbor treneri/meno-priezvisko.jpg (bez diakritiky); kým nie je nahraný, ukáže sa silueta */
+  .role{display:grid; grid-template-columns:64px 1fr; column-gap:14px; align-items:center;}
+  .role > :not(.role-photo){grid-column:2;}
+  .role-photo{grid-column:1; grid-row:1 / span 3; width:64px; height:64px; border-radius:50%; overflow:hidden;
+    background:#efeadf url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='24' r='12' fill='%23b9b2a2'/%3E%3Cpath d='M10 60c2-13 11-20 22-20s20 7 22 20z' fill='%23b9b2a2'/%3E%3C/svg%3E") center/100% no-repeat; border:2px solid var(--line);}
+  .role-photo img{width:100%; height:100%; object-fit:cover; display:block;}
   .role-label{
     font-size:11px; text-transform:uppercase; letter-spacing:0.05em; font-weight:700;
     color:var(--red); margin-bottom:4px;
@@ -140,7 +146,7 @@
   .role-phone.tba{color:#6b6455; font-style:italic;}
   .contact-card .pending{color:#6b6455; font-style:italic; font-size:14px;}
   .cards{
-    display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap:24px;
   }
   .recruit{
     background:var(--red); color:#fff; padding:52px 40px;
@@ -276,21 +282,25 @@
 <div class="contact-card">
         <h2>Muži</h2>
         <div class="role">
+          <span class="role-photo"><img src="treneri/tomas-stachovic.jpg" alt="Tomáš Stachovič" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Muži A (Extraliga)</div>
           <div class="role-name">Tomáš Stachovič</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/milan-mikulcak.jpg" alt="Milan Mikulčák" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Milan Mikulčák</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
         <div class="role">
+          <span class="role-photo"><img src="treneri/tomas-balaz.jpg" alt="Tomáš Baláž" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Muži B (1. liga)</div>
           <div class="role-name">Tomáš Baláž</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/vladimir-pavlik.jpg" alt="Vladimír Pavlík" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Vladimír Pavlík</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
@@ -299,21 +309,25 @@
 <div class="contact-card">
         <h2>Dorastenci</h2>
         <div class="role">
+          <span class="role-photo"><img src="treneri/ondrej-sakar.jpg" alt="Ondrej Sakar" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Starší dorastenci</div>
           <div class="role-name">Ondrej Sakar</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/tomas-obzera.jpg" alt="Tomáš Obžera" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Tomáš Obžera</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
         <div class="role">
+          <span class="role-photo"><img src="treneri/pavol-stachovic.jpg" alt="Pavol Stachovič" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Mladší dorastenci</div>
           <div class="role-name">Pavol Stachovič</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/martin-moravcik.jpg" alt="Martin Moravčík" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Martin Moravčík</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
@@ -322,21 +336,25 @@
 <div class="contact-card">
         <h2>Žiaci</h2>
         <div class="role">
+          <span class="role-photo"><img src="treneri/lazar-gugolj.jpg" alt="Lazar Gugolj" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Mladší žiaci</div>
           <div class="role-name">Lazar Gugolj</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/jakub-janos.jpg" alt="Jakub Jánoš" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Jakub Jánoš</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
         <div class="role">
+          <span class="role-photo"><img src="treneri/vladimir-niznansky.jpg" alt="Vladimír Nižňanský" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Starší žiaci</div>
           <div class="role-name">Vladimír Nižňanský</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/peter-kovac.jpg" alt="Peter Kováč" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Peter Kováč</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
@@ -345,11 +363,13 @@
 <div class="contact-card">
         <h2>Ženy</h2>
         <div class="role">
+          <span class="role-photo"><img src="treneri/marek-bozsoky.jpg" alt="Marek Bozsóky" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Ženy</div>
           <div class="role-name">Marek Bozsóky</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/peter-kovac.jpg" alt="Peter Kováč" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Peter Kováč</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
@@ -358,21 +378,25 @@
 <div class="contact-card">
         <h2>Dorastenky</h2>
         <div class="role">
+          <span class="role-photo"><img src="treneri/marek-bozsoky.jpg" alt="Marek Bozsóky" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Staršie dorastenky (1. liga)</div>
           <div class="role-name">Marek Bozsóky</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/peter-kovac.jpg" alt="Peter Kováč" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Peter Kováč</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxxx">+421 90x xxx xxx</a></div>
         </div>
         <div class="role">
+          <span class="role-photo"><img src="treneri/patrik-walter.jpg" alt="Patrik Walter" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Mladšie dorastenky (1. liga)</div>
           <div class="role-name">Patrik Walter</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/vladimir-pavlik-ml.jpg" alt="Vladimír Pavlík ml." loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Vladimír Pavlík ml.</div>
           <div class="role-phone"><a href="tel:+42190xxxxxxx">+421 90x xxx xxx</a></div>
@@ -381,31 +405,37 @@
 <div class="contact-card">
         <h2>Žiačky</h2>
         <div class="role">
+          <span class="role-photo"><img src="treneri/ladislav-topolcany.jpg" alt="Ladislav Topolčány" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Staršie žiačky</div>
           <div class="role-name">Ladislav Topolčány</div>
           <div class="role-phone"><a href="tel:+421902576937">+421 902 576 937</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/jozef-majersky.jpg" alt="Jozef Majerský" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Jozef Majerský</div>
           <div class="role-phone"><a href="tel:+421907707978">+421 907 707 978</a></div>
         </div>
         <div class="role">
+          <span class="role-photo"><img src="treneri/lubos-hurban.jpg" alt="Ľuboš Hurban" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Mladšie žiačky A</div>
           <div class="role-name">Ľuboš Hurban</div>
           <div class="role-phone"><a href="tel:+421903822217">+421 903 822 217</a></div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/martin-sraga.jpg" alt="Martin Šraga" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Martin Šraga</div>
           <div class="role-phone"><a href="tel:+421907655169">+421 907 655 169</a></div>
         </div>
         <div class="role">
+          <span class="role-photo"><img src="treneri/robo-balaz.jpg" alt="Robo Baláž" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Mladšie žiačky B</div>
           <div class="role-name">Robo Baláž</div>
           <div class="role-phone tba">Telefón bude doplnený</div>
         </div>
 <div class="role">
+          <span class="role-photo"><img src="treneri/vojto-planka.jpg" alt="Vojto Planka" loading="lazy" onerror="this.remove()"></span>
           <div class="role-label">Vedúci družstva</div>
           <div class="role-name">Vojto Planka</div>
           <div class="role-phone tba">Telefón bude doplnený</div>
