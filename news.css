@@ -56,3 +56,11 @@ a.news-card.linked:hover .news-more{text-decoration-thickness:2px;}
 .oznam-photos{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:16px; margin-top:30px;}
 .oznam-photos img{width:100%; height:auto; max-height:640px; object-fit:contain; background:#f0ede3; border:1px solid var(--line); cursor:zoom-in;}
 .oznam-photos.one{grid-template-columns:1fr;}
+
+/* Aktuality: skrátený text s tlačidlom "Zobraziť celý text" a nižšie fotky */
+.news-card p.clamp{display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden;}
+.news-card p.clamp.open{display:block; -webkit-line-clamp:unset !important;}
+.news-toggle{display:block; margin-top:8px; background:none; border:none; padding:0; cursor:pointer; font:inherit; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--ink); text-decoration:underline; text-underline-offset:3px;}
+.news-toggle:hover{color:var(--red);}
+.news-grid.short-photos .news-photo{height:170px;}
+.news-toggle[hidden]{display:none;}

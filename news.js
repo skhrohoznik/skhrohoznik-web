@@ -53,7 +53,8 @@
       '<div class="news-date">' + esc(item.datum || '') + '</div>' +
       (item.klub ? '<div class="news-club">' + esc(item.klub) + '</div>' : '') +
       (item.nadpis ? '<h3>' + esc(item.nadpis) + '</h3>' : '') +
-      (item.text ? '<p>' + esc(item.text) + '</p>' : '') +
+      (item.text ? '<p' + (opts.clamp && !opts.compact && !detailUrl ? ' class="clamp" style="-webkit-line-clamp:' + opts.clamp + '"' : '') + '>' + esc(item.text) + '</p>' +
+        (opts.clamp && !opts.compact && !detailUrl ? '<button type="button" class="news-toggle" hidden>Zobraziť celý text ▾</button>' : '') : '') +
       linkHtml + '</div>';
     var card;
     if (detailUrl) {
@@ -76,6 +77,19 @@
       });
     }
     return card;
+  }
+
+  // dlhý text skrátený na pár riadkov; tlačidlo sa ukáže len vtedy, keď sa text naozaj nezmestí
+  function setupClamp(card) {
+    var p = card.querySelector('p.clamp'), btn = card.querySelector('.news-toggle');
+    if (!p || !btn) return;
+    requestAnimationFrame(function () {
+      if (p.scrollHeight - p.clientHeight > 4) btn.hidden = false;
+    });
+    btn.addEventListener('click', function () {
+      var open = p.classList.toggle('open');
+      btn.textContent = open ? 'Skryť text ▴' : 'Zobraziť celý text ▾';
+    });
   }
 
   function render(opts) {
@@ -113,7 +127,7 @@
         }
         var PAGE = opts.pageSize || 9, shown = 0;
         function more() {
-          items.slice(shown, shown + PAGE).forEach(function (it) { grid.appendChild(buildCard(it, opts)); });
+          items.slice(shown, shown + PAGE).forEach(function (it) { var c = buildCard(it, opts); grid.appendChild(c); setupClamp(c); });
           shown = Math.min(items.length, shown + PAGE);
           if (moreWrap) moreWrap.style.display = shown < items.length ? 'block' : 'none';
         }

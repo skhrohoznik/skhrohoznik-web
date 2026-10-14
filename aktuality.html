@@ -320,7 +320,7 @@
     <h1 class="page-title">Aktuality</h1>
     <p class="page-intro">Príspevky z Facebooku našich klubov — ŠKH Rohožník / TJ Strojár Malacky a HC Záhoráci.</p>
     <section class="block">
-      <div class="news-grid" id="news-grid"><p class="news-empty">Načítavam…</p></div>
+      <div class="news-grid short-photos" id="news-grid"><p class="news-empty">Načítavam…</p></div>
       <div class="news-loadmore-wrap" id="news-loadmore-wrap">
         <button type="button" class="news-loadmore-btn" id="news-loadmore">Zobraziť staršie príspevky</button>
       </div>
@@ -333,7 +333,7 @@
 </div>
 
 <script>
-  NewsFeed.render({url:'/aktuality.json', grid:'news-grid', moreWrap:'news-loadmore-wrap', moreBtn:'news-loadmore',
+  NewsFeed.render({url:'/aktuality.json', grid:'news-grid', moreWrap:'news-loadmore-wrap', moreBtn:'news-loadmore', clamp:5,
     pageSize:9, empty:'Zatiaľ žiadne aktuality.', error:'Aktuality sa nepodarilo načítať.'});
 </script>
 
