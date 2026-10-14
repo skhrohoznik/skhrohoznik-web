@@ -248,7 +248,7 @@
   .lb-counter{position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:13px; font-weight:700; letter-spacing:.05em;}
   @media (max-width:640px){ .lb-prev,.lb-next{width:40px; height:64px; font-size:36px;} .lightbox{padding:16px;} }
   /* ---- KALENDÁR ---- */
-  .kal{--rohoznik:#D6262C; --zahoraci:#1E7B2E; --strojar:#0B4F9C; --akcie:#F2B705;}
+  .kal{--g-f:#C21F26; --g-m:#0B4F9C; --akcie:#F2B705;}
   .kal-bar{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px;}
   .kal-month{display:flex; align-items:center; gap:8px;}
   .kal-month h2{font-size:clamp(20px,2.6vw,28px); min-width:230px; text-align:center; margin:0;}
@@ -263,7 +263,7 @@
   .kal-filters button{display:inline-flex; align-items:center; gap:7px; background:#fff; border:1px solid var(--line); border-radius:999px; font:inherit; font-size:13px; font-weight:600; padding:7px 14px; cursor:pointer;}
   .kal-filters button.active{background:var(--ink); border-color:var(--ink); color:#fff;}
   .dot{display:inline-block; width:10px; height:10px; border-radius:50%; flex:none;}
-  .dot.rohoznik{background:var(--rohoznik);} .dot.zahoraci{background:var(--zahoraci);} .dot.strojar{background:var(--strojar);} .dot.akcie{background:var(--akcie);}
+  .dot.g-f{background:var(--g-f);} .dot.g-m{background:var(--g-m);} .dot.akcie{background:var(--akcie);}
 
   .kal-grid{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); background:#fff; border:2px solid var(--ink);}
   .kal-wd{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#6b6455; padding:10px 8px; border-bottom:2px solid var(--ink); background:var(--cream);}
@@ -279,17 +279,19 @@
   .kal-ev.akcia{--c:var(--akcie); background:#fff6d6; color:var(--ink); font-weight:700;}
   .kal-ev b{font-weight:700;}
   .kal-more{font-size:11px; font-weight:700; color:#6b6455; padding-left:4px;}
-  .rohoznik{--c:var(--rohoznik);} .zahoraci{--c:var(--zahoraci);} .strojar{--c:var(--strojar);}
+  /* farby: ženy a dievčatá červená, muži a chlapci modrá (ako v zápasoch na úvodnej stránke) */
+  .kal .g-f{--c:var(--g-f);} .kal .g-m{--c:var(--g-m);}
 
   .kal-legend{display:flex; flex-wrap:wrap; gap:16px; font-size:12px; color:#6b6455; margin-top:10px;}
   .kal-legend span{display:inline-flex; align-items:center; gap:6px;}
-  .kal-legend i{display:inline-block; width:22px; height:12px;}
+  .kal-legend i{display:inline-block; width:22px; height:12px;} .kal-legend i + i{margin-left:-2px;}
 
   .kal-day{margin-top:18px;}
   .kal-day h3, .kal-list h3{font-size:16px; text-transform:uppercase; margin:22px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--ink);}
   .kal-day h3:first-child, .kal-list h3:first-child{margin-top:0;}
   .kal-item{display:grid; grid-template-columns:62px 1fr auto; gap:14px; align-items:center; background:#fff; border:1px solid var(--line); border-left:5px solid var(--c); padding:12px 14px; margin-bottom:8px; color:inherit; text-decoration:none;}
   .kal-item.akcia{--c:var(--akcie);}
+  .kal-item.g-f.away{--c:#F2A0A3;} .kal-item.g-m.away{--c:#8DB8EA;}
   a.kal-item:hover{box-shadow:0 4px 14px rgba(22,26,34,.08);}
   .kal-time{font-family:'Archivo Black', sans-serif; font-size:15px;}
   .kal-cat{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--c); margin-bottom:4px;}
@@ -403,9 +405,8 @@
       </div>
       <div class="kal-filters" id="kal-filters">
         <button type="button" class="active" data-f="vsetko">Všetko</button>
-        <button type="button" data-f="rohoznik"><i class="dot rohoznik"></i>ŠKH Rohožník</button>
-        <button type="button" data-f="zahoraci"><i class="dot zahoraci"></i>HC Záhoráci</button>
-        <button type="button" data-f="strojar"><i class="dot strojar"></i>TJ Strojár</button>
+        <button type="button" data-f="g-f"><i class="dot g-f"></i>Ženy, dievčatá</button>
+        <button type="button" data-f="g-m"><i class="dot g-m"></i>Muži, chlapci</button>
         <button type="button" data-f="akcie"><i class="dot akcie"></i>Klubové akcie</button>
       </div>
 

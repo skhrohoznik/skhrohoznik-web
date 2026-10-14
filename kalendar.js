@@ -3,21 +3,21 @@
 (function () {
   // ku ktorému klubu patrí tím (farba) a kam vedie odkaz
   var TEAMS = {
-    muzi_a:       { label: "Muži Extraliga",     club: "zahoraci", name: "Malacky",            href: "muzi-extraliga.html",     venue: "Šport Aréna Malacky" },
-    muzi_b:       { label: "Muži 1. liga",       club: "zahoraci", name: "Malacky",            href: "muzi-1-liga.html",        venue: "Šport Aréna Malacky" },
-    dorast_st_ch: { label: "Starší dorastenci",  club: "zahoraci", name: "Malacky",            href: "starsi-dorastenci.html",  venue: "Šport Aréna Malacky" },
-    dorast_ml_ch: { label: "Mladší dorastenci",  club: "zahoraci", name: "Malacky",            href: "mladsi-dorastenci.html",  venue: "Šport Aréna Malacky" },
-    ziaci_st:     { label: "Starší žiaci",       club: "strojar",  name: "Malacky",            href: "starsi-ziaci.html",       venue: "Šport Aréna Malacky" },
-    ziaci_ml:     { label: "Mladší žiaci",       club: "strojar",  name: "Malacky",            href: "mladsi-ziaci.html",       venue: "Šport Aréna Malacky" },
-    chlapci_mini: { label: "Chlapci mini",       club: "strojar",  name: "Malacky",            href: "chlapci-mini.html",       venue: "Šport Aréna Malacky" },
-    zeny:         { label: "Ženy",               club: "rohoznik", name: "Rohožník / Malacky", href: "zeny.html",               venue: "Šport Aréna Malacky" },
-    dorast_st:    { label: "Staršie dorastenky", club: "rohoznik", name: "Rohožník / Malacky", href: "starsie-dorastenky.html", venue: "Šport Aréna Malacky" },
-    dorast_ml:    { label: "Mladšie dorastenky", club: "rohoznik", name: "Rohožník / Malacky", href: "mladsie-dorastenky.html", venue: "Šport Aréna Malacky" },
-    sz:           { label: "Staršie žiačky",     club: "rohoznik", name: "Rohožník / Malacky", href: "starsie-ziacky.html",     venue: "ŠH Rohožník" },
-    mza:          { label: "Mladšie žiačky A",   club: "rohoznik", name: "Rohožník / Malacky", href: "mladsie-ziacky-a.html",   venue: "ŠH Rohožník" },
-    mzb:          { label: "Mladšie žiačky B",   club: "rohoznik", name: "Rohožník / Malacky", href: "mladsie-ziacky-b.html",   venue: "ŠH Rohožník" },
-    mzc:          { label: "Mladšie žiačky C",   club: "rohoznik", name: "Rohožník / Malacky", href: "mladsie-ziacky-c.html",   venue: "ŠH Rohožník" },
-    dievcata_mini:{ label: "Dievčatá mini",      club: "rohoznik", name: "Rohožník / Malacky", href: "dievcata-mini.html",      venue: "ŠH Rohožník" }
+    muzi_a:       { label: "Muži Extraliga",     club: "g-m", name: "Malacky",            href: "muzi-extraliga.html",     venue: "Šport Aréna Malacky" },
+    muzi_b:       { label: "Muži 1. liga",       club: "g-m", name: "Malacky",            href: "muzi-1-liga.html",        venue: "Šport Aréna Malacky" },
+    dorast_st_ch: { label: "Starší dorastenci",  club: "g-m", name: "Malacky",            href: "starsi-dorastenci.html",  venue: "Šport Aréna Malacky" },
+    dorast_ml_ch: { label: "Mladší dorastenci",  club: "g-m", name: "Malacky",            href: "mladsi-dorastenci.html",  venue: "Šport Aréna Malacky" },
+    ziaci_st:     { label: "Starší žiaci",       club: "g-m",    name: "Malacky",            href: "starsi-ziaci.html",       venue: "Šport Aréna Malacky" },
+    ziaci_ml:     { label: "Mladší žiaci",       club: "g-m",    name: "Malacky",            href: "mladsi-ziaci.html",       venue: "Šport Aréna Malacky" },
+    chlapci_mini: { label: "Chlapci mini",       club: "g-m",    name: "Malacky",            href: "chlapci-mini.html",       venue: "Šport Aréna Malacky" },
+    zeny:         { label: "Ženy",               club: "g-f", name: "Rohožník / Malacky", href: "zeny.html",               venue: "Šport Aréna Malacky" },
+    dorast_st:    { label: "Staršie dorastenky", club: "g-f", name: "Rohožník / Malacky", href: "starsie-dorastenky.html", venue: "Šport Aréna Malacky" },
+    dorast_ml:    { label: "Mladšie dorastenky", club: "g-f", name: "Rohožník / Malacky", href: "mladsie-dorastenky.html", venue: "Šport Aréna Malacky" },
+    sz:           { label: "Staršie žiačky",     club: "g-f", name: "Rohožník / Malacky", href: "starsie-ziacky.html",     venue: "ŠH Rohožník" },
+    mza:          { label: "Mladšie žiačky A",   club: "g-f", name: "Rohožník / Malacky", href: "mladsie-ziacky-a.html",   venue: "ŠH Rohožník" },
+    mzb:          { label: "Mladšie žiačky B",   club: "g-f", name: "Rohožník / Malacky", href: "mladsie-ziacky-b.html",   venue: "ŠH Rohožník" },
+    mzc:          { label: "Mladšie žiačky C",   club: "g-f", name: "Rohožník / Malacky", href: "mladsie-ziacky-c.html",   venue: "ŠH Rohožník" },
+    dievcata_mini:{ label: "Dievčatá mini",      club: "g-f", name: "Rohožník / Malacky", href: "dievcata-mini.html",      venue: "ŠH Rohožník" }
   };
   var MONTHS = ["január", "február", "marec", "apríl", "máj", "jún", "júl", "august", "september", "október", "november", "december"];
   var MONTHS_GEN = ["januára", "februára", "marca", "apríla", "mája", "júna", "júla", "augusta", "septembra", "októbra", "novembra", "decembra"];
@@ -109,7 +109,7 @@
     var right = e.played
       ? '<span class="kal-score ' + (e.result === "Výhra" ? "win" : e.result === "Prehra" ? "loss" : "") + '">' + esc(String(e.score).replace(/\s+/g, "")) + "</span>"
       : '<span class="kal-badge">' + (e.home ? "Doma" : "Vonku") + "</span>";
-    return '<a class="kal-item ' + e.club + '" href="' + e.team.href + '">' +
+    return '<a class="kal-item ' + e.club + (e.home ? " home" : " away") + '" href="' + e.team.href + '">' +
       '<div class="kal-time">' + esc(e.played ? "✓" : (e.time || "–")) + "</div>" +
       '<div><div class="kal-cat">' + esc(e.team.label) + "</div>" +
       '<div class="kal-teams">' + (e.home ? ours + " – " + opp : opp + " – " + ours) + "</div>" +
@@ -209,8 +209,8 @@
   Promise.all([loadMatches().catch(function () { note.textContent = "Zápasy sa nepodarilo načítať, zobrazujú sa len klubové akcie."; }), loadAkcie()])
     .then(function () {
       if (note.textContent.indexOf("nepodarilo") === -1)
-        note.innerHTML = '<span class="kal-legend"><span><i style="background:#1E7B2E"></i>plná farba = domáci zápas</span>' +
-          '<span><i style="background:#e6efe8;border-left:4px solid #1E7B2E"></i>svetlá = zápas vonku</span>' +
+        note.innerHTML = '<span class="kal-legend"><span><i style="background:#C21F26"></i><i style="background:#0B4F9C"></i>plná farba = domáci zápas</span>' +
+          '<span><i style="background:#f9e4e5;border-left:4px solid #C21F26"></i><i style="background:#e2ebf5;border-left:4px solid #0B4F9C"></i>svetlá = zápas vonku</span>' +
           '<span><i style="background:#fff6d6;border-left:4px solid #F2B705"></i>★ klubová akcia</span></span>';
       // ak tento mesiac nič nie je, skoč na mesiac s najbližšou udalosťou
       var next = events.filter(function (e) { return e.d >= today; }).sort(function (a, b) { return a.d - b.d; })[0];
