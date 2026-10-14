@@ -182,8 +182,16 @@ main.page{display:block; max-width:1500px;}
 .footer-social{list-style:none; margin:0 0 18px; padding:0; display:flex; flex-direction:column; gap:10px;}
 .footer-social li{display:flex; align-items:center; gap:8px;}
 .footer-social span{flex:1; color:#fff; font-weight:600;}
-.footer-social a{width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; transition:background .15s;}
-.footer-social a:hover{background:var(--red);}
+.footer-social a{width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center;
+  transition:background .15s, transform .1s cubic-bezier(.42,0,.58,1), box-shadow .15s;}
+/* po prejdení myšou ikona vyskočí, zakýve sa a dostane farbu siete */
+.footer-social a:hover, .footer-social a:focus-visible{transform:translateY(-5px); box-shadow:0 6px 14px rgba(0,0,0,.35);}
+.footer-social a:hover svg, .footer-social a:focus-visible svg{animation:socWiggle .4s ease infinite;}
+.footer-social a[href*="facebook"]:hover, .footer-social a[href*="facebook"]:focus-visible{background:#1877F2;}
+.footer-social a[href*="instagram"]:hover, .footer-social a[href*="instagram"]:focus-visible{background:radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);}
+.footer-social a[href*="youtube"]:hover, .footer-social a[href*="youtube"]:focus-visible{background:#FF0000;}
+@keyframes socWiggle{0%{transform:rotate(8deg);} 50%{transform:rotate(-8deg);} 100%{transform:rotate(8deg);}}
+@media (prefers-reduced-motion: reduce){ .footer-social a:hover svg{animation:none;} .footer-social a:hover{transform:none;} }
 .footer-social svg{width:17px; height:17px; fill:#fff;}
 .footer-bottom{border-top:1px solid rgba(255,255,255,0.12); text-align:center; font-size:12px; color:rgba(255,255,255,0.6); padding:14px 24px 18px;}
 @media (max-width:1000px){ .footer-inner{grid-template-columns:1fr 1fr;} }
