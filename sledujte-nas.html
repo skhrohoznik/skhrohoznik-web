@@ -166,6 +166,10 @@
   .map-item p{margin-bottom:10px; color:#6b6455; font-size:14px; font-weight:600;}
   .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
   .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
+  .fb-fallback{width:360px; max-width:100%; min-height:200px; background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,.08); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:24px; text-align:center;}
+  .fb-fallback p{font-size:14px; color:#5c5648; margin:0;}
+  .fb-fallback a{display:inline-flex; align-items:center; gap:8px; background:#1877F2; color:#fff; text-decoration:none; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.04em; padding:11px 18px;}
+  .fb-fallback a:hover{filter:brightness(.92);}
   .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
   .gallery-grid {
       display: grid;
@@ -466,6 +470,34 @@
         li.classList.toggle('open');
       });
     });
+  })();
+</script>
+<script>
+  // Ak Facebook niektorú stránku do okna nevloží (napr. má nastavené vekové alebo krajinové obmedzenie),
+  // ukáže sa namiesto prázdneho miesta tlačidlo s odkazom na stránku.
+  (function () {
+    var started = Date.now();
+    function check() {
+      var allowed = document.querySelector('.fb-page') && !document.querySelector('.fb-item .ck-placeholder');
+      if (!allowed) return setTimeout(check, 1500);
+      if (Date.now() - started < 8000 && !window.FB) return setTimeout(check, 1000);
+      function verify() {
+        document.querySelectorAll('.fb-item .fb-page').forEach(function (el) {
+          var ok = el.offsetHeight > 80;
+          var fb = el.parentNode.querySelector('.fb-fallback');
+          if (ok) { if (fb) fb.remove(); return; }
+          if (fb) return;
+          fb = document.createElement('div');
+          fb.className = 'fb-fallback';
+          fb.innerHTML = '<p>Príspevky tejto stránky sa tu nedajú zobraziť.</p>' +
+            '<a href="' + el.getAttribute('data-href') + '" target="_blank" rel="noopener">Otvoriť na Facebooku ↗</a>';
+          el.parentNode.appendChild(fb);
+        });
+      }
+      setTimeout(verify, 6000);
+      setTimeout(verify, 15000);
+    }
+    check();
   })();
 </script>
 <script src="cookies.js" defer></script>
