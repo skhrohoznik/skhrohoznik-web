@@ -196,16 +196,17 @@
   .mc.g-f.home{--mc:#C21F26;} .mc.g-f.away{--mc:#F2A0A3;}
   .mc.g-m.home{--mc:#0B4F9C;} .mc.g-m.away{--mc:#8DB8EA;}
   .mc.g-f .mc-cat{color:#C21F26;} .mc.g-m .mc-cat{color:#0B4F9C;}
-  .mc-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:2px;}
-  .mc-cat{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--red); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .mc-top{display:flex; flex-direction:column; gap:3px; margin-bottom:2px;}
+  .mc-cat{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--red); line-height:1.3;}
   .mc-when{font-size:12px; font-weight:700; color:#5c5648; white-space:nowrap;}
+  .mc-when .tba{color:#9a927f;}
   .mc-row{display:flex; align-items:center; gap:10px; min-width:0; font-size:14px;}
   .mc-row.ours .mc-name{font-weight:700;}
   .mc-logo,.mc-ini{flex:none; width:30px; height:30px;}
   .mc-logo{display:block; object-fit:contain;}
   .mc-ini{border-radius:50%; background:var(--cream); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#6b6455;}
   .mc-ini[hidden]{display:none;}
-  .mc-name{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .mc-name{flex:1; min-width:0; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere;}
   .mc-score{font-family:'Archivo Black', sans-serif; font-size:18px; font-weight:400;}
   .mc-where{font-size:12px; color:#6b6455; border-top:1px solid var(--line); padding-top:8px; margin-top:2px;}
   .mc-badge{position:absolute; right:16px; bottom:10px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#6b6455;}
@@ -557,7 +558,7 @@
       sh = sc[0] || ""; sa = sc[1] || "";
       cls = m.result === "Výhra" ? " win" : (m.result === "Prehra" ? " loss" : "");
     }
-    const when = shortDate(m.date) + (played ? "" : " · " + (m.time ? escH(m.time) : "čas upresníme"));
+    const when = shortDate(m.date) + (played ? "" : " · " + (m.time ? escH(m.time) : '<span class="tba" title="Čas zápasu ešte nie je určený">??:??</span>'));
     const place = m.home ? t.venue : (m.awayCity || "");
     const row = (team, score, isOurs) =>
       '<div class="mc-row' + (isOurs ? " ours" : "") + '">' + logoHtml(team.logo, team.name) +
