@@ -164,13 +164,6 @@
   }
   .maps-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:24px;}
   .map-item p{margin-bottom:10px; color:#6b6455; font-size:14px; font-weight:600;}
-  .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
-  .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
-  .fb-fallback{width:360px; max-width:100%; min-height:200px; background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,.08); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:24px; text-align:center;}
-  .fb-fallback p{font-size:14px; color:#5c5648; margin:0;}
-  .fb-fallback a{display:inline-flex; align-items:center; gap:8px; background:#1877F2; color:#fff; text-decoration:none; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.04em; padding:11px 18px;}
-  .fb-fallback a:hover{filter:brightness(.92);}
-  .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
   .gallery-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -207,6 +200,29 @@
   .page-title{font-size:clamp(26px,4vw,38px); margin-bottom:12px;}
   .page-intro{color:#5c5648; font-size:15px; max-width:640px; margin-bottom:8px;}
   .block{margin-top:44px;}
+  /* ---- Siete klubov: "3D" dlaždice ---- */
+  .iso-clubs{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:30px 24px;}
+  .iso-club{background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,.08); padding:22px 22px 74px; overflow:hidden;}
+  .iso-club h3{display:flex; align-items:center; gap:12px; font-size:18px; margin:0 0 6px;}
+  .iso-club h3 img{width:44px; height:44px; border-radius:50%; object-fit:contain; box-shadow:0 2px 8px rgba(0,0,0,.12);}
+  .iso{list-style:none; margin:0; padding:62px 0 0 30px; display:flex; flex-direction:column; gap:30px;}
+  .iso li{--c:#3b5998; --cd:#2d4373; --cl:#4a69ad;}
+  .iso li.fb{--c:#1877F2; --cd:#0f5fc9; --cl:#4a92f5;}
+  .iso li.ig{--c:#E4405F; --cd:#c82245; --cl:#ec6a83;}
+  .iso li.yt{--c:#FF0000; --cd:#c40000; --cl:#ff4d4d;}
+  .iso a{position:relative; display:flex; align-items:center; gap:14px; width:250px; height:56px; padding-left:18px;
+    background:linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.55)), var(--logo) right 8px center / 44px no-repeat, #fff;
+    color:var(--ink); text-decoration:none; border:1px solid #e3e3e3;
+    transform:rotate(-30deg) skew(25deg) translate(0,0); transition:.5s; box-shadow:-14px 14px 10px rgba(0,0,0,.25);}
+  .iso a::before{content:''; position:absolute; top:7px; left:-14px; height:100%; width:14px; background:#c9c9c9; transform:skewY(-45deg); transition:.5s;}
+  .iso a::after{content:''; position:absolute; bottom:-14px; left:-7px; height:14px; width:100%; background:#dcdcdc; transform:skewX(-45deg); transition:.5s;}
+  .iso svg{width:26px; height:26px; fill:var(--c); flex:none; transition:.5s;}
+  .iso span{font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.2em; transition:.5s;}
+  .iso a:hover, .iso a:focus-visible{background:linear-gradient(color-mix(in srgb, var(--c) 82%, transparent), color-mix(in srgb, var(--c) 82%, transparent)), var(--logo) right 8px center / 46px no-repeat, #fff; color:#fff; transform:rotate(-30deg) skew(25deg) translate(14px,-10px); box-shadow:-34px 34px 34px rgba(0,0,0,.35);}
+  .iso a:hover svg, .iso a:focus-visible svg{fill:#fff;}
+  .iso a:hover::before, .iso a:focus-visible::before{background:var(--cd);}
+  .iso a:hover::after, .iso a:focus-visible::after{background:var(--cl);}
+  @media (prefers-reduced-motion: reduce){ .iso a, .iso a::before, .iso a::after{transition:none;} }
 </style>
 </head>
 <body>
@@ -279,86 +295,35 @@
     <p class="page-intro">Zostrihy zápasov, tréningy a novinky zo všetkých troch klubov na jednom mieste.</p>
 
     <section class="block">
-      <div class="section-head"><h2>YouTube</h2></div>
-      <div class="cards">
-        <a class="video-card" href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener">
-          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
-          <div>
-            <div class="vt">ŠKH Rohožník</div>
-          </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/@hczahoraci9848" target="_blank" rel="noopener">
-          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
-          <div>
-            <div class="vt">HC Záhoráci</div>
-          </div>
-        </a>
-        <a class="video-card" href="https://www.youtube.com/@handballmalacky1975" target="_blank" rel="noopener">
-          <div class="play"><img src="youtube-logo.png" alt="YouTube"></div>
-          <div>
-            <div class="vt">TJ Strojár Malacky</div>
-          </div>
-        </a>
+      <div class="section-head"><h2>Naše siete</h2></div>
+      <div class="iso-clubs">
+        <div class="iso-club" style="--logo:url(logo.png)">
+          <h3><img src="logo.png" alt="">ŠKH Rohožník</h3>
+          <ul class="iso">
+            <li class="fb"><a href="https://www.facebook.com/skhrohoznik.sk/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 8V6.5c0-.8.2-1.2 1.4-1.2H17V2.2C16.5 2.1 15.4 2 14.3 2 11.8 2 10.2 3.5 10.2 6.3V8H7.5v3.4h2.7V22H14V11.4h2.8l.4-3.4H14z"/></svg><span>Facebook</span></a></li>
+            <li class="ig"><a href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM20.9 7c-.1-1.6-.4-3-1.6-4.2S16.6 1.2 15 1.1C13.4 1 10.6 1 9 1.1 7.4 1.2 6 1.5 4.8 2.7S3.2 5.4 3.1 7C3 8.6 3 15.4 3.1 17c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 4.4.1 6 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-8.4.2-10zm-2.1 12.2a3.3 3.3 0 0 1-1.9 1.9c-1.3.5-4.4.4-5.9.4s-4.6.1-5.9-.4a3.3 3.3 0 0 1-1.9-1.9c-.5-1.3-.4-4.4-.4-5.9s-.1-4.6.4-5.9a3.3 3.3 0 0 1 1.9-1.9C6.4 4.9 9.5 5 11 5s4.6-.1 5.9.4a3.3 3.3 0 0 1 1.9 1.9c.5 1.3.4 4.4.4 5.9s.1 4.6-.4 5.9z"/></svg><span>Instagram</span></a></li>
+            <li class="yt"><a href="https://www.youtube.com/@SKHRohoznik_StrojarMalacky" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg><span>YouTube</span></a></li>
+          </ul>
+        </div>
+        <div class="iso-club" style="--logo:url(zahoraci.png)">
+          <h3><img src="zahoraci.png" alt="">HC Záhoráci</h3>
+          <ul class="iso">
+            <li class="fb"><a href="https://www.facebook.com/hczahoraci/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 8V6.5c0-.8.2-1.2 1.4-1.2H17V2.2C16.5 2.1 15.4 2 14.3 2 11.8 2 10.2 3.5 10.2 6.3V8H7.5v3.4h2.7V22H14V11.4h2.8l.4-3.4H14z"/></svg><span>Facebook</span></a></li>
+            <li class="ig"><a href="https://www.instagram.com/hc_zahoraci/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM20.9 7c-.1-1.6-.4-3-1.6-4.2S16.6 1.2 15 1.1C13.4 1 10.6 1 9 1.1 7.4 1.2 6 1.5 4.8 2.7S3.2 5.4 3.1 7C3 8.6 3 15.4 3.1 17c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 4.4.1 6 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-8.4.2-10zm-2.1 12.2a3.3 3.3 0 0 1-1.9 1.9c-1.3.5-4.4.4-5.9.4s-4.6.1-5.9-.4a3.3 3.3 0 0 1-1.9-1.9c-.5-1.3-.4-4.4-.4-5.9s-.1-4.6.4-5.9a3.3 3.3 0 0 1 1.9-1.9C6.4 4.9 9.5 5 11 5s4.6-.1 5.9.4a3.3 3.3 0 0 1 1.9 1.9c.5 1.3.4 4.4.4 5.9s.1 4.6-.4 5.9z"/></svg><span>Instagram</span></a></li>
+            <li class="yt"><a href="https://www.youtube.com/@hczahoraci9848" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg><span>YouTube</span></a></li>
+          </ul>
+        </div>
+        <div class="iso-club" style="--logo:url(strojar-malacky.jpg)">
+          <h3><img src="strojar-malacky.jpg" alt="">TJ Strojár Malacky</h3>
+          <ul class="iso">
+            <li class="fb"><a href="https://www.facebook.com/handballmalacky/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 8V6.5c0-.8.2-1.2 1.4-1.2H17V2.2C16.5 2.1 15.4 2 14.3 2 11.8 2 10.2 3.5 10.2 6.3V8H7.5v3.4h2.7V22H14V11.4h2.8l.4-3.4H14z"/></svg><span>Facebook</span></a></li>
+            <li class="ig"><a href="https://www.instagram.com/handballmalacky/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 7.3A4.7 4.7 0 1 0 12 16.7 4.7 4.7 0 0 0 12 7.3zm0 7.7a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.9-8.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM20.9 7c-.1-1.6-.4-3-1.6-4.2S16.6 1.2 15 1.1C13.4 1 10.6 1 9 1.1 7.4 1.2 6 1.5 4.8 2.7S3.2 5.4 3.1 7C3 8.6 3 15.4 3.1 17c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 4.4.1 6 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-8.4.2-10zm-2.1 12.2a3.3 3.3 0 0 1-1.9 1.9c-1.3.5-4.4.4-5.9.4s-4.6.1-5.9-.4a3.3 3.3 0 0 1-1.9-1.9c-.5-1.3-.4-4.4-.4-5.9s-.1-4.6.4-5.9a3.3 3.3 0 0 1 1.9-1.9C6.4 4.9 9.5 5 11 5s4.6-.1 5.9.4a3.3 3.3 0 0 1 1.9 1.9c.5 1.3.4 4.4.4 5.9s.1 4.6-.4 5.9z"/></svg><span>Instagram</span></a></li>
+            <li class="yt"><a href="https://www.youtube.com/@handballmalacky1975" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg><span>YouTube</span></a></li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <section class="block">
-      <div class="section-head"><h2>Instagram</h2></div>
-      <div class="cards">
-        <a class="video-card" href="https://www.instagram.com/skhrohoznik_strojarmalacky/" target="_blank" rel="noopener">
-          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
-          <div>
-            <div class="vt">ŠKH Rohožník</div>
-          </div>
-        </a>
-        <a class="video-card" href="https://www.instagram.com/hc_zahoraci/" target="_blank" rel="noopener">
-          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
-          <div>
-            <div class="vt">HC Záhoráci</div>
-          </div>
-        </a>
-        <a class="video-card" href="https://www.instagram.com/handballmalacky/" target="_blank" rel="noopener">
-          <div class="play"><img src="instagram-logo.png" alt="Instagram"></div>
-          <div>
-            <div class="vt">TJ Strojár Malacky</div>
-          </div>
-        </a>
-      </div>
-    </section>
-
-    <section class="block">
-      <div class="section-head"><h2>Facebook</h2></div>
-      <div class="fb-wrap">
-        <div class="fb-item">
-          <span class="fb-label">ŠKH Rohožník</span>
-          <div class="fb-page"
-            data-href="https://www.facebook.com/skhrohoznik.sk/"
-            data-tabs="timeline" data-width="360" data-height="400"
-            data-small-header="false" data-adapt-container-width="true"
-            data-hide-cover="false" data-show-facepile="true">
-          </div>
-        </div>
-        <div class="fb-item">
-          <span class="fb-label">HC Záhoráci</span>
-          <div class="fb-page"
-            data-href="https://www.facebook.com/hczahoraci/"
-            data-tabs="timeline" data-width="360" data-height="400"
-            data-small-header="false" data-adapt-container-width="true"
-            data-hide-cover="false" data-show-facepile="true">
-          </div>
-        </div>
-        <div class="fb-item">
-          <span class="fb-label">Handball Malacky</span>
-          <div class="fb-page"
-            data-href="https://www.facebook.com/handballmalacky/"
-            data-tabs="timeline" data-width="360" data-height="400"
-            data-small-header="false" data-adapt-container-width="true"
-            data-hide-cover="false" data-show-facepile="true">
-          </div>
-        </div>
-      </div>
-    </section>
-    <div id="fb-root"></div>
 
   </div>
   </main>
@@ -470,34 +435,6 @@
         li.classList.toggle('open');
       });
     });
-  })();
-</script>
-<script>
-  // Ak Facebook niektorú stránku do okna nevloží (napr. má nastavené vekové alebo krajinové obmedzenie),
-  // ukáže sa namiesto prázdneho miesta tlačidlo s odkazom na stránku.
-  (function () {
-    var started = Date.now();
-    function check() {
-      var allowed = document.querySelector('.fb-page') && !document.querySelector('.fb-item .ck-placeholder');
-      if (!allowed) return setTimeout(check, 1500);
-      if (Date.now() - started < 8000 && !window.FB) return setTimeout(check, 1000);
-      function verify() {
-        document.querySelectorAll('.fb-item .fb-page').forEach(function (el) {
-          var ok = el.offsetHeight > 80;
-          var fb = el.parentNode.querySelector('.fb-fallback');
-          if (ok) { if (fb) fb.remove(); return; }
-          if (fb) return;
-          fb = document.createElement('div');
-          fb.className = 'fb-fallback';
-          fb.innerHTML = '<p>Príspevky tejto stránky sa tu nedajú zobraziť.</p>' +
-            '<a href="' + el.getAttribute('data-href') + '" target="_blank" rel="noopener">Otvoriť na Facebooku ↗</a>';
-          el.parentNode.appendChild(fb);
-        });
-      }
-      setTimeout(verify, 6000);
-      setTimeout(verify, 15000);
-    }
-    check();
   })();
 </script>
 <script src="cookies.js" defer></script>
