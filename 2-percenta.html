@@ -249,8 +249,8 @@
   @media (max-width:640px){ .lb-prev,.lb-next{width:40px; height:64px; font-size:36px;} .lightbox{padding:16px;} }
   /* ---- 2 % Z DANÍ ---- */
   .dp-lead{max-width:760px; font-size:16px; line-height:1.6;}
-  .dp-clubs{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px; max-width:860px;}
-  .dp-club{--c:var(--red); background:#fff; border:1px solid var(--line); border-top:6px solid var(--c); box-shadow:0 4px 16px rgba(22,26,34,0.08); padding:24px 22px 22px; display:flex; flex-direction:column; align-items:flex-start;}
+  .dp-clubs{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:20px; max-width:860px; margin:0 auto;}
+  .dp-club{--c:var(--red); background:#fff; border:1px solid var(--line); border-top:6px solid var(--c); box-shadow:0 4px 16px rgba(22,26,34,0.08); padding:24px 22px 22px; display:flex; flex-direction:column; align-items:center; text-align:center;}
   .dp-club.zahoraci{--c:#1E7B2E;} .dp-club.strojar{--c:#0B4F9C;} .dp-club.rohoznik{--c:#D6262C;}
   .dp-club img{width:72px; height:72px; object-fit:contain; border-radius:50%; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.12); margin-bottom:14px;}
   .dp-club h3{font-size:20px; text-transform:uppercase; margin:0 0 4px; color:var(--c);}
@@ -260,6 +260,7 @@
   .dp-btn::before{content:"↓"; font-size:16px;}
   .dp-btn:hover{filter:brightness(.9);}
   .dp-note{font-size:14px; color:#5c5648; margin-top:16px; max-width:760px;}
+  .dp-clubs + .dp-note{margin-left:auto; margin-right:auto; text-align:center;}
   .dp-note a{color:var(--red);}
   .dp-sum{display:flex; flex-wrap:wrap; align-items:stretch; gap:10px;}
   .dp-part{flex:1 1 150px; background:#fff; border:1px solid var(--line); padding:16px 14px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:2px;}
