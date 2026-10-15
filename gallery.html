@@ -247,6 +247,7 @@
   .lb-prev{left:12px;} .lb-next{right:12px;}
   .lb-counter{position:absolute; bottom:14px; left:0; right:0; text-align:center; color:#fff; font-size:13px; font-weight:700; letter-spacing:.05em;}
   @media (max-width:640px){ .lb-prev,.lb-next{width:40px; height:64px; font-size:36px;} .lightbox{padding:16px;} }
+  .album-date{display:block; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; letter-spacing:.04em; color:var(--red); margin-bottom:3px;}
 </style>
 </head>
 <body>
@@ -350,7 +351,7 @@
         toggle.type = 'button';
         toggle.className = 'album-toggle';
         toggle.innerHTML =
-          '<h3>' + (album.nazov || '') + '</h3>' +
+          '<h3>' + (album.datum ? '<span class="album-date">' + album.datum + '</span>' : '') + (album.nazov || '') + '</h3>' +
           '<div class="album-right"><span class="album-count">' + fotoLabel(fotky.length) + '</span>' +
           '<span class="album-arrow">▾</span></div>';
         toggle.addEventListener('click', () => card.classList.toggle('open'));
