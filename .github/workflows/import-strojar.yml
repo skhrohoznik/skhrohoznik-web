@@ -18,6 +18,6 @@ jobs:
         run: |
           git config user.name "import-bot"
           git config user.email "import-bot@users.noreply.github.com"
-          git rm -rq --cached import-out 2>/dev/null; rm -rf import-out; git add -A aktuality-web.json archiv-web || true
+          git add -A aktuality-web.json archiv-web
           git commit -m "Výsledok importu [skip ci]" || echo "nič nové"
           git push
