@@ -20,6 +20,7 @@ const clean = (s) => dec(s.replace(/<[^>]+>/g, "")).normalize("NFKC").replace(/[
 
 function htmlToText(h) {
   h = h.replace(/<(script|style)[\s\S]*?<\/\1>/gi, "");
+  h = h.replace(/[\r\n]+/g, " ");
   h = h.replace(/<br\s*\/?>/gi, "\n");
   h = h.replace(/<li[^>]*>/gi, "\n• ");
   h = h.replace(/<\/(p|h[1-6]|li|div|ul|ol|blockquote)>/gi, "\n\n");
