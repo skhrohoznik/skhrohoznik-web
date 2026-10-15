@@ -1,4 +1,4 @@
-// Jednorazový import fotogalérií z https://www.handballmalacky.sk/foto/ do priečinka galeria-web/.
+// Jednorazový import fotiek z galérií vnútri článkov na https://www.handballmalacky.sk/aktuality/.
 import { mkdirSync, writeFileSync } from "node:fs";
 const BASE = "https://www.handballmalacky.sk";
 const UA = { headers: { "User-Agent": "Mozilla/5.0 (jednorazovy import skhrohoznik.sk)" } };
@@ -8,52 +8,59 @@ async function get(u) {
   throw new Error("fetch " + u);
 }
 const dec = (s) => s.replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&#039;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-mkdirSync("galeria-web", { recursive: true });
-const foto = await get(BASE + "/foto/");
-writeFileSync("galeria-web/_foto.html", foto);
-const albums = [...new Set([...foto.matchAll(/href="(\/a\d{4}-\d{4}\/)"/g)].map((m) => m[1]))];
-console.log("albumy", albums);
+const clean = (s) => dec(s.replace(/<[^>]+>/g, "")).normalize("NFKC").replace(/\s+/g, " ").trim();
+
+const urls = [];
+let page = BASE + "/aktuality/";
+const seenPages = new Set();
+while (page && !seenPages.has(page)) {
+  seenPages.add(page);
+  const h = await get(page);
+  for (const m of h.matchAll(/<article class="item">[\s\S]*?href="(\/l\/[^"]+)"/g)) { const u = BASE + m[1]; if (!urls.includes(u)) urls.push(u); }
+  const older = h.match(/href="(\/aktuality\/p-[^"]+)"[^>]*>(?:(?!<\/a>)[\s\S])*Staršie/);
+  page = older ? BASE + older[1] : null;
+}
+console.log("článkov", urls.length);
+mkdirSync("galeria-clanky", { recursive: true });
 const out = [];
-for (const a of albums) {
-  let pageUrl = BASE + a, n = 0;
+let total = 0;
+for (const u of urls) {
+  const h = await get(u);
+  const title = clean((h.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || [])[1] || "");
+  const dShown = clean((h.match(/class="s-bdh-d">([\s\S]*?)<\/span>\s*<\/div>/) || [])[1] || "");
+  const datum = (dShown.match(/\d{1,2}\.\d{1,2}\.\d{4}/) || [""])[0];
+  const start = h.indexOf("</h1>"), end = h.indexOf("<footer", start);
+  const body = h.slice(start, end > 0 ? end : undefined);
   const imgs = [];
-  const seen = new Set();
-  while (pageUrl && !seen.has(pageUrl)) {
-    seen.add(pageUrl);
-    const h = await get(pageUrl);
-    if (!n) writeFileSync("galeria-web/_" + a.replace(/\//g, "") + ".html", h);
-    // galéria Webnode: data-content JSON s položkami a veľkosťami
-    for (const m of h.matchAll(/data-content="([^"]+)"/g)) {
-      let j; try { j = JSON.parse(dec(m[1])); } catch (e) { continue; }
-      for (const it of j.items || []) {
-        const srcs = (it.sources || []).find((s) => /jpe?g|png/.test(s.mimeType)) || (it.sources || [])[0];
-        let best = it.img && it.img.src;
-        if (srcs && srcs.sizes) { const s = srcs.sizes.filter((x) => x.width <= 1200).pop() || srcs.sizes[0]; best = s.src; }
-        if (best && !imgs.includes(best)) imgs.push(best);
-      }
+  for (const m of body.matchAll(/class="gal-app[^"]*"[^>]*data-content="([^"]+)"/g)) {
+    let j; try { j = JSON.parse(dec(m[1])); } catch (e) { continue; }
+    for (const it of j.items || []) {
+      const srcs = (it.sources || []).find((s) => /jpe?g|png/.test(s.mimeType)) || (it.sources || [])[0];
+      let best = it.img && it.img.src;
+      if (srcs && srcs.sizes) { const s = srcs.sizes.filter((x) => x.width <= 1200).pop() || srcs.sizes[0]; best = s.src; }
+      if (best && !imgs.includes(best)) imgs.push(best);
     }
-    // obyčajné <a href> na obrázky (lightbox)
-    for (const m of h.matchAll(/href="(https:\/\/[^"]*cdnwnd\.com[^"]+\.(?:jpe?g|png)[^"]*)"/gi)) { const u = dec(m[1]); if (!imgs.includes(u)) imgs.push(u); }
-    const next = h.match(/href="([^"]+)"[^>]*>(?:(?!<\/a>)[\s\S])*(?:Ďalšie|Staršie|Nasledujúca|›|»)/);
-    pageUrl = next && next[1].startsWith("/a") ? BASE + next[1] : null;
-    n++;
   }
-  const name = a.replace(/\//g, "");
-  mkdirSync("galeria-web/" + name, { recursive: true });
+  if (!imgs.length) { console.log(datum, title, "- bez galérie"); continue; }
+  const slug = u.split("/l/")[1].replace(/\/$/, "");
+  const dir = "galeria-clanky/" + (decodeURIComponent(slug).normalize("NFKD").replace(/[^\w-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 50) || "clanok-" + out.length);
+  mkdirSync(dir, { recursive: true });
   const files = [];
   let i = 1;
-  for (const u of imgs) {
+  for (const src of imgs) {
     try {
-      const r = await fetch(u, UA);
+      const r = await fetch(src, UA);
       if (!r.ok) continue;
-      const ext = (u.split("?")[0].match(/\.(jpe?g|png)$/i) || [, "jpg"])[1].toLowerCase();
-      const f = `galeria-web/${name}/${String(i++).padStart(3, "0")}.${ext}`;
+      const ext = (src.split("?")[0].match(/\.(jpe?g|png|webp)$/i) || [, "jpg"])[1].toLowerCase();
+      const f = `${dir}/${String(i++).padStart(3, "0")}.${ext}`;
       writeFileSync(f, Buffer.from(await r.arrayBuffer()));
       files.push(f);
     } catch (e) {}
-    await sleep(150);
+    await sleep(100);
   }
-  console.log(a, "fotiek", imgs.length, "stiahnutých", files.length);
-  out.push({ album: name, fotky: files });
+  total += files.length;
+  console.log(datum, title, files.length);
+  out.push({ nazov: title, datum, fotky: files });
 }
-writeFileSync("galeria-web/_vysledok.json", JSON.stringify(out, null, 1));
+writeFileSync("galeria-clanky/_vysledok.json", JSON.stringify(out, null, 1));
+console.log("albumov", out.length, "fotiek", total);
