@@ -1,5 +1,0 @@
-https://www.hczahoraci.sk/aktuality/
-https://www.hczahoraci.sk/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.hczahoraci.sk%2Faktuality%2F
-https://www.hczahoraci.sk/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.hczahoraci.sk%2Faktuality%2F&#038;format=xml
-https://www.hczahoraci.sk/aktuality/?share=facebook
-https://www.hczahoraci.sk/aktuality/?share=x
