@@ -833,7 +833,7 @@ async function handleAktuality(env, ctx) {
     try {
       const feed = await readFeed(env);
       if (feed.length) {
-        output = feed.map(({ id, t, ...rest }) => rest);
+        output = feed.slice();
         fromArchive = true;
       } else if (ctx) {
         // archív je prázdny (prvé spustenie) - naplň ho na pozadí, ale najviac raz za 30 minút,
@@ -865,10 +865,22 @@ async function handleAktuality(env, ctx) {
       )
     );
     const fbItems = results.flat();
-    fbItems.sort((a, b) => b._sortTime - a._sortTime);
-    fbItems.forEach((item) => delete item._sortTime);
+    fbItems.forEach((item) => { item.t = item._sortTime; delete item._sortTime; });
     output = fbItems;
   }
+
+  // + články prevzaté zo starého webu handballmalacky.sk (statický súbor aktuality-web.json)
+  try {
+    const r = await env.ASSETS.fetch(new Request("https://assets.local/aktuality-web.json"));
+    if (r.ok) {
+      const web = await r.json();
+      if (Array.isArray(web)) output = output.concat(web);
+    }
+  } catch (err) {
+    // súbor chýba alebo je poškodený - zobrazia sa len príspevky z Facebooku
+  }
+  output.sort((a, b) => (b.t || 0) - (a.t || 0));
+  output = output.map(({ id, t, ...rest }) => rest);
 
   const res = new Response(JSON.stringify(output), {
     status: 200,
