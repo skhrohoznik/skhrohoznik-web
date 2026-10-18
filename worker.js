@@ -896,7 +896,7 @@ async function handleAktuality(env, ctx) {
     return acc ? (acc[1] + ACC[acc[2]]).normalize("NFC") : m;
   });
   const plain = (v) => typeof v === "string"
-    ? decodeEnt(v).replace(/[\u{1D400}-\u{1D7FF}\uFF01-\uFF5E]/gu, (c) => c.normalize("NFKC")).normalize("NFC")
+    ? decodeEnt(decodeEnt(v)).replace(/[\u{1D400}-\u{1D7FF}\uFF01-\uFF5E]/gu, (c) => c.normalize("NFKC")).normalize("NFC")
     : v;
   output = output.map(({ id, t, ...rest }) => ({ ...rest, text: plain(rest.text), nadpis: plain(rest.nadpis) }));
 
