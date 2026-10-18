@@ -3,6 +3,7 @@
 (function () {
   function esc(str) {
     return String(str == null ? '' : str)
+      .replace(/[\u{1D400}-\u{1D7FF}\uFF01-\uFF5E]/gu, function (c) { return c.normalize('NFKC'); }).normalize('NFC')
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function photosOf(item) {

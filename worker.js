@@ -880,7 +880,25 @@ async function handleAktuality(env, ctx) {
     // súbor chýba alebo je poškodený - zobrazia sa len príspevky z Facebooku
   }
   output.sort((a, b) => (b.t || 0) - (a.t || 0));
-  output = output.map(({ id, t, ...rest }) => rest);
+  // Facebook príspevky často používajú "ozdobné" Unicode písmo (𝐁𝐨𝐥𝐝, 𝘐𝘵𝘢𝘭𝘪𝘤, ｆｕｌｌｗｉｄｔｈ).
+  // Webové písmo tieto znaky nemá, preto ich prevedieme na obyčajné písmená (aj s diakritikou).
+  // Niektoré texty prídu aj s HTML entitami (&aacute; &amp; &#39;) - prevedieme ich na znaky.
+  const ENT = { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">", nbsp: " ", ndash: "–", mdash: "—", hellip: "…",
+    bdquo: "„", ldquo: "“", rdquo: "”", lsquo: "‘", rsquo: "’", laquo: "«", raquo: "»" };
+  const ACC = { acute: "\u0301", caron: "\u030C", uml: "\u0308", circ: "\u0302" };
+  const decodeEnt = (v) => v.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => {
+    if (e[0] === "#") {
+      const n = e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+      return n > 0 && n < 0x110000 ? String.fromCodePoint(n) : m;
+    }
+    if (ENT[e]) return ENT[e];
+    const acc = e.match(/^([a-zA-Z])(acute|caron|uml|circ)$/);
+    return acc ? (acc[1] + ACC[acc[2]]).normalize("NFC") : m;
+  });
+  const plain = (v) => typeof v === "string"
+    ? decodeEnt(v).replace(/[\u{1D400}-\u{1D7FF}\uFF01-\uFF5E]/gu, (c) => c.normalize("NFKC")).normalize("NFC")
+    : v;
+  output = output.map(({ id, t, ...rest }) => ({ ...rest, text: plain(rest.text), nadpis: plain(rest.nadpis) }));
 
   const res = new Response(JSON.stringify(output), {
     status: 200,
