@@ -243,7 +243,14 @@
     "mzc": {
       "nazov": "Mladšie žiačky C",
       "tim_regex": "^Malacky\\s*/\\s*Rohožník C$",
-      "sezony": {}
+      "sezony": {
+        "2026/2027": [
+          {
+            "nazov": "Základná časť",
+            "url": "https://www.slovakhandball.sk/competition?id=158785&part=366256"
+          }
+        ]
+      }
     },
     "dievcata_mini": {
       "nazov": "Dievčatá mini",
