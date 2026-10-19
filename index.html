@@ -23,6 +23,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="animacie.js"></script>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#161A22">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script src="/upozornenia.js" defer></script>
 <style>
   .page-content > section.block:first-child{margin-top:0;}
   /* ---- HOMEPAGE CONTENT ---- */
@@ -169,6 +173,10 @@
   .matches-switch{background:rgba(10,10,14,.35); backdrop-filter:blur(3px);}
   .matches-head{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; flex-wrap:wrap;}
   .matches-head h2{color:#fff; font-size:22px; margin:0;}
+  .matches-bell{display:inline-flex; align-items:center; gap:7px; margin-right:auto; background:rgba(10,10,14,.35); backdrop-filter:blur(3px); color:#fff; border:1.5px solid rgba(255,255,255,.7); font:inherit; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:7px 12px; cursor:pointer;}
+  .matches-bell svg{width:16px; height:16px;}
+  .matches-bell:hover{background:#fff; color:var(--ink);}
+  .matches-bell.active{border-color:#4ade80;}
   .matches-switch{display:flex; border:2px solid #fff;}
   .matches-switch button{
     background:transparent; color:#fff; border:none; cursor:pointer; font:inherit; font-size:12px; font-weight:700;
@@ -294,6 +302,7 @@
     <div class="matches-inner">
       <div class="matches-head">
         <h2>Zápasy</h2>
+        <button type="button" class="js-push-open matches-bell" title="Upozornenia na zápasy a výsledky do mobilu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span>Upozornenia</span></button>
         <div class="matches-switch" role="tablist">
           <button type="button" class="active" data-view="upcoming" role="tab" aria-selected="true">Najbližšie</button>
           <button type="button" data-view="results" role="tab" aria-selected="false">Výsledky</button>

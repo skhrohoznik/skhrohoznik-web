@@ -1,3 +1,5 @@
+import { handlePush, pushTick } from "./push.js";
+
 // Cloudflare Worker: obsluhuje statické súbory webu (cez ASSETS) a
 // dynamickú cestu /vysledky, ktorá sťahuje zápasy zo Slovenského zväzu hádzanej.
 
@@ -952,6 +954,9 @@ export default {
     if (url.pathname === "/klub.html" || url.pathname === "/klub") {
       return Response.redirect(new URL("/kontakty.html#haly", url).toString(), 301);
     }
+    if (url.pathname.startsWith("/push/")) {
+      return handlePush(request, env, url);
+    }
     if (url.pathname === "/vysledky") {
       return handleVysledky(request, env, ctx);
     }
@@ -971,6 +976,13 @@ export default {
     return serveStatic(request, env, url);
   },
   async scheduled(event, env, ctx) {
+    if (event.cron === "*/10 * * * *") {
+      // upozornenia do mobilu (push.js) - výsledky a zápasy berie z tej istej funkcie ako /vysledky
+      const getResults = async () =>
+        (await handleVysledky(new Request("https://skhrohoznik.sk/vysledky"), env, ctx)).json();
+      ctx.waitUntil(pushTick(env, ctx, getResults));
+      return;
+    }
     ctx.waitUntil(syncArchive(env));
   },
 };

@@ -1,0 +1,16 @@
+{
+  "name": "Hádzaná Záhorie",
+  "short_name": "Hádzaná Záhorie",
+  "description": "ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky – zápasy, výsledky a novinky.",
+  "lang": "sk",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#161A22",
+  "theme_color": "#161A22",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
