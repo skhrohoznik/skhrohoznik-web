@@ -164,7 +164,7 @@ export async function handlePush(request, env, url) {
     const queue = await readJson(env, QUEUE_KEY, []);
     return json({
       subscribers: subs.length, services: hosts, queue: queue.length,
-      seeded: !!state, known: state ? { results: state.results.length, reminders: state.reminders.length, oznamy: state.oznamy.length } : null,
+      seeded: !!state, known: state ? { results: state.results.length, reminders: state.reminders.length, oznamy: state.oznamy.length, oznamyErr: state.oznamyErr } : null,
       log: (await readJson(env, LOG_KEY, [])).slice().reverse(),
     });
   }
@@ -287,7 +287,12 @@ async function detect(env, ctx, getResults) {
   // nové oznamy (oznamy.json)
   try {
     const res = await env.ASSETS.fetch(new Request("https://assets.local/oznamy.json"));
-    const list = res.ok ? await res.json() : [];
+    if (!res.ok) throw new Error("oznamy.json " + res.status);
+    const list = await res.json();
+    // prvé úspešné načítanie oznamov len zapamätá, čo už na webe je (nič neposiela)
+    const seedOznamy = first || !st.oznamySeeded;
+    st.oznamySeeded = true;
+    delete st.oznamyErr;
     const used = {};
     for (const o of Array.isArray(list) ? list : []) {
       const base = slugify(o.id || o.nadpis || o.datum);
@@ -296,11 +301,11 @@ async function detect(env, ctx, getResults) {
       used[s] = 1;
       if (st.oznamy.includes(s)) continue;
       st.oznamy.push(s);
-      if (first) continue;
+      if (seedOznamy) continue;
       msgs.push({ type: "oznamy", title: `Nový oznam: ${o.nadpis || "Hádzaná Záhorie"}`,
         body: String(o.text || "").replace(/\s+/g, " ").slice(0, 140), icon: "/icon-192.png", url: "/oznam.html?o=" + encodeURIComponent(s) });
     }
-  } catch (e) { /* oznamy sa nepodarilo načítať */ }
+  } catch (e) { st.oznamyErr = String(e && e.message || e).slice(0, 120); }
 
   for (const k of ["results", "reminders", "oznamy"]) st[k] = st[k].slice(-800);
   const after = JSON.stringify(st);
