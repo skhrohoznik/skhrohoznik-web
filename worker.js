@@ -21,6 +21,11 @@ const COMPETITIONS = {
     url: "https://www.slovakhandball.sk/competition?id=158785&part=366256",
     teamMatch: /^Malacky\s*\/\s*Rohožník B$/i,
   },
+  // mladšie žiačky C hrajú v tej istej súťaži ako B
+  mzc: {
+    url: "https://www.slovakhandball.sk/competition?id=158785&part=366256",
+    teamMatch: /^Malacky\s*\/\s*Rohožník C$/i,
+  },
   zeny: {
     url: "https://www.slovakhandball.sk/competition?id=154381",
     teamMatch: GIRLS_TEAM,
@@ -284,6 +289,8 @@ const OPPONENT_CITY = {
 
 function cityForOpponent(name) {
   if (!name) return null;
+  // vzájomný zápas našich tímov (napr. mladšie žiačky B proti C) sa vždy hrá v Rohožníku
+  if (/^(TJ\s+)?(Strojár\s+)?Malacky\s*\/\s*(ŠKH\s+)?Rohožník\b/i.test(name.trim())) return "ŠH Rohožník";
   // odstranime pripadne koncove oznacenie tímu (napr. "Slovan Modra A" -> "Slovan Modra")
   const normalized = name.trim().replace(/\s+[A-C]$/, "");
   return OPPONENT_CITY[normalized] || OPPONENT_CITY[name.trim()] || null;
