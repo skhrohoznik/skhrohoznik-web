@@ -8,6 +8,12 @@
   var TEAMS_M = [["muzi_a", "Muži Extraliga"], ["muzi_b", "Muži 1. liga"], ["dorast_st_ch", "Starší dorastenci"], ["dorast_ml_ch", "Mladší dorastenci"],
     ["ziaci_st", "Starší žiaci"], ["ziaci_ml", "Mladší žiaci"], ["chlapci_mini", "Chlapci mini"]];
   var KEY = "hz-push";
+  // zvonček, ktorý sa každých 5 s rozhojdá (3 vrstvy: ozvena s "vlnkami", samotný zvonček, tieň)
+  var SVG_A = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+  var BELL_P = '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>';
+  var RING = '<span class="hz-bell" aria-hidden="true">' +
+    SVG_A + BELL_P + '<path d="M2.5 8a9.5 9.5 0 0 1 2-5.5M21.5 8a9.5 9.5 0 0 0-2-5.5"/></svg>' +
+    SVG_A + BELL_P + '</svg>' + SVG_A + BELL_P + '</svg></span>';
   var BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>';
 
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } }
@@ -19,6 +25,16 @@
   var css = '' +
     '.hzp-nav{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font:inherit;color:inherit;cursor:pointer;padding:0;text-transform:inherit;letter-spacing:inherit;font-weight:inherit;font-size:inherit}' +
     '.hzp-nav svg{width:18px;height:18px}@media (min-width:901px){.hzp-nav .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}.hzp-nav .on{width:7px;height:7px;border-radius:50%;background:#16a34a;display:none}.hzp-nav.active .on{display:inline-block}' +
+    '.hz-bell{position:relative;display:inline-block;width:18px;height:18px;flex:none;line-height:0}' +
+    '.hz-bell svg{position:absolute;top:0;left:0;width:100%!important;height:100%!important;transform-origin:50% 8%}' +
+    '.hz-bell svg:nth-child(1){z-index:3;opacity:0;animation:hzb1 5s infinite}' +
+    '.hz-bell svg:nth-child(2){z-index:2;animation:hzb2 5s infinite}' +
+    '.hz-bell svg:nth-child(3){z-index:1;opacity:.45;animation:hzb3 5s infinite}' +
+    '.matches-bell .hz-bell{width:16px;height:16px}' +
+    '@keyframes hzb1{0%,8%{transform:rotate(0);opacity:0}12%{transform:rotate(42deg);opacity:.5}16%{transform:rotate(-35deg);opacity:.4}20%{transform:rotate(0);opacity:.1}23%{transform:rotate(28deg);opacity:.3}26%{transform:rotate(-20deg);opacity:.2}29%{transform:rotate(0);opacity:.1}31%{transform:rotate(16deg);opacity:0}33%{transform:rotate(-12deg)}35%{transform:rotate(0)}37%{transform:rotate(-6deg)}39%,100%{transform:rotate(0);opacity:0}}' +
+    '@keyframes hzb2{0%,8%{transform:rotate(0)}12%{transform:rotate(42deg)}16%{transform:rotate(-35deg)}20%{transform:rotate(0)}23%{transform:rotate(28deg)}26%{transform:rotate(-20deg)}29%{transform:rotate(0)}31%{transform:rotate(16deg)}33%{transform:rotate(-12deg)}35%{transform:rotate(0)}37%{transform:rotate(-6deg)}39%{transform:rotate(0)}40%{transform:rotate(6deg)}44%{transform:rotate(-3deg)}49%{transform:rotate(2deg)}55%{transform:rotate(0)}62%{transform:rotate(1deg)}70%,100%{transform:rotate(0)}}' +
+    '@keyframes hzb3{0%,8%{transform:rotate(0);opacity:0}12%{transform:rotate(52deg);opacity:.35}16%{transform:rotate(-48deg);opacity:.3}20%{transform:rotate(0);opacity:0}23%{transform:rotate(42deg);opacity:.25}26%{transform:rotate(-30deg);opacity:.15}29%{transform:rotate(0);opacity:0}31%{transform:rotate(26deg);opacity:.12}33%{transform:rotate(-18deg);opacity:.08}35%{transform:rotate(0);opacity:0}37%{transform:rotate(-12deg);opacity:.2}40%{transform:rotate(6deg);opacity:0}100%{transform:rotate(0);opacity:0}}' +
+    '@media (prefers-reduced-motion:reduce){.hz-bell svg{animation:none!important}.hz-bell svg:nth-child(1),.hz-bell svg:nth-child(3){opacity:0}}' +
     '.hzp-ov{position:fixed;inset:0;z-index:3000;background:rgba(14,18,26,.55);display:none;align-items:flex-start;justify-content:center;padding:4vh 12px;overflow-y:auto}' +
     '.hzp-ov.open{display:flex}' +
     '.hzp{background:#fff;color:#161A22;border:2px solid #161A22;box-shadow:0 18px 40px rgba(0,0,0,.3);width:100%;max-width:620px;font-family:"Space Grotesk",sans-serif;text-transform:none;letter-spacing:normal;text-align:left}' +
@@ -64,11 +80,13 @@
     var ul = document.querySelector("#nav-menu > ul") || document.querySelector(".navbar nav ul");
     if (ul) {
       var li = document.createElement("li");
-      li.innerHTML = '<button type="button" class="hzp-nav" title="Upozornenia do mobilu">' + BELL + '<span class="lbl">Upozornenia</span><span class="on"></span></button>';
+      li.innerHTML = '<button type="button" class="hzp-nav" title="Upozornenia do mobilu">' + RING + '<span class="lbl">Upozornenia</span><span class="on"></span></button>';
       ul.appendChild(li);
     }
     document.querySelectorAll(".hzp-nav, .js-push-open").forEach(function (b) {
       navBtns.push(b);
+      var old = b.querySelector(":scope > svg");
+      if (old) { var w = document.createElement("span"); w.innerHTML = RING; b.replaceChild(w.firstChild, old); }
       b.addEventListener("click", function (e) { e.preventDefault(); open(); });
     });
     markActive();
