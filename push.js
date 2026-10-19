@@ -76,6 +76,8 @@ export async function encryptPayload(payload, p256dh, auth) {
 }
 
 // Odošle jednu správu. Vráti HTTP status (404/410 = odber už neplatí, treba ho zmazať).
+// Odpoveď push služby (pri chybe) sa uloží do lastPushError pre diagnostiku.
+export let lastPushError = "";
 export async function sendPush(sub, message, vapid, subject = "mailto:info@skhrohoznik.sk") {
   const body = await encryptPayload(JSON.stringify(message), sub.keys.p256dh, sub.keys.auth);
   const res = await fetch(sub.endpoint, {
@@ -89,7 +91,25 @@ export async function sendPush(sub, message, vapid, subject = "mailto:info@skhro
     },
     body,
   });
+  lastPushError = res.ok ? "" : (await res.text().catch(() => "")).slice(0, 200);
   return res.status;
+}
+
+// ---- záznam posledných odoslaní (na /push/status, bez adries odberov) ----
+const LOG_KEY = "push-log";
+async function addLog(env, entries) {
+  if (!entries.length) return;
+  const log = await readJson(env, LOG_KEY, []);
+  await env.ARCHIV.put(LOG_KEY, JSON.stringify(log.concat(entries).slice(-40)));
+}
+function logEntry(kind, endpoint, status, title) {
+  let host = "";
+  try { host = new URL(endpoint).host; } catch (e) {}
+  return { t: new Date().toISOString(), kind, host, status, title: String(title || "").slice(0, 60), err: status >= 200 && status < 300 ? undefined : lastPushError || undefined };
+}
+async function safeSend(sub, message, vapid) {
+  try { return await sendPush(sub, message, vapid); }
+  catch (e) { lastPushError = String(e && e.message || e).slice(0, 200); return 0; }
 }
 
 // ======================= Odbery a rozosielanie =======================
@@ -135,6 +155,19 @@ export async function handlePush(request, env, url) {
     const v = await getVapid(env);
     return json({ key: v.publicKey });
   }
+  // prehľad pre správcu webu: počet odberov, front, posledné odoslania (bez adries odberov)
+  if (url.pathname === "/push/status") {
+    const subs = await readJson(env, SUBS_KEY, []);
+    const hosts = {};
+    for (const s of subs) { let h = "?"; try { h = new URL(s.endpoint).host; } catch (e) {} hosts[h] = (hosts[h] || 0) + 1; }
+    const state = await readJson(env, STATE_KEY, null);
+    const queue = await readJson(env, QUEUE_KEY, []);
+    return json({
+      subscribers: subs.length, services: hosts, queue: queue.length,
+      seeded: !!state, known: state ? { results: state.results.length, reminders: state.reminders.length, oznamy: state.oznamy.length } : null,
+      log: (await readJson(env, LOG_KEY, [])).slice().reverse(),
+    });
+  }
   if (request.method !== "POST") return json({ error: "method" }, 405);
   let body;
   try { body = await request.json(); } catch (e) { return json({ error: "bad json" }, 400); }
@@ -144,6 +177,20 @@ export async function handlePush(request, env, url) {
   const subs = await readJson(env, SUBS_KEY, []);
   const idx = subs.findIndex((s) => s.endpoint === endpoint);
 
+  // skúšobná správa na jedno zariadenie (tlačidlo v okne upozornení)
+  if (url.pathname === "/push/test") {
+    if (idx < 0) return json({ ok: false, error: "unknown" }, 404);
+    const status = await safeSend(subs[idx], {
+      title: "Skúšobná správa ✓", body: "Upozornenia z webu Hádzaná Záhorie fungujú.", icon: "/icon-192.png", url: "/",
+    }, await getVapid(env));
+    await addLog(env, [logEntry("test", endpoint, status, "Skúšobná správa")]);
+    if (status === 404 || status === 410) {
+      subs.splice(idx, 1);
+      await env.ARCHIV.put(SUBS_KEY, JSON.stringify(subs));
+      return json({ ok: false, error: "expired", status });
+    }
+    return json({ ok: status >= 200 && status < 300, status, error: status >= 200 && status < 300 ? undefined : lastPushError });
+  }
   if (url.pathname === "/push/unsubscribe") {
     if (idx >= 0) { subs.splice(idx, 1); await env.ARCHIV.put(SUBS_KEY, JSON.stringify(subs)); }
     return json({ ok: true });
@@ -163,11 +210,13 @@ export async function handlePush(request, env, url) {
   await env.ARCHIV.put(SUBS_KEY, JSON.stringify(subs));
   if (isNew) {
     const vapid = await getVapid(env);
-    await sendPush(entry, {
+    const status = await safeSend(entry, {
       title: "Upozornenia sú zapnuté ✓",
       body: "Odteraz vám budú chodiť správy o zápasoch a výsledkoch, ktoré ste si vybrali.",
       icon: "/icon-192.png", url: "/",
-    }, vapid).catch(() => 0);
+    }, vapid);
+    await addLog(env, [logEntry("vitanie", endpoint, status, "Upozornenia sú zapnuté")]);
+    return json({ ok: true, push: status });
   }
   return json({ ok: true });
 }
@@ -266,6 +315,7 @@ export async function pushTick(env, ctx, getResults) {
   const now = localParts();
   if (!queue.length && now.min >= 30 && now.min < 40) {
     const msgs = await detect(env, ctx, getResults);
+    await addLog(env, [{ t: new Date().toISOString(), kind: "kontrola", noveSpravy: msgs.length }]);
     if (msgs.length) {
       const subs = await readJson(env, SUBS_KEY, []);
       for (const s of subs) {
@@ -288,12 +338,15 @@ export async function pushTick(env, ctx, getResults) {
   const byEp = new Map(subs.map((s) => [s.endpoint, s]));
   const vapid = await getVapid(env);
   const dead = new Set();
+  const log = [];
   await Promise.all(batch.map(async (item) => {
     const s = byEp.get(item.e);
     if (!s) return;
-    const status = await sendPush(s, item.m, vapid).catch(() => 0);
+    const status = await safeSend(s, item.m, vapid);
+    log.push(logEntry("auto", item.e, status, item.m.title));
     if (status === 404 || status === 410) dead.add(item.e);
   }));
+  await addLog(env, log);
   if (dead.size) {
     await env.ARCHIV.put(SUBS_KEY, JSON.stringify(subs.filter((s) => !dead.has(s.endpoint))));
     queue = queue.filter((q) => !dead.has(q.e));

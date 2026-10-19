@@ -52,6 +52,7 @@
     '.hzp .g-f{--c:#C21F26}.hzp .g-m{--c:#0B4F9C}' +
     '.hzp-foot{padding:14px 20px 18px;border-top:1px solid #E3DFD2;display:flex;flex-direction:column;gap:10px}' +
     '.hzp-go{background:#D6262C;color:#fff;border:none;font:inherit;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.05em;padding:14px;cursor:pointer}' +
+    '.hzp-test{background:#fff;color:#161A22;border:2px solid #161A22;font:inherit;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.05em;padding:11px;cursor:pointer}.hzp-test:disabled{opacity:.6;cursor:wait}' +
     '.hzp-go:disabled{opacity:.6;cursor:wait}.hzp-off{align-self:center;background:none;border:none;font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;color:#6b6455}' +
     '.hzp-note{font-size:12px;color:#6b6455;margin:0}.hzp-msg{display:none;padding:10px 12px;font-size:13.5px;line-height:1.45}' +
     '.hzp-msg.ok{display:block;background:#e8f5ec;border-left:4px solid #16a34a}.hzp-msg.err{display:block;background:#fdecec;border-left:4px solid #D6262C}' +
@@ -117,6 +118,7 @@
       "</div>" +
       '<div class="hzp-foot"><div class="hzp-msg" role="status"></div>' +
       '<button type="button" class="hzp-go">' + (active ? "Uložiť zmeny" : "🔔 Zapnúť upozornenia") + "</button>" +
+      (active ? '<button type="button" class="hzp-test">Poslať skúšobnú správu</button>' : "") +
       (active ? '<button type="button" class="hzp-off">Vypnúť upozornenia v tomto zariadení</button>' : "") +
       '<p class="hzp-note">Netreba telefónne číslo ani e-mail. Upozornenia sa dajú kedykoľvek vypnúť tu alebo v nastaveniach prehliadača. ' +
       'Na iPhone si najprv pridajte web na plochu (Zdieľať → Pridať na plochu) a upozornenia zapnite tam. <a href="/ochrana-udajov.html#upozornenia">Viac o údajoch</a></p></div></div>';
@@ -135,6 +137,8 @@
     ov.querySelector(".hzp-go").addEventListener("click", subscribe);
     var off = ov.querySelector(".hzp-off");
     if (off) off.addEventListener("click", unsubscribe);
+    var tst = ov.querySelector(".hzp-test");
+    if (tst) tst.addEventListener("click", sendTest);
 
     if (!supported) {
       msg(isIOS && !standalone
@@ -195,6 +199,29 @@
       msg(e && e.message === "perm"
         ? "Upozornenia neboli povolené. Ak ste ich omylom zamietli, povoľte ich v nastaveniach stránky (ikona zámky vedľa adresy)."
         : "Upozornenia sa nepodarilo zapnúť. Skúste to prosím o chvíľu znova.", "err");
+    }
+  }
+
+  async function sendTest() {
+    var b = ov.querySelector(".hzp-test");
+    b.disabled = true;
+    msg("Posielam skúšobnú správu…", "info");
+    try {
+      var reg = await navigator.serviceWorker.getRegistration("/sw.js");
+      var sub = reg && await reg.pushManager.getSubscription();
+      if (!sub || Notification.permission !== "granted") {
+        b.disabled = false;
+        return msg("V tomto zariadení odber chýba alebo sú upozornenia v prehliadači vypnuté. Kliknite na „Uložiť zmeny“ – odber sa obnoví.", "err");
+      }
+      var r = await fetch("/push/test", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ endpoint: sub.endpoint }) });
+      var d = await r.json().catch(function () { return {}; });
+      b.disabled = false;
+      if (d.ok) return msg("✓ Odoslané. Správa by mala prísť do pár sekúnd. Ak nepríde, skontrolujte, či má prehliadač v nastaveniach telefónu povolené upozornenia.", "ok");
+      if (d.error === "unknown" || d.error === "expired") return msg("Odber na serveri chýba alebo vypršal. Kliknite na „Uložiť zmeny“ – obnoví sa.", "err");
+      msg("Správu sa nepodarilo odoslať (kód " + (d.status || r.status) + "). Skúste prosím vypnúť a znova zapnúť upozornenia.", "err");
+    } catch (e) {
+      b.disabled = false;
+      msg("Správu sa nepodarilo odoslať. Skúste to o chvíľu znova.", "err");
     }
   }
 
