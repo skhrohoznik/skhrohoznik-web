@@ -139,6 +139,13 @@ function skontrolujFotky(subor, kde, fotky) {
       else if (f.animacia !== "logo") chyba(subor, `${kde}: "animacia" môže byť len "logo"`);
       continue;
     }
+    if (f && typeof f === "object" && f.typ !== undefined) {
+      // snímka banera "2 % z daní": { "typ": "2percenta", "fotky": [...] }
+      if (subor !== "hero.json") chyba(subor, `${kde}: "typ" sa dá použiť len v hero.json`);
+      else if (f.typ !== "2percenta") chyba(subor, `${kde}: "typ" môže byť len "2percenta"`);
+      else skontrolujFotky(subor, `${kde} (2 %)`, f.fotky);
+      continue;
+    }
     const cesta = typeof f === "string" ? f : f && f.foto;
     if (!jeText(cesta)) {
       chyba(subor, `${kde}: prázdny názov fotky`);
