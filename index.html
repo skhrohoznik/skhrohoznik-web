@@ -222,6 +222,52 @@
     .matches-inner{padding:24px 20px 20px;}
     .matches-row{grid-auto-columns:78%;}
   }
+
+  /* ---- snímka banera "2 % z daní" (hero.json: { "typ": "2percenta", "fotky": [...], "odkaz": "2-percenta.html" }) ---- */
+  .intro .slide:not(.active){pointer-events:none;}
+  .intro.own-on .intro-content{opacity:0; pointer-events:none;}
+  .intro .slide-dp{display:block; color:#fff; text-decoration:none; cursor:pointer;
+    background:radial-gradient(70% 90% at 78% 35%, #E2343A 0%, #B71C22 38%, #6E0F13 75%, #3D080B 100%);}
+  .intro .slide-dp::after{background:linear-gradient(90deg, rgba(20,4,6,.55) 0%, rgba(20,4,6,.15) 45%, transparent 70%);}
+  .dp-big{position:absolute; left:-2%; top:4%; font-family:'Archivo Black',sans-serif; font-size:min(44vw,560px); line-height:.8; letter-spacing:-.04em;
+    color:transparent; -webkit-text-stroke:2px rgba(255,255,255,.10); white-space:nowrap; user-select:none; pointer-events:none;}
+  .dp-collage{position:absolute; z-index:1; right:3%; top:96px; width:min(54%,760px); bottom:calc(var(--band,260px) + 30px);}
+  .dp-collage figure{position:absolute; margin:0; background:#fff; padding:7px 7px 7px; box-shadow:0 14px 34px rgba(0,0,0,.45);
+    rotate:var(--r); opacity:0; transform:translateY(-26px) scale(1.06); transition:opacity .6s ease, transform .7s cubic-bezier(.2,.8,.2,1);}
+  .dp-collage img{display:block; width:100%; aspect-ratio:4/3; object-fit:cover;}
+  .slide-dp.active .dp-collage figure{opacity:1; transform:none;}
+  .slide-dp.active .dp-collage figure:nth-child(2){transition-delay:.12s;} .slide-dp.active .dp-collage figure:nth-child(3){transition-delay:.24s;}
+  .slide-dp.active .dp-collage figure:nth-child(4){transition-delay:.36s;} .slide-dp.active .dp-collage figure:nth-child(5){transition-delay:.48s;}
+  .dp-collage figure:nth-child(1){left:0;   top:4%;  width:44%; --r:-6deg; z-index:2;}
+  .dp-collage figure:nth-child(2){left:36%; top:0;   width:40%; --r:4deg;  z-index:1;}
+  .dp-collage figure:nth-child(3){left:63%; top:20%; width:37%; --r:-3deg; z-index:3;}
+  .dp-collage figure:nth-child(4){left:9%;  top:47%; width:40%; --r:5deg;  z-index:4;}
+  .dp-collage figure:nth-child(5){left:45%; top:52%; width:37%; --r:-4deg; z-index:5;}
+  .dp-text{position:absolute; z-index:2; left:24px; bottom:calc(var(--band,260px) + 34px); max-width:min(560px,44%);}
+  .dp-kicker{display:inline-block; background:#fff; color:#B71C22; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:5px 10px; margin-bottom:10px;}
+  .dp-text h2{font-family:'Archivo Black',sans-serif; font-weight:400; font-size:clamp(30px,3.8vw,52px); line-height:1.02; text-transform:uppercase; margin:0 0 14px; text-shadow:0 3px 14px rgba(0,0,0,.35);}
+  .dp-text h2 b{font-weight:400; color:#FFD54A;}
+  .dp-text p{font-size:16px; line-height:1.5; color:#FBE3E4; margin:0 0 18px; max-width:480px;}
+  .dp-cta{display:inline-flex; align-items:center; gap:10px; background:#fff; color:var(--ink); font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.05em; padding:13px 20px; box-shadow:0 8px 20px rgba(0,0,0,.3); transition:transform .2s;}
+  .slide-dp:hover .dp-cta{transform:translateY(-2px);}
+  .dp-cta i{font-style:normal; transition:transform .2s;} .slide-dp:hover .dp-cta i{transform:translateX(4px);}
+  /* tablet a mobil: koláž je stlmené pozadie za textom */
+  @media (max-width:900px){
+    .dp-collage{left:-4%; right:-4%; width:auto; top:56px; bottom:calc(var(--band,260px) - 10px); z-index:0;}
+    .slide-dp.active .dp-collage figure{opacity:.55;}
+    .intro .slide-dp::after{z-index:1; background:linear-gradient(180deg, rgba(61,8,11,.35) 0%, rgba(61,8,11,.55) 45%, rgba(40,5,8,.92) 100%);}
+    .dp-text{left:20px; right:20px; max-width:none;}
+    .dp-text p{font-size:14.5px; margin-bottom:14px;}
+  }
+  @media (max-width:640px){
+    .dp-collage figure{padding:4px;}
+    .dp-kicker{display:none;}
+    .dp-text{bottom:calc(var(--band,260px) + 18px);}
+    .dp-text h2{font-size:30px; margin-bottom:10px;}
+    .dp-text p{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+    .dp-cta{padding:11px 16px; font-size:13px;}
+  }
+  @media (prefers-reduced-motion:reduce){ .dp-collage figure{transition:none;} }
 </style>
 <link rel="stylesheet" href="news.css">
 <script src="news.js"></script>
@@ -444,7 +490,8 @@
     function schedule() {
       clearTimeout(timer);
       if (slides.length < 2) return;
-      const ms = isAnim(slides[current]) && anim ? Math.max(interval * 1000, anim.duration) : interval * 1000;
+      const ms = isAnim(slides[current]) && anim ? Math.max(interval * 1000, anim.duration)
+        : slides[current].classList.contains('slide-own') ? Math.max(interval, 8) * 1000 : interval * 1000;
       timer = setTimeout(() => show((current + 1) % slides.length), ms);
     }
     function show(i) {
@@ -456,6 +503,7 @@
       cur.classList.add('active');
       if (dotsWrap.children[current]) dotsWrap.children[current].classList.add('active');
       hero.classList.toggle('anim-on', isAnim(cur));
+      hero.classList.toggle('own-on', cur.classList.contains('slide-own'));
       if (isAnim(cur) && anim) anim.play(cur);
       if (isAnim(prev) && prev !== cur && anim) setTimeout(() => { if (!prev.classList.contains('active')) anim.stop(prev); }, 1300);
       schedule();
@@ -466,13 +514,16 @@
       slides.forEach((s, i) => {
         const dot = document.createElement('button');
         dot.type = 'button';
-        dot.setAttribute('aria-label', isAnim(s) ? 'Animované logo' : 'Fotka ' + (i + 1));
+        dot.setAttribute('aria-label', isAnim(s) ? 'Animované logo' : s.classList.contains('slide-dp') ? '2 % z daní' : 'Fotka ' + (i + 1));
         if (i === current) dot.className = 'active';
         dot.addEventListener('click', () => show(i));
         dotsWrap.appendChild(dot);
       });
       if (isAnim(slides[current])) show(current); else schedule();
     }
+    function bandVar() { const b = document.getElementById('zapasy'), d = document.getElementById('hero-dots'); hero.style.setProperty('--band', ((b ? b.offsetHeight : 0) + (d ? d.offsetHeight : 0)) + 'px'); }
+    bandVar(); setTimeout(bandVar, 1500);
+    window.addEventListener('resize', bandVar);
     window.addEventListener('resize', () => {
       if (anim) hero.querySelectorAll('.slide-anim').forEach(el => anim.fit(el));
     });
@@ -482,13 +533,29 @@
     fetch('/hero.json', { cache: 'no-cache' })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(cfg => {
-        const list = (cfg.fotky || []).map(f => typeof f === 'string' ? { foto: f } : f).filter(f => f && (f.foto || (f.animacia === 'logo' && anim)));
+        const list = (cfg.fotky || []).map(f => typeof f === 'string' ? { foto: f } : f).filter(f => f && (f.foto || f.typ === '2percenta' || (f.animacia === 'logo' && anim)));
         if (list.length) {
           hero.querySelectorAll('.slide').forEach(el => el.remove());
           const content = hero.querySelector('.intro-content');
           list.forEach((f, i) => {
             const d = document.createElement('div');
             d.className = 'slide' + (i === 0 ? ' active' : '');
+            if (f.typ === '2percenta') {
+              const a = document.createElement('a');
+              a.className = 'slide slide-dp slide-own' + (i === 0 ? ' active' : '');
+              a.href = f.odkaz || '2-percenta.html';
+              a.setAttribute('aria-label', 'Darujte nám 2 % z daní – ako na to');
+              const esc = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+              a.innerHTML = '<div class="dp-big" aria-hidden="true">2 %</div>' +
+                '<div class="dp-collage" aria-hidden="true">' + (f.fotky || []).slice(0, 5).map(src =>
+                  '<figure><img src="' + esc(src) + '" alt="" loading="lazy"></figure>').join('') + '</div>' +
+                '<div class="dp-text"><span class="dp-kicker">' + esc(f.nadtitulok || 'Podporte našu mládež') + '</span>' +
+                '<h2>' + (f.nadpis ? esc(f.nadpis) : 'Darujte nám <b>2&nbsp;%</b> z&nbsp;daní') + '</h2>' +
+                '<p>' + esc(f.text || 'Každé percento ide na tréningy, turnaje, dresy a dopravu našich detí na zápasy. Stačí vyplniť jedno tlačivo – nič vás to nestojí.') + '</p>' +
+                '<span class="dp-cta">' + esc(f.tlacidlo || 'Chcem darovať 2 %') + ' <i>→</i></span></div>';
+              hero.insertBefore(a, content);
+              return;
+            }
             if (f.animacia) {
               d.classList.add('slide-anim');
               d.setAttribute('aria-hidden', 'true');
@@ -503,6 +570,7 @@
           slides = hero.querySelectorAll('.slide');
           current = 0;
           start(Number(cfg.interval_sekundy) || 5);
+          hero.classList.toggle('own-on', slides[current].classList.contains('slide-own'));
         }
         const h1 = hero.querySelector('.intro-content h1');
         const p = hero.querySelector('.intro-content p');

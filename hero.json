@@ -4,6 +4,9 @@
   "interval_sekundy": 5,
   "fotky": [
     { "foto": "hero-akcia.jpg", "pozicia": "center 12%" },
+    { "typ": "2percenta", "odkaz": "2-percenta.html", "tlacidlo": "Chcem darovať 2 %",
+      "text": "Každé percento ide na tréningy, turnaje, dresy a dopravu našich detí na zápasy. Stačí vyplniť jedno tlačivo – nič vás to nestojí.",
+      "fotky": ["hero/2p-1.jpg", "hero/2p-2.jpg", "hero/2p-3.jpg", "hero/2p-4.jpg", "hero/2p-5.jpg"] },
     { "foto": "hero/CP7A5741.jpg",   "pozicia": "center 15%" },
     { "animacia": "logo" },
     { "foto": "muzi.jpg",       "pozicia": "center top" },
