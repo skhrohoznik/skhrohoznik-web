@@ -25,6 +25,37 @@
   var WD_LONG = ["Nedeľa", "Pondelok", "Utorok", "Streda", "Štvrtok", "Piatok", "Sobota"];
   var MAX_IN_CELL = 3;
 
+  // ---- odber kalendára (/kalendar.ics) ----
+  (function () {
+    var box = document.getElementById("kal-sub-chips");
+    if (!box) return;
+    box.innerHTML = Object.keys(TEAMS).sort(function (a, b) {
+      return (TEAMS[a].club === "g-f" ? 0 : 1) - (TEAMS[b].club === "g-f" ? 0 : 1);
+    }).map(function (k) {
+      return '<label class="' + TEAMS[k].club + '"><input type="checkbox" value="' + k + '">' + TEAMS[k].label + "</label>";
+    }).join("");
+    var g = document.getElementById("kal-sub-google"), w = document.getElementById("kal-sub-webcal"), c = document.getElementById("kal-sub-copy");
+    function feed() {
+      var sel = [].map.call(box.querySelectorAll("input:checked"), function (i) { return i.value; });
+      return "skhrohoznik.sk/kalendar.ics" + (sel.length ? "?tim=" + sel.join(",") : "");
+    }
+    function update() {
+      g.href = "https://calendar.google.com/calendar/render?cid=" + encodeURIComponent("webcal://" + feed());
+      w.href = "webcal://" + feed();
+    }
+    box.addEventListener("change", function (e) {
+      if (e.target.parentNode) e.target.parentNode.classList.toggle("on", e.target.checked);
+      update();
+    });
+    c.addEventListener("click", function () {
+      var url = "https://" + feed();
+      var done = function () { c.textContent = "✓ Skopírované"; setTimeout(function () { c.textContent = "Kopírovať adresu"; }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { prompt("Adresa kalendára:", url); });
+      else prompt("Adresa kalendára:", url);
+    });
+    update();
+  })();
+
   var grid = document.getElementById("kal-grid");
   var dayBox = document.getElementById("kal-day");
   var listBox = document.getElementById("kal-list");
@@ -73,6 +104,17 @@
             place: m.home ? t.venue : (m.awayCity || ""), detailUrl: m.detailUrl
           });
         });
+        if (window.MatchLd) {
+          var now = new Date(); now.setHours(0, 0, 0, 0);
+          window.MatchLd.set("kalendar", (data.zapasy || []).filter(function (m) {
+            var d = parseDate(m.date); return TEAMS[m.tim] && !m.played && d && d >= now;
+          }).slice(0, 40).map(function (m) {
+            var t = TEAMS[m.tim];
+            return { date: m.date, time: m.time, home: m.home ? t.name : m.opponent, away: m.home ? m.opponent : t.name,
+              place: m.home ? t.venue : (m.awayCity || ""), city: window.MatchLd.city(m.home ? t.venue : m.awayCity) || m.awayCity || "",
+              label: t.label, url: "/" + t.href };
+          }));
+        }
       });
   }
   function loadAkcie() {

@@ -1,4 +1,4 @@
-import { handlePush, pushTick } from "./push.js";
+import { handlePush, pushTick, PUSH_TEAMS } from "./push.js";
 
 // Cloudflare Worker: obsluhuje statické súbory webu (cez ASSETS) a
 // dynamickú cestu /vysledky, ktorá sťahuje zápasy zo Slovenského zväzu hádzanej.
@@ -476,6 +476,114 @@ async function loadPhaseDataOnce(compUrl, ctx) {
     if (cached && cached.data) return cached.data;
     throw err;
   }
+}
+
+// /kalendar.ics?tim=zeny,mza -> zápasy (a klubové akcie) ako odoberateľný kalendár (Google, iPhone, Outlook).
+// Bez parametra tim = všetky tímy. akcie=0 vynechá klubové akcie.
+function icsEsc(s) {
+  return String(s == null ? "" : s).replace(/\\/g, "\\\\").replace(/;/g, "\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+}
+function icsFold(line) {
+  // riadky max. 75 bajtov (UTF-8), pokračovanie začína medzerou
+  const bytes = new TextEncoder().encode(line);
+  if (bytes.length <= 75) return line;
+  const out = [];
+  let cur = "", len = 0;
+  for (const ch of line) {
+    const l = new TextEncoder().encode(ch).length;
+    if (len + l > (out.length ? 74 : 75)) { out.push(cur); cur = ""; len = 0; }
+    cur += ch; len += l;
+  }
+  out.push(cur);
+  return out.join("\r\n ");
+}
+function icsDate(sk) {
+  const p = String(sk).split(".");
+  return p.length === 3 ? p[2] + p[1].padStart(2, "0") + p[0].padStart(2, "0") : null;
+}
+function icsAddMin(ymd, hm, add) {
+  const d = new Date(Date.UTC(+ymd.slice(0, 4), +ymd.slice(4, 6) - 1, +ymd.slice(6, 8), +hm[0], +hm[1] + add));
+  const z = (n) => String(n).padStart(2, "0");
+  return `${d.getUTCFullYear()}${z(d.getUTCMonth() + 1)}${z(d.getUTCDate())}T${z(d.getUTCHours())}${z(d.getUTCMinutes())}00`;
+}
+function icsNextDay(ymd) {
+  const d = new Date(Date.UTC(+ymd.slice(0, 4), +ymd.slice(4, 6) - 1, +ymd.slice(6, 8) + 1));
+  return d.toISOString().slice(0, 10).replace(/-/g, "");
+}
+const ICS_TZ = [
+  "BEGIN:VTIMEZONE", "TZID:Europe/Bratislava",
+  "BEGIN:DAYLIGHT", "TZOFFSETFROM:+0100", "TZOFFSETTO:+0200", "TZNAME:CEST", "DTSTART:19700329T020000", "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU", "END:DAYLIGHT",
+  "BEGIN:STANDARD", "TZOFFSETFROM:+0200", "TZOFFSETTO:+0100", "TZNAME:CET", "DTSTART:19701025T030000", "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU", "END:STANDARD",
+  "END:VTIMEZONE",
+];
+async function handleIcs(request, env, ctx, url) {
+  const wanted = (url.searchParams.get("tim") || "").split(",").map((s) => s.trim()).filter((k) => PUSH_TEAMS[k]);
+  const withAkcie = url.searchParams.get("akcie") !== "0";
+  const data = await (await handleKalendar(request, env, ctx)).json().catch(() => ({ zapasy: [] }));
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+  const ev = [];
+  for (const m of data.zapasy || []) {
+    if (wanted.length && !wanted.includes(m.tim)) continue;
+    const meta = PUSH_TEAMS[m.tim];
+    const ymd = icsDate(m.date);
+    if (!meta || !ymd) continue;
+    const home = m.home ? meta.club : m.opponent, away = m.home ? m.opponent : meta.club;
+    const score = m.played && m.score ? " " + String(m.score).replace(/\s+/g, "") : "";
+    const place = m.home ? meta.venue : (m.awayCity || "");
+    const hm = m.time && /^\d{1,2}:\d{2}$/.test(m.time) ? m.time.split(":") : null;
+    const lines = [
+      "BEGIN:VEVENT",
+      `UID:${(m.tim + "-" + ymd + "-" + m.opponent).replace(/[^A-Za-z0-9-]+/g, "")}@skhrohoznik.sk`,
+      `DTSTAMP:${stamp}`,
+      ...(hm
+        ? [`DTSTART;TZID=Europe/Bratislava:${icsAddMin(ymd, hm, 0)}`, `DTEND;TZID=Europe/Bratislava:${icsAddMin(ymd, hm, 90)}`]
+        : [`DTSTART;VALUE=DATE:${ymd}`, `DTEND;VALUE=DATE:${icsNextDay(ymd)}`]),
+      `SUMMARY:${icsEsc(`🤾 ${meta.label}: ${home} – ${away}${score}`)}`,
+      ...(place ? [`LOCATION:${icsEsc(place)}`] : []),
+      `DESCRIPTION:${icsEsc((m.played ? (m.result ? m.result + ". " : "") : (hm ? "" : "Čas zápasu ešte nie je známy. ")) + (m.home ? "Domáci zápas." : "Zápas vonku.") + " Viac na https://skhrohoznik.sk" + meta.href)}`,
+      `URL:https://skhrohoznik.sk${meta.href}`,
+      "END:VEVENT",
+    ];
+    ev.push(...lines);
+  }
+  if (withAkcie) {
+    try {
+      const r = await env.ASSETS.fetch(new Request("https://assets.local/akcie.json"));
+      const list = r.ok ? await r.json() : [];
+      for (const a of Array.isArray(list) ? list : []) {
+        const from = icsDate(a.datum);
+        if (!from || !a.nazov) continue;
+        const to = a.do ? icsDate(a.do) : from;
+        const hm = a.cas && /^\d{1,2}:\d{2}$/.test(a.cas) && !a.do ? a.cas.split(":") : null;
+        ev.push(
+          "BEGIN:VEVENT",
+          `UID:akcia-${from}-${String(a.nazov).normalize("NFD").replace(/[^A-Za-z0-9]+/g, "").slice(0, 40)}@skhrohoznik.sk`,
+          `DTSTAMP:${stamp}`,
+          ...(hm
+            ? [`DTSTART;TZID=Europe/Bratislava:${icsAddMin(from, hm, 0)}`, `DTEND;TZID=Europe/Bratislava:${icsAddMin(from, hm, 180)}`]
+            : [`DTSTART;VALUE=DATE:${from}`, `DTEND;VALUE=DATE:${icsNextDay(to || from)}`]),
+          `SUMMARY:${icsEsc("⭐ " + a.nazov)}`,
+          ...(a.miesto ? [`LOCATION:${icsEsc(a.miesto)}`] : []),
+          ...(a.popis ? [`DESCRIPTION:${icsEsc(a.popis)}`] : []),
+          "END:VEVENT",
+        );
+      }
+    } catch (e) { /* akcie sa nepodarilo načítať */ }
+  }
+  const name = wanted.length === 1 ? `Hádzaná Záhorie – ${PUSH_TEAMS[wanted[0]].label}` : "Hádzaná Záhorie – zápasy";
+  const body = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//skhrohoznik.sk//Hadzana Zahorie//SK", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+    `X-WR-CALNAME:${icsEsc(name)}`, "X-WR-TIMEZONE:Europe/Bratislava",
+    "REFRESH-INTERVAL;VALUE=DURATION:PT6H", "X-PUBLISHED-TTL:PT6H",
+    ...ICS_TZ, ...ev, "END:VCALENDAR",
+  ].map(icsFold).join("\r\n") + "\r\n";
+  return new Response(body, {
+    headers: {
+      "Content-Type": "text/calendar; charset=utf-8",
+      "Content-Disposition": 'inline; filename="hadzana-zahorie.ics"',
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
 }
 
 // /zapasy.json -> všetky zápasy všetkých tímov v aktuálnej sezóne (odohrané aj budúce) pre stránku Kalendár
@@ -980,6 +1088,9 @@ export default {
     }
     if (url.pathname === "/zapasy.json") {
       return handleKalendar(request, env, ctx);
+    }
+    if (url.pathname === "/kalendar.ics") {
+      return handleIcs(request, env, ctx, url);
     }
     if (url.pathname === "/aktuality.json") {
       return handleAktuality(env, ctx);

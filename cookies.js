@@ -140,7 +140,7 @@
     banner.innerHTML =
       '<h2 id="ck-title">Cookies a externý obsah</h2>' +
       '<p class="ck-intro-only">Tento web si pamätá len tvoju voľbu a meria návštevnosť anonymne bez cookies. ' +
-      'Mapy Google a Facebook stránky načítame až s tvojím súhlasom, pretože tieto služby môžu ukladať cookies ' +
+      'Mapy Google načítame až s tvojím súhlasom, pretože Google môže ukladať cookies ' +
       'a spracúvať tvoje údaje. Viac v <a href="/ochrana-udajov.html">Ochrane údajov</a>.</p>' +
       '<div class="ck-settings">' +
         '<div class="ck-row"><div><strong>Nevyhnutné</strong><span class="ck-desc">Zapamätanie tvojej voľby v úložisku prehliadača, aby sa banner nezobrazoval opakovane.</span></div><span class="ck-always">Vždy zapnuté</span></div>' +

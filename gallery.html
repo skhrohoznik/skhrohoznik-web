@@ -18,9 +18,8 @@
 <meta name="twitter:title" content="Galéria — Hádzaná Záhorie">
 <meta name="twitter:description" content="Fotky z tréningov, zápasov a turnajov všetkých klubov Hádzaná Záhorie.">
 <meta name="twitter:image" content="https://skhrohoznik.sk/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/space-grotesk-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="style.css">
 <script src="animacie.js"></script>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -169,6 +168,11 @@
   .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
   .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
   .albums{display:flex; flex-direction:column; gap:16px;}
+  .g-years{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .g-years button{background:#fff; border:1px solid var(--line); border-radius:999px; font:inherit; font-size:13px; font-weight:600; padding:7px 14px; cursor:pointer; color:var(--ink);}
+  .g-years button span{opacity:.6; font-weight:500; margin-left:4px;}
+  .g-years button.active{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .album.g-hide{display:none;}
   .album{
       background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,0.10);
     }
@@ -323,6 +327,7 @@
     <h1 class="page-title">Galéria</h1>
     <p class="page-intro">Fotky z tréningov, zápasov a turnajov všetkých klubov.</p>
     <section class="block">
+      <div class="g-years" id="g-years" role="group" aria-label="Filtrovať podľa roku" hidden></div>
       <div class="albums" id="albums">
         <p style="color:#5c5648;">Galéria sa načítava…</p>
       </div>
@@ -346,10 +351,18 @@
         if (n >= 2 && n <= 4) return n + ' fotky';
         return n + ' fotiek';
       }
+      // rok albumu: z dátumu; staré albumy celých sezón idú do "Staršie sezóny", ostatné bez dátumu sú aktuálne
+      const thisYear = String(new Date().getFullYear());
+      function albumYear(a) {
+        const m = String(a.datum || '').match(/(\d{4})$/);
+        if (m) return m[1];
+        return /sezóna\s*\d{4}/i.test(a.nazov || '') ? 'starsie' : thisYear;
+      }
       albums.forEach((album, idx) => {
         const fotky = album.fotky || [];
         const card = document.createElement('div');
         card.className = 'album';
+        card.dataset.rok = albumYear(album);
 
         const toggle = document.createElement('button');
         toggle.type = 'button';
@@ -380,6 +393,24 @@
 
         wrap.appendChild(card);
       });
+      // filter podľa roku
+      const counts = {};
+      albums.forEach(a => { const y = albumYear(a); counts[y] = (counts[y] || 0) + 1; });
+      const years = Object.keys(counts).filter(y => y !== 'starsie').sort((a, b) => b - a);
+      if (counts.starsie) years.push('starsie');
+      const bar = document.getElementById('g-years');
+      const chip = (y, label, n) => '<button type="button" data-y="' + y + '">' + label + '<span>' + n + '</span></button>';
+      bar.innerHTML = chip('vsetko', 'Všetko', albums.length) +
+        years.map(y => chip(y, y === 'starsie' ? 'Staršie sezóny' : y, counts[y])).join('');
+      function setYear(y) {
+        if (y !== 'vsetko' && !counts[y]) y = 'vsetko';
+        bar.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.y === y));
+        wrap.querySelectorAll('.album').forEach(c => c.classList.toggle('g-hide', y !== 'vsetko' && c.dataset.rok !== y));
+        try { history.replaceState(null, '', y === 'vsetko' ? location.pathname : '#rok-' + y); } catch (e) {}
+      }
+      bar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setYear(b.dataset.y); });
+      bar.hidden = years.length < 2;
+      setYear((location.hash.match(/^#rok-(\w+)/) || [])[1] || 'vsetko');
       wrap.querySelectorAll('.gallery-grid').forEach(grid => {
         const imgs = Array.from(grid.querySelectorAll('img'));
         imgs.forEach((img, i) => {

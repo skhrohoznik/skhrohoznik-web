@@ -72,6 +72,13 @@
         esc(window.Odpocet.fromSk(m.date, m.time)) + '"></span></div>' : "") +
       (place ? '<div class="nm-where">' + (m.home ? "Domáci zápas · " : "Vonku · ") + "<strong>" + esc(place) + "</strong></div>" : "");
     box.hidden = false;
+    if (window.MatchLd) {
+      window.MatchLd.set("tim-" + key, (phase.upcoming || []).map(function (u) {
+        var pl = u.home ? meta.venue : (u.awayCity || "");
+        return { date: u.date, time: u.time, home: u.home ? meta.teamLabel : u.opponent, away: u.home ? u.opponent : meta.teamLabel,
+          place: pl, city: window.MatchLd.city(u.home ? meta.venue : u.awayCity) || u.awayCity || "", label: meta.liga || "", url: location.pathname };
+      }));
+    }
   };
 
   window.renderStandings = function (key, standings) {

@@ -133,6 +133,49 @@
   }
   window.Odpocet = { refresh: tick, fromSk: fromSk };
 
+  // ---------- 4. zápasy pre vyhľadávače (schema.org SportsEvent) ----------
+  // MatchLd.set("id", [{date:"25.10.2026", time:"17:00", home:"…", away:"…", place:"…", city:"…", label:"Ženy", url:"/zeny.html"}])
+  function skOffset(y, m, d) {
+    // letný čas: od poslednej nedele v marci do poslednej nedele v októbri
+    function lastSun(mon) { var x = new Date(Date.UTC(y, mon + 1, 0)); return x.getUTCDate() - x.getUTCDay(); }
+    var t = m * 100 + d, a = 300 + lastSun(2), b = 1000 + lastSun(9);
+    return t >= a && t < b ? "+02:00" : "+01:00";
+  }
+  window.MatchLd = {
+    set: function (id, list) {
+      var events = (list || []).map(function (e) {
+        var p = String(e.date || "").match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+        if (!p) return null;
+        var y = +p[3], m = +p[2], d = +p[1];
+        var date = p[3] + "-" + pad(m) + "-" + pad(d);
+        var t = String(e.time || "").match(/^(\d{1,2}):(\d{2})/);
+        var start = t ? date + "T" + pad(+t[1]) + ":" + t[2] + ":00" + skOffset(y, m, d) : date;
+        var ev = {
+          "@type": "SportsEvent",
+          name: (e.label ? e.label + ": " : "") + e.home + " – " + e.away,
+          sport: "Hádzaná",
+          startDate: start,
+          eventStatus: "https://schema.org/EventScheduled",
+          eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+          homeTeam: { "@type": "SportsTeam", name: e.home },
+          awayTeam: { "@type": "SportsTeam", name: e.away },
+          competitor: [{ "@type": "SportsTeam", name: e.home }, { "@type": "SportsTeam", name: e.away }],
+          organizer: { "@type": "SportsOrganization", name: "Hádzaná Záhorie", url: "https://skhrohoznik.sk/" },
+          url: "https://skhrohoznik.sk" + (e.url || "/kalendar.html")
+        };
+        if (e.place || e.city) ev.location = { "@type": "Place", name: e.place || e.city,
+          address: { "@type": "PostalAddress", addressLocality: e.city || e.place, addressCountry: "SK" } };
+        return ev;
+      }).filter(Boolean);
+      var el = document.getElementById("ld-" + id);
+      if (!events.length) { if (el) el.remove(); return; }
+      if (!el) { el = document.createElement("script"); el.type = "application/ld+json"; el.id = "ld-" + id; document.head.appendChild(el); }
+      el.textContent = JSON.stringify({ "@context": "https://schema.org", "@graph": events });
+    },
+    // mesto haly pre adresu
+    city: function (venue) { return /Rohožník/i.test(venue || "") ? "Rohožník" : /Malacky|Malina/i.test(venue || "") ? "Malacky" : ""; }
+  };
+
   // ---------- štart + sledovanie obsahu, ktorý sa dočíta neskôr ----------
   function init() {
     scan(document.body);
