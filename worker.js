@@ -442,12 +442,22 @@ function cachePutJson(key, data, maxAge, ctx) {
   }
 }
 
-async function loadPhaseData(compUrl, ctx) {
-  const freshKey = phaseCacheKey(compUrl, "fresh");
-  const fresh = await cacheGetJson(freshKey);
-  if (fresh) return fresh;
-
-  const backupKey = phaseCacheKey(compUrl, "backup");
+// Jedna položka v cache na súťaž: { at, data } drží 7 dní (záloha pri výpadku zväzu),
+// za čerstvú sa považuje 30 minút. Jedno čítanie + jeden zápis na súťaž, aby sa worker
+// zmestil do limitu 50 pod-požiadaviek na jeden beh (12 súťaží).
+const phaseInflight = new Map();
+function loadPhaseData(compUrl, ctx) {
+  // rovnaká súťaž pre viac tímov (napr. mladšie žiačky B a C) sa v jednom behu sťahuje len raz
+  if (!phaseInflight.has(compUrl)) {
+    const p = loadPhaseDataOnce(compUrl, ctx).finally(() => setTimeout(() => phaseInflight.delete(compUrl), 0));
+    phaseInflight.set(compUrl, p);
+  }
+  return phaseInflight.get(compUrl);
+}
+async function loadPhaseDataOnce(compUrl, ctx) {
+  const key = phaseCacheKey(compUrl, "v");
+  const cached = await cacheGetJson(key);
+  if (cached && cached.data && Date.now() - cached.at < PHASE_FRESH_SEC * 1000) return cached.data;
   try {
     const res = await fetch(compUrl, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
@@ -456,13 +466,14 @@ async function loadPhaseData(compUrl, ctx) {
     const html = await res.text();
     const text = htmlToMarkerText(html);
     const data = { matches: extractMatches(text), tables: extractStandings(text), logos: extractLogos(html) };
-    cachePutJson(freshKey, data, PHASE_FRESH_SEC, ctx);
-    // prázdny rozpis (napr. nová súťaž) neprepisuje zálohu so zápasmi
-    if (data.matches.length) cachePutJson(backupKey, data, PHASE_BACKUP_SEC, ctx);
-    return data;
+    // prázdny rozpis (napr. výpadok alebo nová súťaž) neprepíše uložené zápasy
+    if (data.matches.length || !(cached && cached.data && cached.data.matches.length)) {
+      cachePutJson(key, { at: Date.now(), data }, PHASE_BACKUP_SEC, ctx);
+      return data;
+    }
+    return cached.data;
   } catch (err) {
-    const backup = await cacheGetJson(backupKey);
-    if (backup) return backup;
+    if (cached && cached.data) return cached.data;
     throw err;
   }
 }

@@ -164,7 +164,7 @@ export async function handlePush(request, env, url) {
     const queue = await readJson(env, QUEUE_KEY, []);
     return json({
       subscribers: subs.length, services: hosts, queue: queue.length,
-      seeded: !!state, known: state ? { results: state.results.length, reminders: state.reminders.length, oznamy: state.oznamy.length, oznamyErr: state.oznamyErr } : null,
+      seeded: !!state, known: state ? { results: state.results.length, reminders: state.reminders.length, oznamy: state.oznamy.length, oznamyErr: state.oznamyErr, resultsErr: state.resultsErr } : null,
       log: (await readJson(env, LOG_KEY, [])).slice().reverse(),
     });
   }
@@ -248,42 +248,6 @@ async function detect(env, ctx, getResults) {
   const msgs = [];
   const now = localParts();
 
-  let data = {};
-  try { data = await getResults(); } catch (e) { data = {}; }
-  const todayUtc = Date.UTC(now.y, now.m - 1, now.d);
-  const tomorrow = new Date(todayUtc + 86400000);
-  const tomorrowSk = skDate(tomorrow.getUTCFullYear(), tomorrow.getUTCMonth() + 1, tomorrow.getUTCDate());
-
-  for (const [key, entry] of Object.entries(data)) {
-    const meta = PUSH_TEAMS[key];
-    if (!meta || !entry || entry.error) continue;
-    for (const r of entry.results || []) {
-      const id = `${key}|${r.date}|${r.opponent}`;
-      if (st.results.includes(id)) continue;
-      st.results.push(id);
-      // len čerstvé výsledky (posledné 4 dni), staršie sa len zapamätajú
-      if (first || todayUtc - parseSk(r.date) > 4 * 86400000) continue;
-      const home = r.home ? meta.club : r.opponent, away = r.home ? r.opponent : meta.club;
-      const verdict = r.result ? " · " + String(r.result).toLowerCase() : "";
-      msgs.push({ type: "vysledok", team: key, title: `Výsledok: ${meta.label}`,
-        body: `${home} – ${away} ${String(r.score || "").replace(/\s+/g, "")}${verdict}`, icon: meta.icon, url: meta.href });
-    }
-    if (now.h === 18) {
-      for (const u of entry.upcoming || []) {
-        if (u.date !== tomorrowSk) continue;
-        const id = `${key}|${u.date}|${u.opponent}`;
-        if (st.reminders.includes(id)) continue;
-        st.reminders.push(id);
-        const home = u.home ? meta.club : u.opponent, away = u.home ? u.opponent : meta.club;
-        const place = u.home ? meta.venue : (u.awayCity || "");
-        const wd = WD[new Date(parseSk(u.date)).getUTCDay()];
-        msgs.push({ type: "zapas", team: key, title: `Zajtra hrajú ${meta.label} 🤾`,
-          body: `${wd} ${u.date.slice(0, 6)}${u.time ? " o " + u.time : ""} · ${home} – ${away}${place ? " · " + place : ""}`,
-          icon: meta.icon, url: meta.href });
-      }
-    }
-  }
-
   // nové oznamy (oznamy.json)
   try {
     const res = await env.ASSETS.fetch(new Request("https://assets.local/oznamy.json"));
@@ -306,6 +270,46 @@ async function detect(env, ctx, getResults) {
         body: String(o.text || "").replace(/\s+/g, " ").slice(0, 140), icon: "/icon-192.png", url: "/oznam.html?o=" + encodeURIComponent(s) });
     }
   } catch (e) { st.oznamyErr = String(e && e.message || e).slice(0, 120); }
+
+  let data = {};
+  try { data = await getResults(); delete st.resultsErr; } catch (e) { data = {}; st.resultsErr = String(e && e.message || e).slice(0, 120); }
+  const todayUtc = Date.UTC(now.y, now.m - 1, now.d);
+  const tomorrow = new Date(todayUtc + 86400000);
+  const tomorrowSk = skDate(tomorrow.getUTCFullYear(), tomorrow.getUTCMonth() + 1, tomorrow.getUTCDate());
+
+  for (const [key, entry] of Object.entries(data)) {
+    const meta = PUSH_TEAMS[key];
+    if (!meta || !entry || entry.error) continue;
+    // tím, ktorého výsledky sa načítali prvýkrát, sa len zapamätá (žiadne staré správy)
+    st.teamsSeen = st.teamsSeen || [];
+    const newTeam = !st.teamsSeen.includes(key);
+    if (newTeam) st.teamsSeen.push(key);
+    for (const r of entry.results || []) {
+      const id = `${key}|${r.date}|${r.opponent}`;
+      if (st.results.includes(id)) continue;
+      st.results.push(id);
+      // len čerstvé výsledky (posledné 4 dni), staršie sa len zapamätajú
+      if (first || newTeam || todayUtc - parseSk(r.date) > 4 * 86400000) continue;
+      const home = r.home ? meta.club : r.opponent, away = r.home ? r.opponent : meta.club;
+      const verdict = r.result ? " · " + String(r.result).toLowerCase() : "";
+      msgs.push({ type: "vysledok", team: key, title: `Výsledok: ${meta.label}`,
+        body: `${home} – ${away} ${String(r.score || "").replace(/\s+/g, "")}${verdict}`, icon: meta.icon, url: meta.href });
+    }
+    if (now.h === 18) {
+      for (const u of entry.upcoming || []) {
+        if (u.date !== tomorrowSk) continue;
+        const id = `${key}|${u.date}|${u.opponent}`;
+        if (st.reminders.includes(id)) continue;
+        st.reminders.push(id);
+        const home = u.home ? meta.club : u.opponent, away = u.home ? u.opponent : meta.club;
+        const place = u.home ? meta.venue : (u.awayCity || "");
+        const wd = WD[new Date(parseSk(u.date)).getUTCDay()];
+        msgs.push({ type: "zapas", team: key, title: `Zajtra hrajú ${meta.label} 🤾`,
+          body: `${wd} ${u.date.slice(0, 6)}${u.time ? " o " + u.time : ""} · ${home} – ${away}${place ? " · " + place : ""}`,
+          icon: meta.icon, url: meta.href });
+      }
+    }
+  }
 
   for (const k of ["results", "reminders", "oznamy"]) st[k] = st[k].slice(-800);
   const after = JSON.stringify(st);
@@ -334,7 +338,10 @@ export async function pushTick(env, ctx, getResults) {
         }];
         for (const m of msg) queue.push({ e: s.endpoint, m: { title: m.title, body: m.body, icon: m.icon, url: m.url } });
       }
+      // posielať sa začne až v ďalšom behu (o 10 minút) - tento beh už minul pod-požiadavky na výsledky
+      if (queue.length) await env.ARCHIV.put(QUEUE_KEY, JSON.stringify(queue));
     }
+    return;
   }
   if (!queue.length) return;
   const batch = queue.slice(0, SENDS_PER_TICK);
