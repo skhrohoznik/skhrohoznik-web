@@ -248,8 +248,11 @@
   .dp-text h2{font-family:'Archivo Black',sans-serif; font-weight:400; font-size:clamp(30px,3.8vw,52px); line-height:1.02; text-transform:uppercase; margin:0 0 14px; text-shadow:0 3px 14px rgba(0,0,0,.35);}
   .dp-text h2 b{font-weight:400; color:#FFD54A;}
   .dp-text p{font-size:16px; line-height:1.5; color:#FBE3E4; margin:0 0 18px; max-width:480px;}
-  .dp-cta{display:inline-flex; align-items:center; gap:10px; background:#fff; color:var(--ink); font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:.05em; padding:13px 20px; box-shadow:0 8px 20px rgba(0,0,0,.3); transition:transform .2s;}
-  .slide-dp:hover .dp-cta{transform:translateY(-2px);}
+  /* tlačidlo s "vlniacimi" rohmi (podľa btn-178) - biele, aby bolo vidieť na červenom pozadí */
+  .dp-cta{display:inline-flex; align-items:center; gap:10px; background:none; color:#fff; font-weight:700; font-size:15px; letter-spacing:.02em;
+    padding:12px 18px; border:2px solid #fff; border-radius:10px 3px 10px 3px; text-shadow:0 1px 6px rgba(0,0,0,.3);}
+  .slide-dp:hover .dp-cta, .slide-dp:focus-visible .dp-cta{animation:dp-cta .8s ease infinite;}
+  @keyframes dp-cta{0%,100%{border-radius:10px 30px 10px 30px;} 50%{border-radius:30px 10px 30px 10px;}}
   .dp-cta i{font-style:normal; transition:transform .2s;} .slide-dp:hover .dp-cta i{transform:translateX(4px);}
   /* tablet a mobil: koláž je stlmené pozadie za textom */
   @media (max-width:900px){
@@ -265,9 +268,9 @@
     .dp-text{bottom:calc(var(--band,260px) + 18px);}
     .dp-text h2{font-size:30px; margin-bottom:10px;}
     .dp-text p{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
-    .dp-cta{padding:11px 16px; font-size:13px;}
+    .dp-cta{padding:10px 15px; font-size:14px;}
   }
-  @media (prefers-reduced-motion:reduce){ .dp-collage figure{transition:none;} }
+  @media (prefers-reduced-motion:reduce){ .dp-collage figure{transition:none;} .slide-dp:hover .dp-cta{animation:none;} }
 </style>
 <link rel="stylesheet" href="news.css">
 <script src="news.js"></script>
