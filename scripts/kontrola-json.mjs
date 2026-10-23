@@ -257,8 +257,8 @@ if (existsSync("akcie.json")) {
             continue;
           }
           fazy.forEach((f, i) => {
-            if (!f || !/^https:\/\/(www\.)?slovakhandball\.sk\/competition\?id=\d+/.test(f.url || ""))
-              chyba(s, `${kde}, sezóna ${sezona}, fáza č. ${i + 1}: "url" má byť odkaz na súťaž na slovakhandball.sk (https://www.slovakhandball.sk/competition?id=...)`);
+            if (!f || !(Number.isInteger(f.tim_id) && f.tim_id > 0) && !/^https:\/\/(www\.)?slovakhandball\.sk\/competition\?id=\d+/.test(f.url || ""))
+              chyba(s, `${kde}, sezóna ${sezona}, fáza č. ${i + 1}: treba "tim_id" (číslo tímu z adresy slovakhandball.sk/teams/ČÍSLO) alebo starší "url" súťaže`);
           });
         }
       }

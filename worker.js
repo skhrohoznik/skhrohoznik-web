@@ -182,7 +182,10 @@ function extractLogos(html) {
 const LOGO_CACHE_SEC = 30 * 24 * 60 * 60;
 async function handleLogo(request, ctx) {
   const path = new URL(request.url).pathname.replace(/^\/logo/, "");
-  if (!LOGO_PATH_RE.test(path)) return new Response("Not found", { status: 404 });
+  // nový web zväzu: /logo/eh/<súbor> -> https://cdn.handball.eliterro.sk/<súbor>
+  const eh = /^\/eh\/([A-Za-z0-9-]+\.(?:png|jpe?g|webp|gif))$/i.exec(path);
+  if (!eh && !LOGO_PATH_RE.test(path)) return new Response("Not found", { status: 404 });
+  const upstreamUrl = eh ? "https://cdn.handball.eliterro.sk/" + eh[1] : "https://www.slovakhandball.sk" + path;
 
   const cacheKey = new Request("https://cache.skhrohoznik.sk/logo" + path);
   try {
@@ -193,7 +196,7 @@ async function handleLogo(request, ctx) {
   }
   let upstream;
   try {
-    upstream = await fetch("https://www.slovakhandball.sk" + path, {
+    upstream = await fetch(upstreamUrl, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
     });
   } catch (err) {
@@ -323,7 +326,7 @@ function toClubResults(matches, teamMatch) {
       // inak by pri zápasoch vonku sedelo poradie tímov, ale nie poradie čísel skóre
       score: `${s1} : ${s2}`,
       result,
-      awayCity: homeIsClub ? null : cityForOpponent(opponent),
+      awayCity: homeIsClub ? null : (match.place || cityForOpponent(opponent)),
       detailUrl: match.detailUrl || null,
     });
   }
@@ -353,7 +356,7 @@ function toClubUpcoming(matches, teamMatch, limit) {
       opponent,
       home: homeIsClub,
       time: isTbaTime ? null : match.score,
-      awayCity: homeIsClub ? null : cityForOpponent(opponent),
+      awayCity: homeIsClub ? null : (match.place || cityForOpponent(opponent)),
     });
   }
   upcoming.sort((a, b) => dateToObj(a.date) - dateToObj(b.date));
@@ -413,7 +416,7 @@ function sortSeasonsDesc(seasons) {
 // Na adrese *.workers.dev cache nefunguje - vtedy sa jednoducho sťahuje zakaždým.
 const PHASE_FRESH_SEC = 30 * 60;
 const PHASE_BACKUP_SEC = 7 * 24 * 60 * 60;
-const PHASE_CACHE_VERSION = "3"; // zvýš, ak sa zmení formát uložených dát
+const PHASE_CACHE_VERSION = "4"; // zvýš, ak sa zmení formát uložených dát
 
 function phaseCacheKey(compUrl, kind) {
   return new Request(
@@ -442,6 +445,135 @@ function cachePutJson(key, data, maxAge, ctx) {
   }
 }
 
+
+// --- NOVÝ WEB ZVÄZU (od októbra 2026, platforma Eliterro) ---
+// Stránka tímu https://slovakhandball.sk/teams/<id> obsahuje všetky zápasy tímu v sezóne
+// aj tabuľku jeho skupiny - ako JSON v dátach Next.js (self.__next_f.push(...)).
+// Spracovanie je náročnejšie na procesor, preto ho robí samostatné volanie /_szh/tim/<id>
+// (cez väzbu SELF na tento istý worker), aby hlavná požiadavka /vysledky nepresiahla limit.
+const SZH_WEB = "https://slovakhandball.sk";
+const SZH_UA = "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)";
+let SELF_BINDING = null; // nastaví sa v fetch/scheduled (env.SELF)
+
+// nájde v surovom HTML objekt {"id":...} (v zápise JS reťazca, úvodzovky ako \") obsahujúci daný kľúč
+function szhObjectsWith(html, key) {
+  const k0 = key.replace(/"/g, '\\"'), idk = '{\\"id\\":';
+  const out = [];
+  let k = 0;
+  while ((k = html.indexOf(k0, k)) >= 0) {
+    const j = html.lastIndexOf(idk, k);
+    const raw = j >= 0 ? szhObjAt(html, j) : null;
+    if (raw && j + raw.length > k) {
+      try { out.push(JSON.parse(JSON.parse('"' + raw + '"'))); } catch (e) { /* poškodený objekt - preskočiť */ }
+      k = j + raw.length;
+    } else k += k0.length;
+  }
+  return out;
+}
+function szhObjAt(h, start) {
+  let depth = 0, inStr = false;
+  for (let i = start; i < h.length; i++) {
+    const c = h.charCodeAt(i);
+    if (c === 92) {                     // spätná lomka
+      const n = h.charCodeAt(i + 1);
+      if (n === 34) { inStr = !inStr; i++; continue; }          // \"  = úvodzovka v JSON
+      i++;
+      if (n === 92 && h.charCodeAt(i + 1) === 92 && h.charCodeAt(i + 2) === 34) i += 2; // \\\" = úvodzovka v texte
+      continue;
+    }
+    if (inStr) continue;
+    if (c === 123) depth++;
+    else if (c === 125) { if (--depth === 0) return h.slice(start, i + 1); }
+    else if (c === 34) return null;     // koniec JS reťazca - objekt je rozdelený, preskočiť
+  }
+  return null;
+}
+const SZH_TZ_FMT = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Europe/Bratislava", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false,
+});
+function szhLocal(iso) {
+  const p = Object.fromEntries(SZH_TZ_FMT.formatToParts(new Date(iso)).map((x) => [x.type, x.value]));
+  return { date: `${p.day}.${p.month}.${p.year}`, time: `${String(+p.hour % 24).padStart(2, "0")}:${p.minute}` };
+}
+// logo z CDN zväzu -> naša adresa /logo/eh/<súbor> (obsluhuje handleLogo)
+function szhLogo(p) {
+  const u = p && p.logoEntity && p.logoEntity.url;
+  const m = u && /^https:\/\/cdn\.handball\.eliterro\.sk\/([A-Za-z0-9-]+\.(?:png|jpe?g|webp|gif))$/i.exec(u);
+  return m ? "/logo/eh/" + m[1] : null;
+}
+const clean = (s) => String(s || "").replace(/\s+/g, " ").trim();
+
+// Stiahne a spracuje stránku tímu do rovnakého tvaru, aký dávalo staré spracovanie: { matches, tables, logos, ourName }
+async function szhParseTeam(teamId) {
+  const res = await fetch(`${SZH_WEB}/teams/${teamId}`, { headers: { "User-Agent": SZH_UA } });
+  if (!res.ok) throw new Error("slovakhandball.sk vrátil chybu " + res.status);
+  const html = await res.text();
+  const logos = {};
+  let ourName = null;
+  const seen = new Set();
+  const matches = [];
+  for (const m of szhObjectsWith(html, '"homeParticipantResult"')) {
+    if (!m || seen.has(m.id) || !m.homeParticipant || !m.visitingParticipant || !m.dateFrom) continue;
+    seen.add(m.id);
+    const h = m.homeParticipant, v = m.visitingParticipant;
+    const teamHome = clean(h.name), teamAway = clean(v.name);
+    if (h.id === teamId) ourName = teamHome;
+    if (v.id === teamId) ourName = teamAway;
+    for (const p of [h, v]) { const l = szhLogo(p); if (l && !logos[clean(p.name)]) logos[clean(p.name)] = l; }
+    const when = szhLocal(m.dateFrom);
+    const played = m.state === "Finished" && m.homeParticipantResult != null && m.visitingParticipantResult != null;
+    if (m.state === "Cancelled" || m.state === "Canceled") continue;
+    matches.push({
+      date: when.date, teamHome, teamAway, played,
+      score: played ? `${m.homeParticipantResult}:${m.visitingParticipantResult}` : (m.showTime ? when.time : "00:00"),
+      detailUrl: played ? `${SZH_WEB}/matches/${m.id}` : null,
+      place: m.place && m.place.name ? clean(m.place.name) : null,
+    });
+  }
+  // tabuľka skupiny tímu
+  const groups = new Map();
+  for (const r of szhObjectsWith(html, '"finalPosition"')) {
+    const p = r && r.participants && r.participants[0];
+    if (!p) continue;
+    const lvl = (r.levels && r.levels[0] && r.levels[0].id) || (p.levels && p.levels[0] && p.levels[0].id) || 0;
+    const ad = Object.fromEntries((r.additionalData || []).map((a) => [a.name, a.value]));
+    const l = szhLogo(p); if (l && !logos[clean(p.name)]) logos[clean(p.name)] = l;
+    if (!groups.has(lvl)) groups.set(lvl, new Map());
+    groups.get(lvl).set(p.id, {
+      rank: Number(r.finalPosition) || 0, team: clean(p.name), teamId: p.id,
+      played: Number(ad["matches-played"]) || 0,
+      score: `${ad["goals-for"] || 0}:${ad["goals-against"] || 0}`,
+      points: Number(ad.points) || 0,
+    });
+  }
+  const ourTables = [...groups.values()].map((g) => [...g.values()].sort((a, b) => a.rank - b.rank))
+    .filter((t) => t.length > 1 && t.some((r) => r.teamId === teamId));
+  if (!ourName && ourTables[0]) ourName = ourTables[0].find((r) => r.teamId === teamId).team;
+  const tables = ourTables.map((t) => t.map(({ teamId: _, ...r }) => r));
+  return { matches, tables, logos, ourName };
+}
+
+// /_szh/tim/<id> - spracovanie jednej stránky tímu v samostatnom volaní (len cez väzbu SELF)
+async function handleSzhTeam(request, url) {
+  const id = Number((/^\/_szh\/tim\/(\d{1,7})$/.exec(url.pathname) || [])[1]);
+  if (!id || request.headers.get("X-Internal") !== "1") return new Response("Not found", { status: 404 });
+  try {
+    const data = await szhParseTeam(id);
+    return new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: String(err && err.message || err) }), { status: 502, headers: { "Content-Type": "application/json" } });
+  }
+}
+async function szhLoadTeam(teamId) {
+  if (SELF_BINDING) {
+    const r = await SELF_BINDING.fetch(new Request(`https://skhrohoznik.sk/_szh/tim/${teamId}`, { headers: { "X-Internal": "1" } }));
+    const d = await r.json();
+    if (!r.ok || d.error) throw new Error(d.error || "chyba " + r.status);
+    return d;
+  }
+  return szhParseTeam(teamId);
+}
+
 // Jedna položka v cache na súťaž: { at, data } drží 7 dní (záloha pri výpadku zväzu),
 // za čerstvú sa považuje 30 minút. Jedno čítanie + jeden zápis na súťaž, aby sa worker
 // zmestil do limitu 50 pod-požiadaviek na jeden beh (12 súťaží).
@@ -459,13 +591,19 @@ async function loadPhaseDataOnce(compUrl, ctx) {
   const cached = await cacheGetJson(key);
   if (cached && cached.data && Date.now() - cached.at < PHASE_FRESH_SEC * 1000) return cached.data;
   try {
-    const res = await fetch(compUrl, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
-    });
-    if (!res.ok) throw new Error("slovakhandball.sk vrátil chybu " + res.status);
-    const html = await res.text();
-    const text = htmlToMarkerText(html);
-    const data = { matches: extractMatches(text), tables: extractStandings(text), logos: extractLogos(html) };
+    let data;
+    const tim = /^tim:(\d+)$/.exec(compUrl);
+    if (tim) {
+      data = await szhLoadTeam(Number(tim[1]));
+    } else {
+      const res = await fetch(compUrl, {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
+      });
+      if (!res.ok) throw new Error("slovakhandball.sk vrátil chybu " + res.status);
+      const html = await res.text();
+      const text = htmlToMarkerText(html);
+      data = { matches: extractMatches(text), tables: extractStandings(text), logos: extractLogos(html) };
+    }
     // prázdny rozpis (napr. výpadok alebo nová súťaž) neprepíše uložené zápasy
     if (data.matches.length || !(cached && cached.data && cached.data.matches.length)) {
       cachePutJson(key, { at: Date.now(), data }, PHASE_BACKUP_SEC, ctx);
@@ -587,6 +725,15 @@ async function handleIcs(request, env, ctx, url) {
 }
 
 // /zapasy.json -> všetky zápasy všetkých tímov v aktuálnej sezóne (odohrané aj budúce) pre stránku Kalendár
+// fáza súťaže v sutaze.json: { "tim_id": 6553 } (nový web zväzu) alebo starší { "url": "..." }
+function compKey(comp) {
+  return comp && Number(comp.tim_id) > 0 ? "tim:" + Number(comp.tim_id) : comp.url;
+}
+// náš tím: na stránke tímu presne podľa názvu, ktorý tam zväz používa
+function teamMatchFor(data, fallback) {
+  return data && data.ourName ? new RegExp("^" + data.ourName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$", "i") : fallback;
+}
+
 async function handleKalendar(request, env, ctx) {
   const cfg = await loadConfig(env, request);
   const season = cfg.aktualna_sezona;
@@ -597,14 +744,16 @@ async function handleKalendar(request, env, ctx) {
       await Promise.all(
         comps.map(async (comp) => {
           try {
-            const { matches, logos = {} } = await loadPhaseData(comp.url, ctx);
-            const clubName = Object.keys(logos).find((t) => team.teamMatch.test(t));
+            const data = await loadPhaseData(compKey(comp), ctx);
+            const { matches, logos = {} } = data;
+            const tm = teamMatchFor(data, team.teamMatch);
+            const clubName = Object.keys(logos).find((t) => tm.test(t));
             const clubLogo = team.ownLogo || (clubName ? logos[clubName] : null);
             const base = { tim: key, nazov: team.nazov || key, faza: comp.nazov || "", clubLogo };
-            for (const m of toClubResults(matches, team.teamMatch)) {
+            for (const m of toClubResults(matches, tm)) {
               out.push({ ...base, ...m, played: true, opponentLogo: logos[m.opponent] || null });
             }
-            for (const m of toClubUpcoming(matches, team.teamMatch, Infinity)) {
+            for (const m of toClubUpcoming(matches, tm, Infinity)) {
               out.push({ ...base, ...m, played: false, opponentLogo: logos[m.opponent] || null });
             }
           } catch (err) {
@@ -620,9 +769,11 @@ async function handleKalendar(request, env, ctx) {
   });
 }
 
-async function loadPhase(comp, teamMatch, ctx, ownLogo) {
+async function loadPhase(comp, teamMatchCfg, ctx, ownLogo) {
   try {
-    const { matches, tables, logos = {} } = await loadPhaseData(comp.url, ctx);
+    const data = await loadPhaseData(compKey(comp), ctx);
+    const { matches, tables, logos = {} } = data;
+    const teamMatch = teamMatchFor(data, teamMatchCfg);
     const logoOf = (team) => logos[team] || null;
     const clubName = Object.keys(logos).find((t) => teamMatch.test(t));
     const withLogo = (m) => ({ ...m, opponentLogo: logoOf(m.opponent) });
@@ -1075,10 +1226,14 @@ async function serveStatic(request, env, url) {
 
 export default {
   async fetch(request, env, ctx) {
+    if (env.SELF) SELF_BINDING = env.SELF;
     const url = new URL(request.url);
     // stránka Klub bola zlúčená so stránkou Kontakty (haly sú v sekcii #haly)
     if (url.pathname === "/klub.html" || url.pathname === "/klub") {
       return Response.redirect(new URL("/kontakty.html#haly", url).toString(), 301);
+    }
+    if (url.pathname.startsWith("/_szh/")) {
+      return handleSzhTeam(request, url);
     }
     if (url.pathname.startsWith("/push/")) {
       return handlePush(request, env, url);
@@ -1105,6 +1260,7 @@ export default {
     return serveStatic(request, env, url);
   },
   async scheduled(event, env, ctx) {
+    if (env.SELF) SELF_BINDING = env.SELF;
     if (event.cron === "*/10 * * * *") {
       // upozornenia do mobilu (push.js) - výsledky a zápasy berie z tej istej funkcie ako /vysledky
       const getResults = async () =>
