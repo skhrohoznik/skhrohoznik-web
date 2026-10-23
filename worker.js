@@ -416,7 +416,7 @@ function sortSeasonsDesc(seasons) {
 // Na adrese *.workers.dev cache nefunguje - vtedy sa jednoducho sťahuje zakaždým.
 const PHASE_FRESH_SEC = 30 * 60;
 const PHASE_BACKUP_SEC = 7 * 24 * 60 * 60;
-const PHASE_CACHE_VERSION = "4"; // zvýš, ak sa zmení formát uložených dát
+const PHASE_CACHE_VERSION = "5"; // zvýš, ak sa zmení formát uložených dát
 
 function phaseCacheKey(compUrl, kind) {
   return new Request(
@@ -504,8 +504,8 @@ function szhLogo(p) {
 const clean = (s) => String(s || "").replace(/\s+/g, " ").trim();
 
 // Stiahne a spracuje stránku tímu do rovnakého tvaru, aký dávalo staré spracovanie: { matches, tables, logos, ourName }
-async function szhParseTeam(teamId) {
-  const res = await fetch(`${SZH_WEB}/teams/${teamId}`, { headers: { "User-Agent": SZH_UA } });
+async function szhParseTeam(teamId, seasonId) {
+  const res = await fetch(`${SZH_WEB}/teams/${teamId}${seasonId ? "?seasonId=" + seasonId : ""}`, { headers: { "User-Agent": SZH_UA } });
   if (!res.ok) throw new Error("slovakhandball.sk vrátil chybu " + res.status);
   const html = await res.text();
   const logos = {};
@@ -528,6 +528,7 @@ async function szhParseTeam(teamId) {
       score: played ? `${m.homeParticipantResult}:${m.visitingParticipantResult}` : (m.showTime ? when.time : "00:00"),
       detailUrl: played ? `${SZH_WEB}/matches/${m.id}` : null,
       place: m.place && m.place.name ? clean(m.place.name) : null,
+      levelId: m.level && m.level.id || null,
     });
   }
   // tabuľka skupiny tímu
@@ -549,29 +550,37 @@ async function szhParseTeam(teamId) {
   const ourTables = [...groups.values()].map((g) => [...g.values()].sort((a, b) => a.rank - b.rank))
     .filter((t) => t.length > 1 && t.some((r) => r.teamId === teamId));
   if (!ourName && ourTables[0]) ourName = ourTables[0].find((r) => r.teamId === teamId).team;
-  const tables = ourTables.map((t) => t.map(({ teamId: _, ...r }) => r));
-  return { matches, tables, logos, ourName };
+  const strip = (t) => t.map(({ teamId: _, ...r }) => r);
+  const tables = ourTables.map(strip);
+  // tabuľky podľa časti súťaže (pre fázy s "cast_id" v sutaze.json)
+  const tablesByLevel = {};
+  for (const [lvl, g] of groups) {
+    const t = [...g.values()].sort((a, b) => a.rank - b.rank);
+    if (t.length > 1 && t.some((r) => r.teamId === teamId)) tablesByLevel[lvl] = strip(t);
+  }
+  return { matches, tables, tablesByLevel, logos, ourName };
 }
 
 // /_szh/tim/<id> - spracovanie jednej stránky tímu v samostatnom volaní (len cez väzbu SELF)
 async function handleSzhTeam(request, url) {
   const id = Number((/^\/_szh\/tim\/(\d{1,7})$/.exec(url.pathname) || [])[1]);
+  const season = Number(url.searchParams.get("sezona")) || 0;
   if (!id || request.headers.get("X-Internal") !== "1") return new Response("Not found", { status: 404 });
   try {
-    const data = await szhParseTeam(id);
+    const data = await szhParseTeam(id, season);
     return new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
   } catch (err) {
     return new Response(JSON.stringify({ error: String(err && err.message || err) }), { status: 502, headers: { "Content-Type": "application/json" } });
   }
 }
-async function szhLoadTeam(teamId) {
+async function szhLoadTeam(teamId, seasonId) {
   if (SELF_BINDING) {
-    const r = await SELF_BINDING.fetch(new Request(`https://skhrohoznik.sk/_szh/tim/${teamId}`, { headers: { "X-Internal": "1" } }));
+    const r = await SELF_BINDING.fetch(new Request(`https://skhrohoznik.sk/_szh/tim/${teamId}${seasonId ? "?sezona=" + seasonId : ""}`, { headers: { "X-Internal": "1" } }));
     const d = await r.json();
     if (!r.ok || d.error) throw new Error(d.error || "chyba " + r.status);
     return d;
   }
-  return szhParseTeam(teamId);
+  return szhParseTeam(teamId, seasonId);
 }
 
 // Jedna položka v cache na súťaž: { at, data } drží 7 dní (záloha pri výpadku zväzu),
@@ -592,9 +601,9 @@ async function loadPhaseDataOnce(compUrl, ctx) {
   if (cached && cached.data && Date.now() - cached.at < PHASE_FRESH_SEC * 1000) return cached.data;
   try {
     let data;
-    const tim = /^tim:(\d+)$/.exec(compUrl);
+    const tim = /^tim:(\d+)(?::(\d+))?$/.exec(compUrl);
     if (tim) {
-      data = await szhLoadTeam(Number(tim[1]));
+      data = await szhLoadTeam(Number(tim[1]), Number(tim[2]) || 0);
     } else {
       const res = await fetch(compUrl, {
         headers: { "User-Agent": "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)" },
@@ -727,7 +736,19 @@ async function handleIcs(request, env, ctx, url) {
 // /zapasy.json -> všetky zápasy všetkých tímov v aktuálnej sezóne (odohrané aj budúce) pre stránku Kalendár
 // fáza súťaže v sutaze.json: { "tim_id": 6553 } (nový web zväzu) alebo starší { "url": "..." }
 function compKey(comp) {
-  return comp && Number(comp.tim_id) > 0 ? "tim:" + Number(comp.tim_id) : comp.url;
+  if (!comp) return null;
+  if (Number(comp.tim_id) > 0) return "tim:" + Number(comp.tim_id) + (Number(comp.sezona_id) > 0 ? ":" + Number(comp.sezona_id) : "");
+  return comp.url;
+}
+// "cast_id": len zápasy a tabuľka danej časti súťaže (napr. základná časť / nadstavba)
+function applyCast(data, comp) {
+  const cast = Number(comp && comp.cast_id);
+  if (!cast || !data || !data.matches) return data;
+  return {
+    ...data,
+    matches: data.matches.filter((m) => m.levelId === cast),
+    tables: data.tablesByLevel && data.tablesByLevel[cast] ? [data.tablesByLevel[cast]] : [],
+  };
 }
 // náš tím: na stránke tímu presne podľa názvu, ktorý tam zväz používa
 function teamMatchFor(data, fallback) {
@@ -744,7 +765,7 @@ async function handleKalendar(request, env, ctx) {
       await Promise.all(
         comps.map(async (comp) => {
           try {
-            const data = await loadPhaseData(compKey(comp), ctx);
+            const data = applyCast(await loadPhaseData(compKey(comp), ctx), comp);
             const { matches, logos = {} } = data;
             const tm = teamMatchFor(data, team.teamMatch);
             const clubName = Object.keys(logos).find((t) => tm.test(t));
@@ -771,7 +792,7 @@ async function handleKalendar(request, env, ctx) {
 
 async function loadPhase(comp, teamMatchCfg, ctx, ownLogo) {
   try {
-    const data = await loadPhaseData(compKey(comp), ctx);
+    const data = applyCast(await loadPhaseData(compKey(comp), ctx), comp);
     const { matches, tables, logos = {} } = data;
     const teamMatch = teamMatchFor(data, teamMatchCfg);
     const logoOf = (team) => logos[team] || null;

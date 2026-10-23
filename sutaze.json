@@ -1,5 +1,5 @@
 {
-  "_navod": "Sezóny: pod \"sezony\" je pre každú sezónu zoznam fáz súťaže. Od októbra 2026 (nový web zväzu) má fáza \"nazov\" a \"tim_id\" = číslo tímu z adresy https://slovakhandball.sk/teams/ČÍSLO (zápasy aj tabuľka sa berú zo stránky tímu). Staršie sezóny majú \"url\" na starý web zväzu. \"aktualna_sezona\" je sezóna, ktorá sa zobrazí ako prvá. \"tim\" = girls, boys, zahoraci_a, zahoraci_b alebo \"tim_regex\" (len pri starších sezónach s \"url\"). Voliteľne \"logo\": názov súboru s logom v repozitári (napr. \"strojar-malacky.jpg\") - použije sa namiesto loga zo zväzu.",
+  "_navod": "Sezóny: pod \"sezony\" je pre každú sezónu zoznam fáz súťaže. Od októbra 2026 (nový web zväzu) má fáza \"nazov\" a \"tim_id\" = číslo tímu z adresy https://slovakhandball.sk/teams/ČÍSLO (zápasy aj tabuľka sa berú zo stránky tímu). Pri minulých sezónach sa pridá aj \"sezona_id\" (číslo sezóny na webe zväzu, 2025/2026 = 1) a pri viacerých fázach \"cast_id\" (číslo časti súťaže, napr. základná časť / nadstavba). \"aktualna_sezona\" je sezóna, ktorá sa zobrazí ako prvá. \"tim\" = girls, boys, zahoraci_a, zahoraci_b alebo \"tim_regex\" (len pri starších sezónach s \"url\"). Voliteľne \"logo\": názov súboru s logom v repozitári (napr. \"strojar-malacky.jpg\") - použije sa namiesto loga zo zväzu.",
   "aktualna_sezona": "2026/2027",
   "timy": {
     "muzi_a": {
@@ -15,11 +15,15 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=91541"
+            "tim_id": 17,
+            "sezona_id": 1,
+            "cast_id": 7
           },
           {
             "nazov": "Nadstavba 7.-10.",
-            "url": "https://www.slovakhandball.sk/competition?id=91541&part=255143"
+            "tim_id": 17,
+            "sezona_id": 1,
+            "cast_id": 155
           }
         ]
       }
@@ -37,7 +41,9 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=91542"
+            "tim_id": 33,
+            "sezona_id": 1,
+            "cast_id": 10
           }
         ]
       }
@@ -55,7 +61,9 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=91546"
+            "tim_id": 59,
+            "sezona_id": 1,
+            "cast_id": 22
           }
         ]
       }
@@ -73,7 +81,9 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=91543"
+            "tim_id": 65,
+            "sezona_id": 1,
+            "cast_id": 13
           }
         ]
       }
@@ -91,7 +101,9 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=91548"
+            "tim_id": 91,
+            "sezona_id": 1,
+            "cast_id": 25
           }
         ]
       }
@@ -109,7 +121,9 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=91544"
+            "tim_id": 77,
+            "sezona_id": 1,
+            "cast_id": 16
           }
         ]
       }
@@ -127,15 +141,21 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=91549"
+            "tim_id": 103,
+            "sezona_id": 1,
+            "cast_id": 28
           },
           {
-            "nazov": "Final 4 - 3.miesto",
-            "url": "https://www.slovakhandball.sk/competition?id=91549&part=319479"
+            "nazov": "Final 4 - 3. miesto",
+            "tim_id": 103,
+            "sezona_id": 1,
+            "cast_id": 193
           },
           {
             "nazov": "Final 4",
-            "url": "https://www.slovakhandball.sk/competition?id=91549&part=318001"
+            "tim_id": 103,
+            "sezona_id": 1,
+            "cast_id": 191
           }
         ]
       }
@@ -154,11 +174,15 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=93299&part=195384"
+            "tim_id": 491,
+            "sezona_id": 1,
+            "cast_id": 69
           },
           {
             "nazov": "Semifinále - Skupina B",
-            "url": "https://www.slovakhandball.sk/competition?id=93299&part=326511"
+            "tim_id": 491,
+            "sezona_id": 1,
+            "cast_id": 202
           }
         ]
       }
@@ -176,11 +200,15 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=93298&part=195376"
+            "tim_id": 485,
+            "sezona_id": 1,
+            "cast_id": 66
           },
           {
             "nazov": "Semifinále - Skupina B",
-            "url": "https://www.slovakhandball.sk/competition?id=93298&part=326496"
+            "tim_id": 485,
+            "sezona_id": 1,
+            "cast_id": 201
           }
         ]
       }
@@ -199,7 +227,9 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=158788&part=366264"
+            "tim_id": 512,
+            "sezona_id": 1,
+            "cast_id": 67
           }
         ]
       }
@@ -217,7 +247,9 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=93297&part=195370"
+            "tim_id": 507,
+            "sezona_id": 1,
+            "cast_id": 64
           }
         ]
       }
@@ -235,7 +267,9 @@
         "2025/2026": [
           {
             "nazov": "Základná časť",
-            "url": "https://www.slovakhandball.sk/competition?id=93297"
+            "tim_id": 501,
+            "sezona_id": 1,
+            "cast_id": 65
           }
         ]
       }
