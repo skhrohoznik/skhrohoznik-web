@@ -756,16 +756,24 @@
   .pv-switch div{display:flex; flex-wrap:wrap; gap:6px;}
   .pv-switch button{font:inherit; font-weight:700; font-size:12px; border:1.5px solid var(--line); background:#fff; padding:6px 10px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
   .pv-switch button.on{border-color:var(--ink); background:var(--ink); color:#fff;}
+  .pv-switch.min div{display:none;} .pv-switch b{cursor:pointer;}
+  @media (max-width:640px){ .pv-switch{font-size:11px; padding:8px;} .pv-switch button{font-size:11px; padding:5px 7px;} }
   .pv-switch i{width:14px; height:14px; display:inline-block; border:1px solid rgba(0,0,0,.15);}
 </style>
 <div id="pixel-bg" aria-hidden="true"></div>
-<div class="pv-switch" role="group" aria-label="Náhľad pozadia"><b>Náhľad pozadia</b><div id="pv-btns"></div></div>
+<div class="pv-switch" role="group" aria-label="Náhľad pozadia"><b title="Skryť / zobraziť">Náhľad pozadia ▾</b><div id="pv-btns"></div></div>
 <script src="/pozadie-pixel.js"></script>
+<script src="/pozadie-akvarel.js"></script>
 <script>
   (function () {
     var BASE = { type: "PIXEL", animated: true, width: 1920, height: 1080, aspect: 16 / 9, speed: 30, startT: 20.75, blur: 0, fieldBlur: 0,
       grain: 6, divs: null, size: 40, pixelStyle: "quilt", cover: 50, rings: 12, weave: 20 };
+    var AKV = { type: "WATERCOLOR", animated: true, width: 1920, height: 1080, aspect: 16 / 9, speed: 18, startT: 20.75, blur: 0, fieldBlur: 0, grain: 0, divs: null,
+      params: { wetness: 82, pigment: 48, scale: 62, spread: 62, blooms: 20, granulation: 18, edges: 24, texture: 16, paperWarmth: 14, coverage: 86, seed: 911, angle: 302, layers: 5, technique: "veil" } };
     var VARIANTS = [
+      { id: "akvarel", name: "Akvarel ružový (originál)", engine: "akv", stops: ["#FC6697", "#FF91B2", "#FFB6B7", "#FFD196"] },
+      { id: "akvarel-kluby", name: "Akvarel červeno-modrý", engine: "akv", stops: ["#E35D63", "#F29A9D", "#8FB0E0", "#BBD0EE"] },
+      { id: "akvarel-jemny", name: "Akvarel jemný", engine: "akv", stops: ["#F2B7BA", "#F7D3D4", "#C6D6EF", "#E2EAF6"], pigment: 36 },
       { id: "amber", name: "Jantárová (originál)", stops: ["#F59410", "#FFB23C", "#FFCB70", "#FFE2A6", "#F8F1E0"] },
       { id: "svetla", name: "Svetlá (farby webu)", stops: ["#C9D5EA", "#D8E1F1", "#E5EBF6", "#EEF2F9", "#F8FAFD"] },
       { id: "cervena", name: "Jemná červená", stops: ["#F3B8BA", "#F7CDCE", "#FADFE0", "#FCECEC", "#FDF7F6"] },
@@ -778,7 +786,10 @@
       if (stop) { stop(); stop = null; }
       host.replaceChildren();
       document.body.style.setProperty("background", v.stops ? "transparent" : "#EEF2F9", "important");
-      if (v.stops) stop = window.PixelBg.mount(host, Object.assign({}, BASE, { stops: v.stops }));
+      if (v.stops && v.engine === "akv") {
+        var rec = Object.assign({}, AKV, { stops: v.stops, params: Object.assign({}, AKV.params, v.pigment ? { pigment: v.pigment } : {}) });
+        stop = window.AkvarelBg.mount(host, rec);
+      } else if (v.stops) stop = window.PixelBg.mount(host, Object.assign({}, BASE, { stops: v.stops }));
       host.style.position = "fixed";
       [].forEach.call(btns.children, function (b) { b.classList.toggle("on", b.dataset.id === v.id); });
       try { history.replaceState(null, "", "#" + v.id); } catch (e) {}
@@ -786,8 +797,9 @@
     btns.innerHTML = VARIANTS.map(function (v) {
       return '<button type="button" data-id="' + v.id + '">' + (v.stops ? '<i style="background:linear-gradient(90deg,' + v.stops.join(",") + ')"></i>' : "") + v.name + "</button>";
     }).join("");
+    document.querySelector(".pv-switch b").addEventListener("click", function () { this.parentNode.classList.toggle("min"); });
     btns.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) set(b.dataset.id); });
-    set((location.hash || "#amber").slice(1));
+    set((location.hash || "#akvarel").slice(1));
   })();
 </script>
 </body>
