@@ -382,6 +382,14 @@ function defaultConfig() {
   return { aktualna_sezona: "2026/2027", timy: teams };
 }
 
+// Vlastné logá súperov (sutaze.json -> "loga": { "HK Senec": "loga/hk-senec.png" }) - keď ho zväz nemá
+// alebo je nesprávne. Platí aj pre družstvá A/B/C toho istého klubu (HK Senec A, HK Senec B).
+let LOGO_OVERRIDES = {};
+const logoBase = (n) => String(n || "").replace(/\s+/g, " ").trim().replace(/\s+[A-C]$/i, "").toLowerCase();
+function overrideLogo(team) {
+  return LOGO_OVERRIDES[logoBase(team)] || null;
+}
+
 // Konfigurácia súťaží je v súbore sutaze.json (upravuje sa na GitHube, bez zásahu do kódu).
 async function loadConfig(env, request) {
   try {
@@ -389,6 +397,11 @@ async function loadConfig(env, request) {
     if (!res.ok) throw new Error("status " + res.status);
     const cfg = await res.json();
     if (!cfg || typeof cfg.timy !== "object") throw new Error("bad config");
+    LOGO_OVERRIDES = {};
+    for (const [name, file] of Object.entries(cfg.loga && typeof cfg.loga === "object" ? cfg.loga : {})) {
+      if (typeof file === "string" && /^[A-Za-z0-9._\/-]+\.(png|jpe?g|webp|svg)$/i.test(file) && !file.includes(".."))
+        LOGO_OVERRIDES[logoBase(name)] = "/" + file.replace(/^\/+/, "");
+    }
     for (const t of Object.values(cfg.timy)) {
       t.teamMatch = t.tim_regex ? new RegExp(t.tim_regex, "i") : TEAM_PRESETS[t.tim] || GIRLS_TEAM;
       t.sezony = t.sezony || {};
@@ -772,10 +785,10 @@ async function handleKalendar(request, env, ctx) {
             const clubLogo = team.ownLogo || (clubName ? logos[clubName] : null);
             const base = { tim: key, nazov: team.nazov || key, faza: comp.nazov || "", clubLogo };
             for (const m of toClubResults(matches, tm)) {
-              out.push({ ...base, ...m, played: true, opponentLogo: logos[m.opponent] || null });
+              out.push({ ...base, ...m, played: true, opponentLogo: overrideLogo(m.opponent) || logos[m.opponent] || null });
             }
             for (const m of toClubUpcoming(matches, tm, Infinity)) {
-              out.push({ ...base, ...m, played: false, opponentLogo: logos[m.opponent] || null });
+              out.push({ ...base, ...m, played: false, opponentLogo: overrideLogo(m.opponent) || logos[m.opponent] || null });
             }
           } catch (err) {
             // súťaž sa nepodarilo načítať - v kalendári jednoducho chýba
@@ -795,7 +808,7 @@ async function loadPhase(comp, teamMatchCfg, ctx, ownLogo) {
     const data = applyCast(await loadPhaseData(compKey(comp), ctx), comp);
     const { matches, tables, logos = {} } = data;
     const teamMatch = teamMatchFor(data, teamMatchCfg);
-    const logoOf = (team) => logos[team] || null;
+    const logoOf = (team) => overrideLogo(team) || logos[team] || null;
     const clubName = Object.keys(logos).find((t) => teamMatch.test(t));
     const withLogo = (m) => ({ ...m, opponentLogo: logoOf(m.opponent) });
     const standings = toClubStandings(tables, teamMatch);

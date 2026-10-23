@@ -1,0 +1,4 @@
+Sem nahraj logá súperov, ktoré na webe zväzu chýbajú (napr. hk-senec.png, štvorcové, aspoň 200x200 px, ideálne PNG s priehľadným pozadím).
+Potom ich pridaj do sutaze.json do časti "loga", napr.:
+  "loga": { "HK Senec": "loga/hk-senec.png" }
+Logo sa použije pre všetky družstvá klubu (HK Senec A, HK Senec B ...).

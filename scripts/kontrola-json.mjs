@@ -230,6 +230,14 @@ if (existsSync("akcie.json")) {
   const PRESETY = ["girls", "boys", "zahoraci_a", "zahoraci_b"];
   if (d !== undefined) {
     if (!d || typeof d.timy !== "object" || Array.isArray(d.timy)) chyba(s, 'chýba časť "timy"');
+    if (d && d.loga !== undefined) {
+      if (!d.loga || typeof d.loga !== "object" || Array.isArray(d.loga)) chyba(s, '"loga" má byť { "Názov tímu": "loga/subor.png" }');
+      else for (const [tim, f] of Object.entries(d.loga)) {
+        if (!jeText(f) || !/^[A-Za-z0-9._\/-]+\.(png|jpe?g|webp|svg)$/i.test(f) || f.includes(".."))
+          chyba(s, `"loga" → "${tim}": názov súboru bez medzier a diakritiky, napr. "loga/hk-senec.png"`);
+        else if (!existsSync(f.replace(/^\/+/, ""))) chyba(s, `"loga" → "${tim}": súbor "${f}" v repozitári neexistuje`);
+      }
+    }
     else {
       if (!/^\d{4}\/\d{4}$/.test(d.aktualna_sezona || ""))
         chyba(s, '"aktualna_sezona" má byť v tvare "2026/2027"');
