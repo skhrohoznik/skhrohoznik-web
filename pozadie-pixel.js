@@ -947,4 +947,23 @@ function mountGradient(host, recipe) {
 }
 
 window.PixelBg = { mount: mountGradient, render: render };
+
+// pozadie celého webu: svetlá mozaika vo farbách webu (za obsahom, nehýbe sa pri posúvaní)
+var SVETLA = { type: "PIXEL", animated: true, width: 1920, height: 1080, aspect: 16 / 9, speed: 30, startT: 20.75, blur: 0, fieldBlur: 0,
+  grain: 6, stops: ["#C9D5EA", "#D8E1F1", "#E5EBF6", "#EEF2F9", "#F8FAFD"], divs: null, size: 40, pixelStyle: "quilt", cover: 50, rings: 12, weave: 20 };
+function start() {
+  if (document.getElementById("pixel-bg") || !document.body) return;
+  var host = document.createElement("div");
+  host.id = "pixel-bg";
+  host.setAttribute("aria-hidden", "true");
+  document.body.insertBefore(host, document.body.firstChild);
+  try {
+    mountGradient(host, SVETLA);
+    host.style.position = "fixed";
+    document.documentElement.classList.add("pixel-bg-on");
+  } catch (e) { host.remove(); }
+}
+if (!window.PIXEL_BG_MANUAL) {
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+}
 })();

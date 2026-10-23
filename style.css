@@ -441,3 +441,7 @@ html.rv-on .section-head.rv-in h2{clip-path:inset(0 0 0 0);}
 .nm-countdown:has(.od-done) > span:first-child{display:none;}
 .nm-countdown > span:first-child{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#6b6455;}
 @media (prefers-reduced-motion: reduce){ .od-box.od-flip b{animation:none;} }
+
+/* animované pixelové pozadie (pozadie-pixel.js) - za obsahom, pevne pri posúvaní */
+#pixel-bg{position:fixed !important; inset:0; z-index:-1; pointer-events:none;}
+html.pixel-bg-on body{background:transparent;}
