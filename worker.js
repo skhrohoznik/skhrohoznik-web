@@ -395,6 +395,29 @@ const KNOWN_LOGOS = new Map();
 function rememberLogos(logos) {
   for (const [name, url] of Object.entries(logos || {})) if (url && !KNOWN_LOGOS.has(logoBase(name))) KNOWN_LOGOS.set(logoBase(name), url);
 }
+// Doplní chýbajúce logá podľa iných súťaží (napr. Slovan Modra A má logo u starších žiakov, ale nie u mladších).
+// Pri výbere len niektorých tímov (?tim=...) sa logá ostatných tímov načítajú z cache.
+async function fillMissingLogos(items, cfg, ctx) {
+  const missing = items.filter((x) => x.obj[x.key] == null && x.team);
+  if (!missing.length) return;
+  if (missing.some((x) => !KNOWN_LOGOS.has(logoBase(x.team)))) {
+    const season = cfg.aktualna_sezona;
+    await Promise.all(Object.values(cfg.timy).flatMap((t) => ((t.sezony && t.sezony[season]) || []).map((c) =>
+      loadPhaseData(compKey(c), ctx).then((d) => rememberLogos(d && d.logos)).catch(() => {}))));
+  }
+  for (const x of missing) { const u = KNOWN_LOGOS.get(logoBase(x.team)); if (u) x.obj[x.key] = u; }
+}
+function logoSlots(entry) {
+  const out = [];
+  const add = (list) => (list || []).forEach((m) => out.push({ obj: m, key: "opponentLogo", team: m.opponent }));
+  add(entry.results); add(entry.upcoming);
+  for (const p of entry.phases || []) {
+    add(p.results); add(p.upcoming);
+    (p.standings || []).forEach((r) => out.push({ obj: r, key: "logo", team: r.team }));
+  }
+  return out;
+}
+
 function teamLogo(team, logos) {
   const own = overrideLogo(team) || (logos && logos[team]);
   if (own) return own;
@@ -811,6 +834,7 @@ async function handleKalendar(request, env, ctx) {
       );
     })
   );
+  await fillMissingLogos(out.map((m) => ({ obj: m, key: "opponentLogo", team: m.opponent })), cfg, ctx);
   out.sort((a, b) => dateToObj(a.date) - dateToObj(b.date) || String(a.time || "").localeCompare(String(b.time || "")));
   return new Response(JSON.stringify({ season, zapasy: out }), {
     headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=1800" },
@@ -878,6 +902,8 @@ async function handleVysledky(request, env, ctx) {
         output[key] = entry;
       })
   );
+
+  await fillMissingLogos(Object.values(output).flatMap(logoSlots), cfg, ctx);
 
   return new Response(JSON.stringify(output), {
     status: 200,
