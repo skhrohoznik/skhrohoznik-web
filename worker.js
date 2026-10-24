@@ -389,6 +389,19 @@ const logoBase = (n) => String(n || "").replace(/\s+/g, " ").trim().replace(/\s+
 function overrideLogo(team) {
   return LOGO_OVERRIDES[logoBase(team)] || null;
 }
+// Keď zväz nemá logo pre družstvo B (napr. ŠKP Bratislava B), použije sa logo družstva A toho istého
+// klubu - z tej istej súťaže, inak z hocijakej inej, ktorú worker práve načítal.
+const KNOWN_LOGOS = new Map();
+function rememberLogos(logos) {
+  for (const [name, url] of Object.entries(logos || {})) if (url && !KNOWN_LOGOS.has(logoBase(name))) KNOWN_LOGOS.set(logoBase(name), url);
+}
+function teamLogo(team, logos) {
+  const own = overrideLogo(team) || (logos && logos[team]);
+  if (own) return own;
+  const base = logoBase(team);
+  for (const [name, url] of Object.entries(logos || {})) if (url && logoBase(name) === base) return url;
+  return KNOWN_LOGOS.get(base) || null;
+}
 
 // Konfigurácia súťaží je v súbore sutaze.json (upravuje sa na GitHube, bez zásahu do kódu).
 async function loadConfig(env, request) {
@@ -780,15 +793,16 @@ async function handleKalendar(request, env, ctx) {
           try {
             const data = applyCast(await loadPhaseData(compKey(comp), ctx), comp);
             const { matches, logos = {} } = data;
+            rememberLogos(logos);
             const tm = teamMatchFor(data, team.teamMatch);
             const clubName = Object.keys(logos).find((t) => tm.test(t));
             const clubLogo = team.ownLogo || (clubName ? logos[clubName] : null);
             const base = { tim: key, nazov: team.nazov || key, faza: comp.nazov || "", clubLogo };
             for (const m of toClubResults(matches, tm)) {
-              out.push({ ...base, ...m, played: true, opponentLogo: overrideLogo(m.opponent) || logos[m.opponent] || null });
+              out.push({ ...base, ...m, played: true, opponentLogo: teamLogo(m.opponent, logos) });
             }
             for (const m of toClubUpcoming(matches, tm, Infinity)) {
-              out.push({ ...base, ...m, played: false, opponentLogo: overrideLogo(m.opponent) || logos[m.opponent] || null });
+              out.push({ ...base, ...m, played: false, opponentLogo: teamLogo(m.opponent, logos) });
             }
           } catch (err) {
             // súťaž sa nepodarilo načítať - v kalendári jednoducho chýba
@@ -808,7 +822,8 @@ async function loadPhase(comp, teamMatchCfg, ctx, ownLogo) {
     const data = applyCast(await loadPhaseData(compKey(comp), ctx), comp);
     const { matches, tables, logos = {} } = data;
     const teamMatch = teamMatchFor(data, teamMatchCfg);
-    const logoOf = (team) => overrideLogo(team) || logos[team] || null;
+    rememberLogos(logos);
+    const logoOf = (team) => teamLogo(team, logos);
     const clubName = Object.keys(logos).find((t) => teamMatch.test(t));
     const withLogo = (m) => ({ ...m, opponentLogo: logoOf(m.opponent) });
     const standings = toClubStandings(tables, teamMatch);
