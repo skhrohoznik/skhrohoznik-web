@@ -561,7 +561,7 @@ async function szhParseTeam(teamId, seasonId) {
   const groups = new Map();
   for (const r of szhObjectsWith(html, '"finalPosition"')) {
     const p = r && r.participants && r.participants[0];
-    if (!p) continue;
+    if (!p || /^vo[ľl]no$/i.test(clean(p.name))) continue; // "Voľno" nie je tím
     const lvl = (r.levels && r.levels[0] && r.levels[0].id) || (p.levels && p.levels[0] && p.levels[0].id) || 0;
     const ad = Object.fromEntries((r.additionalData || []).map((a) => [a.name, a.value]));
     const l = szhLogo(p); if (l && !logos[clean(p.name)]) logos[clean(p.name)] = l;
