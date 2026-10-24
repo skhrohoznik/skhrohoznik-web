@@ -442,7 +442,7 @@ function sortSeasonsDesc(seasons) {
 // Na adrese *.workers.dev cache nefunguje - vtedy sa jednoducho sťahuje zakaždým.
 const PHASE_FRESH_SEC = 30 * 60;
 const PHASE_BACKUP_SEC = 7 * 24 * 60 * 60;
-const PHASE_CACHE_VERSION = "5"; // zvýš, ak sa zmení formát uložených dát
+const PHASE_CACHE_VERSION = "6"; // zvýš, ak sa zmení formát uložených dát
 
 function phaseCacheKey(compUrl, kind) {
   return new Request(
