@@ -2,30 +2,30 @@
   {
     "nazov": "Turnaj starších žiačok",
     "fotky": [
-      "turnaj-ziacky.png"
+      "oznamy/turnaj-ziacky.png"
     ]
   },
   {
     "nazov": "Zo zápasov žien",
     "fotky": [
-      "hero-akcia.jpg",
-      "skok.jpg",
-      "akcia4.jpg",
-      "akcia5.jpg"
+      "hero/akcia1.jpg",
+      "galeria/skok.jpg",
+      "hero/akcia4.jpg",
+      "hero/akcia5.jpg"
     ]
   },
   {
     "nazov": "Muži a dorastenci",
     "fotky": [
-      "muzi.jpg",
-      "akcia3.jpg",
-      "akcia2.jpg"
+      "hero/muzi.jpg",
+      "hero/akcia3.jpg",
+      "hero/akcia2.jpg"
     ]
   },
   {
     "nazov": "Oslavy a tréningy",
     "fotky": [
-      "oslava.jpg"
+      "hero/oslava.jpg"
     ]
   },
   {

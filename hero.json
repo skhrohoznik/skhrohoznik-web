@@ -3,19 +3,19 @@
   "text": "Spoločný projekt troch hádzanárskych klubov z regiónu Záhorie — ŠKH Rohožník, HC Záhoráci a TJ Strojár Malacky. Spolupracujeme na rozvoji hádzanej od najmladších kategórií až po najvyššiu súťaž.",
   "interval_sekundy": 5,
   "fotky": [
-    { "foto": "hero-akcia.jpg", "pozicia": "center 12%" },
+    { "foto": "hero/akcia1.jpg", "pozicia": "center 12%" },
     { "typ": "2percenta", "odkaz": "2-percenta.html", "tlacidlo": "Chcem darovať 2 %",
       "text": "Každé percento ide na tréningy, turnaje, dresy a dopravu našich detí na zápasy. Stačí vyplniť jedno tlačivo – nič vás to nestojí.",
       "fotky": ["hero/2p-1.jpg", "hero/2p-2.jpg", "hero/2p-3.jpg", "hero/2p-4.jpg", "hero/2p-5.jpg"] },
     { "foto": "hero/CP7A5741.jpg",   "pozicia": "center 15%" },
     { "animacia": "logo" },
-    { "foto": "muzi.jpg",       "pozicia": "center top" },
-    { "foto": "akcia2.jpg",     "pozicia": "center top" },
-    { "foto": "oslava.jpg",     "pozicia": "center 20%" },
-    { "foto": "akcia3.jpg",     "pozicia": "center 15%" },
-    { "foto": "akcia4.jpg",     "pozicia": "center 15%" },
-    { "foto": "akcia5.jpg",     "pozicia": "center top" },
-    { "foto": "akcia6.jpg",     "pozicia": "center top" },
-    { "foto": "akcia7.jpg",     "pozicia": "center 10%" }
+    { "foto": "hero/muzi.jpg",       "pozicia": "center top" },
+    { "foto": "hero/akcia2.jpg",     "pozicia": "center top" },
+    { "foto": "hero/oslava.jpg",     "pozicia": "center 20%" },
+    { "foto": "hero/akcia3.jpg",     "pozicia": "center 15%" },
+    { "foto": "hero/akcia4.jpg",     "pozicia": "center 15%" },
+    { "foto": "hero/akcia5.jpg",     "pozicia": "center top" },
+    { "foto": "hero/akcia6.jpg",     "pozicia": "center top" },
+    { "foto": "hero/akcia7.jpg",     "pozicia": "center 10%" }
   ]
 }

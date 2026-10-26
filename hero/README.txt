@@ -1,4 +1,4 @@
-Sem nahrávaj fotky pre veľký banner na úvodnej stránke (napr. hero/turnaj.jpg).
+Sem nahrávaj fotky pre veľký banner na úvodnej stránke (napr. hero/turnaj.jpg). Sú tu aj všetky súčasné fotky bannera (akcia1.jpg ... akcia7.jpg, muzi.jpg, oslava.jpg, fotky k 2 %).
 Potom ich pridaj do súboru hero.json. Odporúčaná šírka fotky je 1600 – 2000 px (na šírku).
 
 Snímka "2 % z daní" (koláž fotiek s textom, kliknutím otvorí stránku 2 %):
