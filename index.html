@@ -227,7 +227,7 @@
   /* ---- snímka banera "2 % z daní" (hero.json: { "typ": "2percenta", "fotky": [...], "odkaz": "2-percenta.html" }) ---- */
   .intro .slide:not(.active){pointer-events:none;}
   .intro.own-on .intro-content{opacity:0; pointer-events:none;}
-  .intro .slide-dp{display:block; color:#fff; text-decoration:none; cursor:pointer;
+  .intro .slide-dp{display:block; color:#fff;
     background:radial-gradient(70% 90% at 78% 35%, #E2343A 0%, #B71C22 38%, #6E0F13 75%, #3D080B 100%);}
   .intro .slide-dp::after{background:linear-gradient(90deg, rgba(20,4,6,.55) 0%, rgba(20,4,6,.15) 45%, transparent 70%);}
   .dp-big{position:absolute; left:-2%; top:4%; font-family:'Archivo Black',sans-serif; font-size:min(44vw,560px); line-height:.8; letter-spacing:-.04em;
@@ -250,11 +250,15 @@
   .dp-text h2 b{font-weight:400; color:#FFD54A;}
   .dp-text p{font-size:16px; line-height:1.5; color:#FBE3E4; margin:0 0 18px; max-width:480px;}
   /* tlačidlo s "vlniacimi" rohmi (podľa btn-178) - biele, aby bolo vidieť na červenom pozadí */
-  .dp-cta{display:inline-flex; align-items:center; gap:10px; background:none; color:#fff; font-weight:700; font-size:15px; letter-spacing:.02em;
-    padding:12px 18px; border:2px solid #fff; border-radius:10px 3px 10px 3px; text-shadow:0 1px 6px rgba(0,0,0,.3);}
-  .slide-dp:hover .dp-cta, .slide-dp:focus-visible .dp-cta{animation:dp-cta .8s ease infinite;}
-  @keyframes dp-cta{0%,100%{border-radius:10px 30px 10px 30px;} 50%{border-radius:30px 10px 30px 10px;}}
-  .dp-cta i{font-style:normal; transition:transform .2s;} .slide-dp:hover .dp-cta i{transform:translateX(4px);}
+  /* tlačidlá: prechod na stránku 2 % až po kliknutí na tlačidlo (nie na celú snímku) */
+  .dp-btns{display:flex; flex-wrap:wrap; gap:12px;}
+  .dp-btn{display:inline-flex; align-items:center; gap:8px; text-transform:uppercase; font-weight:700; font-size:14px; letter-spacing:.05em; text-decoration:none;
+    padding:11px 20px; border-radius:8px; border:2px solid #fff; transition:background .2s, color .2s, transform .2s, box-shadow .2s;}
+  .dp-btn.primary{background:#fff; color:#B71C22; box-shadow:0 8px 20px rgba(0,0,0,.25);}
+  .dp-btn.primary:hover{background:#FFE3E4; border-color:#FFE3E4; transform:translateY(-2px);}
+  .dp-btn.second{background:transparent; color:#fff;}
+  .dp-btn.second:hover{background:#fff; color:#B71C22; transform:translateY(-2px);}
+  .dp-btn:focus-visible{outline:3px solid #FFD54A; outline-offset:3px;}
   /* tablet a mobil: koláž je stlmené pozadie za textom */
   @media (max-width:900px){
     .dp-collage{left:-4%; right:-4%; width:auto; top:56px; bottom:calc(var(--band,260px) - 10px); z-index:0;}
@@ -269,9 +273,9 @@
     .dp-text{bottom:calc(var(--band,260px) + 18px);}
     .dp-text h2{font-size:30px; margin-bottom:10px;}
     .dp-text p{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
-    .dp-cta{padding:10px 15px; font-size:14px;}
+    .dp-btn{padding:9px 14px; font-size:13px;} .dp-btns{gap:8px;}
   }
-  @media (prefers-reduced-motion:reduce){ .dp-collage figure{transition:none;} .slide-dp:hover .dp-cta{animation:none;} }
+  @media (prefers-reduced-motion:reduce){ .dp-collage figure{transition:none;} .dp-btn{transition:none;} }
 </style>
 <link rel="stylesheet" href="news.css">
 <script src="news.js"></script>
@@ -545,10 +549,9 @@
             const d = document.createElement('div');
             d.className = 'slide' + (i === 0 ? ' active' : '');
             if (f.typ === '2percenta') {
-              const a = document.createElement('a');
+              const a = document.createElement('div');
               a.className = 'slide slide-dp slide-own' + (i === 0 ? ' active' : '');
-              a.href = f.odkaz || '2-percenta.html';
-              a.setAttribute('aria-label', 'Darujte nám 2 % z daní – ako na to');
+              const href = f.odkaz || '2-percenta.html';
               const esc = x => String(x == null ? '' : x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
               a.innerHTML = '<div class="dp-big" aria-hidden="true">2 %</div>' +
                 '<div class="dp-collage" aria-hidden="true">' + (f.fotky || []).slice(0, 5).map(src =>
@@ -556,7 +559,7 @@
                 '<div class="dp-text"><span class="dp-kicker">' + esc(f.nadtitulok || 'Podporte našu mládež') + '</span>' +
                 '<h2>' + (f.nadpis ? esc(f.nadpis) : 'Darujte nám <b>2&nbsp;%</b> z&nbsp;daní') + '</h2>' +
                 '<p>' + esc(f.text || 'Každé percento ide na tréningy, turnaje, dresy a dopravu našich detí na zápasy. Stačí vyplniť jedno tlačivo – nič vás to nestojí.') + '</p>' +
-                '<span class="dp-cta">' + esc(f.tlacidlo || 'Chcem darovať 2 %') + ' <i>→</i></span></div>';
+                '<div class="dp-btns"><a class="dp-btn primary" href="' + esc(f.odkaz_tlacidlo || href + '#klub') + '">' + esc(f.tlacidlo || 'Chcem darovať 2 %') + '</a>'+ '</div></div>';
               hero.insertBefore(a, content);
               return;
             }
