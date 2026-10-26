@@ -4,6 +4,28 @@
    3. odpočet do zápasu/akcie - prvok s atribútom data-odpocet="2026-10-17T18:00"
       (bez času: data-odpocet="2026-10-17", vtedy sa ukážu len dni).
    Ak má návštevník v systéme vypnuté animácie, obsah sa ukáže hneď bez pohybu. */
+// Ak sa zápasy/výsledky nenačítajú na prvý raz (krátky výpadok spojenia alebo servera),
+// skúsi sa to automaticky ešte dvakrát - návštevník tak neuvidí chybu hneď.
+(function () {
+  if (!window.fetch) return;
+  var orig = window.fetch.bind(window);
+  window.fetch = function (input, init) {
+    var url = typeof input === "string" ? input : (input && input.url) || "";
+    if (!/^\/(vysledky|zapasy\.json)(\?|$)|\/\/skhrohoznik\.sk\/(vysledky|zapasy\.json)/.test(url)) return orig(input, init);
+    var tries = 0;
+    function attempt() {
+      return orig(input, init).then(function (r) {
+        if (!r.ok && tries++ < 2) return new Promise(function (res) { setTimeout(res, 1500 * tries); }).then(attempt);
+        return r;
+      }, function (e) {
+        if (tries++ < 2) return new Promise(function (res) { setTimeout(res, 1500 * tries); }).then(attempt);
+        throw e;
+      });
+    }
+    return attempt();
+  };
+})();
+
 (function () {
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
