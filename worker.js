@@ -465,7 +465,7 @@ function sortSeasonsDesc(seasons) {
 // Na adrese *.workers.dev cache nefunguje - vtedy sa jednoducho sťahuje zakaždým.
 const PHASE_FRESH_SEC = 30 * 60;
 const PHASE_BACKUP_SEC = 7 * 24 * 60 * 60;
-const PHASE_CACHE_VERSION = "6"; // zvýš, ak sa zmení formát uložených dát
+const PHASE_CACHE_VERSION = "7"; // zvýš, ak sa zmení formát uložených dát
 
 function phaseCacheKey(compUrl, kind) {
   return new Request(
@@ -607,7 +607,42 @@ async function szhParseTeam(teamId, seasonId) {
     const t = [...g.values()].sort((a, b) => a.rank - b.rank);
     if (t.length > 1 && t.some((r) => r.teamId === teamId)) tablesByLevel[lvl] = strip(t);
   }
-  return { matches, tables, tablesByLevel, logos, ourName };
+  return { matches, tables, tablesByLevel, logos, ourName, players: szhPlayers(html) };
+}
+
+// Súpiska družstva zo stránky tímu: číslo dresu, meno, fotka (cez /logo/eh/), góly a zápasy v sezóne
+function szhNameCase(s) {
+  s = clean(s);
+  if (s !== s.toUpperCase()) return s; // už je napísané normálne
+  return s.toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+}
+function szhPlayers(html) {
+  const key = '\\"firstName\\"', start = '{\\"teams\\":';
+  const seen = new Set(), out = [];
+  let k = 0;
+  while ((k = html.indexOf(key, k)) >= 0) {
+    const j = html.lastIndexOf(start, k);
+    const raw = j >= 0 ? szhObjAt(html, j) : null;
+    if (raw && j + raw.length > k) {
+      let o = null;
+      try { o = JSON.parse(JSON.parse('"' + raw + '"')); } catch (e) { /* preskočiť */ }
+      if (o && o.id && !seen.has(o.id) && o.lastName) {
+        seen.add(o.id);
+        const ad = Object.fromEntries((o.additionalData || []).map((a) => [a.name, a.value]));
+        const st = Object.fromEntries((Array.isArray(o.statistics) ? o.statistics : []).filter((a) => a && a.name).map((a) => [a.name, a.value]));
+        const foto = o.avatarEntity && /^https:\/\/cdn\.handball\.eliterro\.sk\/([A-Za-z0-9-]+\.(?:png|jpe?g|webp))$/i.exec(o.avatarEntity.url || "");
+        out.push({
+          cislo: /^\d{1,3}$/.test(ad["jersey-number"] || "") ? Number(ad["jersey-number"]) : null,
+          meno: szhNameCase(o.firstName), priezvisko: szhNameCase(o.lastName),
+          foto: foto ? "/logo/eh/" + foto[1] : null,
+          goly: st.goals != null ? Number(st.goals) || 0 : null,
+          zapasy: st["matches-played"] != null ? Number(st["matches-played"]) || 0 : null,
+        });
+      }
+      k = j + raw.length;
+    } else k += key.length;
+  }
+  return out.sort((a, b) => (a.cislo ?? 999) - (b.cislo ?? 999) || a.priezvisko.localeCompare(b.priezvisko, "sk"));
 }
 
 // /_szh/tim/<id> - spracovanie jednej stránky tímu v samostatnom volaní (len cez väzbu SELF)
@@ -858,6 +893,7 @@ async function loadPhase(comp, teamMatchCfg, ctx, ownLogo) {
       results: toClubResults(matches, teamMatch).map(withLogo),
       upcoming: toClubUpcoming(matches, teamMatch, 4).map(withLogo),
       standings: standings ? standings.map((r) => ({ ...r, logo: (r.ours && ownLogo) || logoOf(r.team) })) : null,
+      players: Array.isArray(data.players) && data.players.length ? data.players : null,
     };
   } catch (err) {
     return { nazov: comp.nazov || "Súťaž", error: String(err) };
@@ -898,6 +934,8 @@ async function handleVysledky(request, env, ctx) {
           entry.upcoming = upcoming.slice(0, 2);
           const withLogo = ok.find((p) => p.clubLogo);
           entry.clubLogo = withLogo ? withLogo.clubLogo : null;
+          const withPlayers = ok.find((p) => p.players);
+          entry.players = withPlayers ? withPlayers.players : null;
         }
         output[key] = entry;
       })

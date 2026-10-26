@@ -445,3 +445,28 @@ html.rv-on .section-head.rv-in h2{clip-path:inset(0 0 0 0);}
 /* animované pixelové pozadie (pozadie-pixel.js) - za obsahom, pevne pri posúvaní */
 #pixel-bg{position:fixed !important; inset:0; z-index:-1; pointer-events:none;}
 html.pixel-bg-on body{background:transparent;}
+
+/* súpiska družstva (supiska.js) */
+.sp-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:16px;}
+.sp-card{background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,.08); display:flex; flex-direction:column; --c:var(--red);}
+.g-m .sp-card, .sp-blue .sp-card{--c:#0B4F9C;}
+.sp-photo{position:relative; aspect-ratio:3/4; background:linear-gradient(180deg,#EEF2F9,#DCE4F2); overflow:hidden;}
+.sp-photo img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 12%; z-index:1;}
+.sp-sil{position:absolute; left:50%; bottom:0; width:70%; aspect-ratio:1; translate:-50% 28%; border-radius:50%; background:#C9D2E2;}
+.sp-sil::before{content:""; position:absolute; left:50%; top:-62%; width:58%; aspect-ratio:1; translate:-50% 0; border-radius:50%; background:#C9D2E2;}
+.sp-num{font-family:'Archivo Black',sans-serif; font-size:22px; line-height:1; color:#fff; background:var(--c); padding:7px 9px; min-width:44px; text-align:center;}
+.sp-photo .sp-num{position:absolute; left:0; top:0; z-index:2;}
+.sp-badge{position:absolute; right:6px; bottom:6px; z-index:2; background:#FFD54A; color:var(--ink); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:4px 7px;}
+.sp-info{padding:10px 12px 12px; display:flex; flex-direction:column; gap:1px;}
+.sp-first{font-size:13px; color:#5c5648;}
+.sp-last{font-family:'Archivo Black',sans-serif; font-size:15px; text-transform:uppercase; line-height:1.15;}
+.sp-stat{font-size:12px; color:#6b6455; margin-top:6px;}
+.sp-stat b{color:var(--ink);}
+.sp-top{outline:2px solid #FFD54A; outline-offset:-2px;}
+.sp-grid-mini{grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:10px;}
+.sp-mini{flex-direction:row; align-items:stretch;}
+.sp-mini .sp-num{display:flex; align-items:center; justify-content:center; min-width:56px; font-size:20px;}
+.sp-mini .sp-info{padding:9px 12px;}
+.sp-note{font-size:12px; color:#6b6455; margin-top:12px;}
+.sp-note a{color:inherit;}
+@media (max-width:640px){ .sp-grid{grid-template-columns:repeat(2,1fr); gap:10px;} .sp-last{font-size:13px;} .sp-num{font-size:18px; min-width:38px;} }
