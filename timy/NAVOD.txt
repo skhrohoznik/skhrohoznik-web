@@ -1,0 +1,22 @@
+Spoločné fotky družstiev (veľká fotka v hlavičke stránky družstva)
+=================================================================
+
+Fotka má rovnaký názov ako stránka družstva, len s .jpg na konci:
+
+  muzi-extraliga.jpg        Muži Extraliga
+  muzi-1-liga.jpg           Muži 1. liga
+  zeny.jpg                  Ženy
+  starsi-dorastenci.jpg     Starší dorastenci
+  mladsi-dorastenci.jpg     Mladší dorastenci
+  starsie-dorastenky.jpg    Staršie dorastenky
+  mladsie-dorastenky.jpg    Mladšie dorastenky
+  starsi-ziaci.jpg          Starší žiaci
+  mladsi-ziaci.jpg          Mladší žiaci
+  starsie-ziacky.jpg        Staršie žiačky
+  mladsie-ziacky-a.jpg      Mladšie žiačky A
+  mladsie-ziacky-b.jpg      Mladšie žiačky B
+  mladsie-ziacky-c.jpg      Mladšie žiačky C
+  mini.jpg                  Dievčatá mini a Chlapci mini (spoločná fotka)
+
+Novú fotku stačí nahrať sem pod rovnakým názvom (prepíše starú) - na stránke sa zmení sama.
+Fotky radšej zmenši na šírku asi 1 920 bodov (fotka z fotoaparátu má aj 10-15 MB).
