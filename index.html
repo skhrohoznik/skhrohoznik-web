@@ -279,6 +279,24 @@
     .dp-btn{padding:9px 14px; font-size:13px;} .dp-btns{gap:8px;}
   }
   @media (prefers-reduced-motion:reduce){ .dp-collage figure{transition:none;} .dp-btn{transition:none;} }
+
+  /* ---- Naše družstvá ---- */
+  .dr-group{margin-bottom:26px;}
+  .dr-h{display:flex; align-items:center; gap:9px; font-size:14px; text-transform:uppercase; letter-spacing:.06em; color:#5c5648; margin:0 0 12px; font-family:'Space Grotesk',sans-serif; font-weight:700;}
+  .dr-h i{width:12px; height:12px; border-radius:50%; background:var(--c);}
+  .g-f{--c:#C21F26;} .g-m{--c:#0B4F9C;}
+  .dr-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  @media (max-width:1000px){ .dr-grid{grid-template-columns:repeat(3,1fr);} }
+  .dr-tile{position:relative; display:block; aspect-ratio:3/2; overflow:hidden; background:var(--ink); color:#fff; text-decoration:none; border-bottom:4px solid var(--c); box-shadow:0 4px 16px rgba(22,26,34,.12);}
+  .dr-tile img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .5s ease;}
+  .dr-tile:hover img{transform:scale(1.06);}
+  .dr-shade{position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,10,14,0) 35%, rgba(10,10,14,.82) 100%);}
+  .dr-txt{position:absolute; left:12px; right:12px; bottom:10px; display:flex; flex-direction:column; gap:2px;}
+  .dr-name{font-family:'Archivo Black',sans-serif; font-size:17px; text-transform:uppercase; line-height:1.1; text-shadow:0 2px 8px rgba(0,0,0,.5);}
+  .dr-next{font-size:12px; font-weight:600; opacity:.92;}
+  .dr-next:empty{display:none;}
+  .dr-tile:hover .dr-name{text-decoration:underline; text-underline-offset:4px;}
+  @media (max-width:640px){ .dr-grid{grid-template-columns:repeat(2,1fr); gap:10px;} .dr-tile{aspect-ratio:4/3;} .dr-txt{left:8px; right:8px; bottom:7px;} .dr-name{font-size:12px;} .dr-next{font-size:10.5px;} .dr-lbl{display:none;} .dr-shade{background:linear-gradient(180deg, rgba(10,10,14,0) 25%, rgba(10,10,14,.88) 100%);} }
 </style>
 <link rel="stylesheet" href="news.css">
 <script src="news.js"></script>
@@ -372,6 +390,33 @@
 
 <main class="page">
 <div class="page-content">
+    <section class="block" id="druzstva">
+      <div class="section-head with-link"><h2>Naše družstvá</h2><a class="section-all" href="kalendar.html">Kalendár zápasov →</a></div>
+      <div class="dr-group"><h3 class="dr-h g-f"><i></i>Ženy a dievčatá</h3>
+        <div class="dr-grid">
+          <a class="dr-tile g-f" href="zeny.html"><img src="timy/nahlad/zeny.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Ženy</span><span class="dr-next" data-k="zeny"></span></span></a>
+          <a class="dr-tile g-f" href="starsie-dorastenky.html"><img src="timy/nahlad/starsie-dorastenky.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Staršie dorastenky</span><span class="dr-next" data-k="dorast_st"></span></span></a>
+          <a class="dr-tile g-f" href="mladsie-dorastenky.html"><img src="timy/nahlad/mladsie-dorastenky.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Mladšie dorastenky</span><span class="dr-next" data-k="dorast_ml"></span></span></a>
+          <a class="dr-tile g-f" href="starsie-ziacky.html"><img src="timy/nahlad/starsie-ziacky.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Staršie žiačky</span><span class="dr-next" data-k="sz"></span></span></a>
+          <a class="dr-tile g-f" href="mladsie-ziacky-a.html"><img src="timy/nahlad/mladsie-ziacky-a.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Mladšie žiačky A</span><span class="dr-next" data-k="mza"></span></span></a>
+          <a class="dr-tile g-f" href="mladsie-ziacky-b.html"><img src="timy/nahlad/mladsie-ziacky-b.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Mladšie žiačky B</span><span class="dr-next" data-k="mzb"></span></span></a>
+          <a class="dr-tile g-f" href="mladsie-ziacky-c.html"><img src="timy/nahlad/mladsie-ziacky-c.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Mladšie žiačky C</span><span class="dr-next" data-k="mzc"></span></span></a>
+          <a class="dr-tile g-f" href="dievcata-mini.html"><img src="timy/nahlad/mini.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Dievčatá mini</span><span class="dr-next"></span></span></a>
+        </div>
+      </div>
+      <div class="dr-group"><h3 class="dr-h g-m"><i></i>Muži a chlapci</h3>
+        <div class="dr-grid">
+          <a class="dr-tile g-m" href="muzi-extraliga.html"><img src="timy/nahlad/muzi-extraliga.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Muži Extraliga</span><span class="dr-next" data-k="muzi_a"></span></span></a>
+          <a class="dr-tile g-m" href="muzi-1-liga.html"><img src="timy/nahlad/muzi-1-liga.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Muži 1. liga</span><span class="dr-next" data-k="muzi_b"></span></span></a>
+          <a class="dr-tile g-m" href="starsi-dorastenci.html"><img src="timy/nahlad/starsi-dorastenci.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Starší dorastenci</span><span class="dr-next" data-k="dorast_st_ch"></span></span></a>
+          <a class="dr-tile g-m" href="mladsi-dorastenci.html"><img src="timy/nahlad/mladsi-dorastenci.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Mladší dorastenci</span><span class="dr-next" data-k="dorast_ml_ch"></span></span></a>
+          <a class="dr-tile g-m" href="starsi-ziaci.html"><img src="timy/nahlad/starsi-ziaci.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Starší žiaci</span><span class="dr-next" data-k="ziaci_st"></span></span></a>
+          <a class="dr-tile g-m" href="mladsi-ziaci.html"><img src="timy/nahlad/mladsi-ziaci.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Mladší žiaci</span><span class="dr-next" data-k="ziaci_ml"></span></span></a>
+          <a class="dr-tile g-m" href="chlapci-mini.html"><img src="timy/nahlad/mini.jpg" alt="" loading="lazy"><span class="dr-shade"></span><span class="dr-txt"><span class="dr-name">Chlapci mini</span><span class="dr-next"></span></span></a>
+        </div>
+      </div>
+    </section>
+
     <section class="block" id="oznamy-section">
       <div class="section-head with-link">
         <h2>Oznamy</h2>
@@ -727,6 +772,14 @@
       res.sort((a, b) => dateToObj(b.date) - dateToObj(a.date));
       MATCHES = { upcoming: up.slice(0, MAX_CARDS), results: res.slice(0, MAX_CARDS) };
       showMatches(up.length ? "upcoming" : "results");
+      // najbližší zápas na dlaždiciach družstiev
+      const WDn = ["ne", "po", "ut", "st", "št", "pi", "so"];
+      document.querySelectorAll('.dr-next[data-k]').forEach(el => {
+        const u = data[el.dataset.k] && (data[el.dataset.k].upcoming || [])[0];
+        if (!u) return;
+        const dt = dateToObj(u.date);
+        el.innerHTML = '<span class="dr-lbl">Najbližší zápas: </span>' + WDn[dt.getDay()] + " " + dt.getDate() + "." + (dt.getMonth() + 1) + "." + (u.home ? " · doma" : " · vonku");
+      });
     })
     .catch(() => {
       document.getElementById("matches-row").innerHTML = '<div class="matches-empty">Zápasy sa nepodarilo načítať.</div>';
