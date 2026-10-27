@@ -18,5 +18,6 @@ Fotka má rovnaký názov ako stránka družstva, len s .jpg na konci:
   mladsie-ziacky-c.jpg      Mladšie žiačky C
   mini.jpg                  Dievčatá mini a Chlapci mini (spoločná fotka)
 
+Malé náhľady pre úvodnú stránku sú v timy/nahlad/ (po výmene fotky mi napíš, pregenerujem ich).
 Novú fotku stačí nahrať sem pod rovnakým názvom (prepíše starú) - na stránke sa zmení sama.
 Fotky radšej zmenši na šírku asi 1 920 bodov (fotka z fotoaparátu má aj 10-15 MB).
