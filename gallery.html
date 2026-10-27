@@ -168,7 +168,25 @@
   .fb-wrap{display:flex; justify-content:center; flex-wrap:nowrap; gap:20px; overflow-x:auto; padding-bottom:8px;}
   .fb-item{display:flex; flex-direction:column; align-items:center; gap:10px; flex:0 0 auto;}
   .fb-item .fb-label{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455;}
-  .albums{display:flex; flex-direction:column; gap:16px;}
+  /* albumy ako dlaždice */
+  .albums[hidden], .g-years[hidden], .album-view[hidden]{display:none !important;}
+  .albums{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:20px;}
+  .g-card{display:flex; flex-direction:column; background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,.08); color:var(--ink); text-decoration:none; transition:transform .2s, box-shadow .2s;}
+  .g-card:hover{transform:translateY(-3px); box-shadow:0 10px 26px rgba(22,26,34,.14);}
+  .g-cover{position:relative; aspect-ratio:4/3; background:#E5EBF6; overflow:hidden;}
+  .g-cover img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .4s;}
+  .g-card:hover .g-cover img{transform:scale(1.04);}
+  .g-count{position:absolute; right:8px; bottom:8px; background:rgba(22,26,34,.82); color:#fff; font-size:11px; font-weight:700; padding:4px 8px;}
+  .g-meta{padding:12px 14px 14px; display:flex; flex-direction:column; gap:4px;}
+  .g-date{font-size:11px; font-weight:700; color:var(--red); letter-spacing:.04em;}
+  .g-title{font-family:'Archivo Black',sans-serif; font-size:14px; text-transform:uppercase; line-height:1.25; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;}
+  .album-view{margin-bottom:10px;}
+  .g-view-head{display:flex; flex-direction:column; gap:12px; margin-bottom:18px;}
+  .g-view-head h2{font-size:clamp(18px,2.4vw,24px); margin:2px 0;}
+  .g-count-txt{font-size:13px; color:#6b6455;}
+  .g-back{align-self:flex-start; background:#fff; border:2px solid var(--ink); font:inherit; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; padding:9px 14px; cursor:pointer;}
+  .g-back:hover{background:var(--ink); color:#fff;}
+  @media (max-width:640px){ .albums{grid-template-columns:repeat(2,1fr); gap:10px;} .g-title{font-size:12px;} .g-meta{padding:9px 10px 11px;} }
   .g-years{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
   .g-years button{background:#fff; border:1px solid var(--line); border-radius:999px; font:inherit; font-size:13px; font-weight:600; padding:7px 14px; cursor:pointer; color:var(--ink);}
   .g-years button span{opacity:.6; font-weight:500; margin-left:4px;}
@@ -329,6 +347,7 @@
     <p class="page-intro">Fotky z tréningov, zápasov a turnajov všetkých klubov.</p>
     <section class="block">
       <div class="g-years" id="g-years" role="group" aria-label="Filtrovať podľa roku" hidden></div>
+      <div class="album-view" id="album-view" hidden></div>
       <div class="albums" id="albums">
         <p style="color:#5c5648;">Galéria sa načítava…</p>
       </div>
@@ -342,90 +361,75 @@
 </div>
 
 <script>
-  fetch('/galeria.json')
-    .then(r => r.json())
-    .then(albums => {
-      const wrap = document.getElementById('albums');
-      wrap.innerHTML = '';
-      function fotoLabel(n) {
-        if (n === 1) return '1 fotka';
-        if (n >= 2 && n <= 4) return n + ' fotky';
-        return n + ' fotiek';
-      }
-      // rok albumu: z dátumu; staré albumy celých sezón idú do "Staršie sezóny", ostatné bez dátumu sú aktuálne
-      const thisYear = String(new Date().getFullYear());
-      function albumYear(a) {
-        const m = String(a.datum || '').match(/(\d{4})$/);
-        if (m) return m[1];
-        return /sezóna\s*\d{4}/i.test(a.nazov || '') ? 'starsie' : thisYear;
-      }
-      albums.forEach((album, idx) => {
-        const fotky = album.fotky || [];
-        const card = document.createElement('div');
-        card.className = 'album';
-        card.dataset.rok = albumYear(album);
+  // Galéria: albumy ako dlaždice s titulnou fotkou; po kliknutí sa album otvorí s náhľadmi fotiek
+  (function () {
+    const wrap = document.getElementById('albums');
+    const view = document.getElementById('album-view');
+    const bar = document.getElementById('g-years');
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const fotoLabel = n => n === 1 ? '1 fotka' : (n >= 2 && n <= 4 ? n + ' fotky' : n + ' fotiek');
+    const thisYear = String(new Date().getFullYear());
+    function albumYear(a) {
+      const m = String(a.datum || '').match(/(\d{4})$/);
+      if (m) return m[1];
+      return /sezóna\s*\d{4}/i.test(a.nazov || '') ? 'starsie' : thisYear;
+    }
+    let albums = [], year = 'vsetko';
 
-        const toggle = document.createElement('button');
-        toggle.type = 'button';
-        toggle.className = 'album-toggle';
-        toggle.innerHTML =
-          '<h3>' + (album.datum ? '<span class="album-date">' + album.datum + '</span>' : '') + (album.nazov || '') + '</h3>' +
-          '<div class="album-right"><span class="album-count">' + fotoLabel(fotky.length) + '</span>' +
-          '<span class="album-arrow">▾</span></div>';
-        toggle.addEventListener('click', () => card.classList.toggle('open'));
-        card.appendChild(toggle);
+    function renderGrid() {
+      wrap.innerHTML = albums.map((a, i) => {
+        if (year !== 'vsetko' && albumYear(a) !== year) return '';
+        const f = a.fotky || [];
+        return '<a class="g-card" href="#album-' + i + '" data-i="' + i + '">' +
+          '<span class="g-cover">' + (f[0] ? '<img src="' + esc(f[0]) + '" alt="" loading="lazy">' : '') +
+          '<span class="g-count">' + fotoLabel(f.length) + '</span></span>' +
+          '<span class="g-meta">' + (a.datum ? '<span class="g-date">' + esc(a.datum) + '</span>' : '') +
+          '<span class="g-title">' + esc(a.nazov || '') + '</span></span></a>';
+      }).join('');
+    }
+    function openAlbum(i) {
+      const a = albums[i];
+      if (!a) return closeAlbum();
+      const f = a.fotky || [];
+      view.innerHTML = '<div class="g-view-head"><button type="button" class="g-back">← Späť na albumy</button>' +
+        '<div><span class="g-date">' + esc(a.datum || '') + '</span><h2>' + esc(a.nazov || '') + '</h2><span class="g-count-txt">' + fotoLabel(f.length) + '</span></div></div>' +
+        '<div class="gallery-grid">' + f.map((src, k) => '<div class="g-item"><img src="' + esc(src) + '" alt="' + esc(a.nazov || '') + '" loading="lazy" data-k="' + k + '"></div>').join('') + '</div>';
+      view.hidden = false; wrap.hidden = true; bar.hidden = true;
+      view.querySelector('.g-back').addEventListener('click', () => { history.pushState(null, '', location.pathname + (year !== 'vsetko' ? '#rok-' + year : '')); closeAlbum(); });
+      view.querySelectorAll('.gallery-grid img').forEach(img => img.addEventListener('click', () => openLightbox(f, +img.dataset.k, a.nazov || '')));
+      window.scrollTo({ top: view.getBoundingClientRect().top + scrollY - 90 });
+    }
+    function closeAlbum() {
+      view.hidden = true; view.innerHTML = ''; wrap.hidden = false; bar.hidden = barHidden;
+    }
+    let barHidden = true;
+    function setYear(y, push) {
+      const counts = {}; albums.forEach(a => { const k = albumYear(a); counts[k] = (counts[k] || 0) + 1; });
+      if (y !== 'vsetko' && !counts[y]) y = 'vsetko';
+      year = y;
+      bar.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.y === y));
+      renderGrid();
+      if (push) try { history.replaceState(null, '', y === 'vsetko' ? location.pathname : '#rok-' + y); } catch (e) {}
+    }
+    function route() {
+      const m = location.hash.match(/^#album-(\d+)/);
+      if (m) openAlbum(+m[1]); else { closeAlbum(); const r = location.hash.match(/^#rok-(\w+)/); setYear(r ? r[1] : year, false); }
+    }
 
-        const body = document.createElement('div');
-        body.className = 'album-body';
-        const grid = document.createElement('div');
-        grid.className = 'gallery-grid';
-        fotky.forEach(foto => {
-          const cell = document.createElement('div');
-          cell.className = 'g-item';
-          const img = document.createElement('img');
-          img.loading = 'lazy';
-          img.src = foto;
-          img.alt = album.nazov || '';
-          cell.appendChild(img);
-          grid.appendChild(cell);
-        });
-        body.appendChild(grid);
-        card.appendChild(body);
-
-        wrap.appendChild(card);
-      });
-      // filter podľa roku
-      const counts = {};
-      albums.forEach(a => { const y = albumYear(a); counts[y] = (counts[y] || 0) + 1; });
+    fetch('/galeria.json').then(r => r.json()).then(list => {
+      albums = list;
+      const counts = {}; albums.forEach(a => { const k = albumYear(a); counts[k] = (counts[k] || 0) + 1; });
       const years = Object.keys(counts).filter(y => y !== 'starsie').sort((a, b) => b - a);
       if (counts.starsie) years.push('starsie');
-      const bar = document.getElementById('g-years');
       const chip = (y, label, n) => '<button type="button" data-y="' + y + '">' + label + '<span>' + n + '</span></button>';
-      bar.innerHTML = chip('vsetko', 'Všetko', albums.length) +
-        years.map(y => chip(y, y === 'starsie' ? 'Staršie sezóny' : y, counts[y])).join('');
-      function setYear(y) {
-        if (y !== 'vsetko' && !counts[y]) y = 'vsetko';
-        bar.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.y === y));
-        wrap.querySelectorAll('.album').forEach(c => c.classList.toggle('g-hide', y !== 'vsetko' && c.dataset.rok !== y));
-        try { history.replaceState(null, '', y === 'vsetko' ? location.pathname : '#rok-' + y); } catch (e) {}
-      }
-      bar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setYear(b.dataset.y); });
-      bar.hidden = years.length < 2;
-      setYear((location.hash.match(/^#rok-(\w+)/) || [])[1] || 'vsetko');
-      wrap.querySelectorAll('.gallery-grid').forEach(grid => {
-        const imgs = Array.from(grid.querySelectorAll('img'));
-        imgs.forEach((img, i) => {
-          img.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openLightbox(imgs.map(x => x.src), i, img.alt);
-          });
-        });
-      });
-    })
-    .catch(() => {
-      document.getElementById('albums').innerHTML =
-        '<p style="color:#5c5648;">Galériu sa nepodarilo načítať.</p>';
-    });
+      bar.innerHTML = chip('vsetko', 'Všetko', albums.length) + years.map(y => chip(y, y === 'starsie' ? 'Staršie sezóny' : y, counts[y])).join('');
+      bar.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setYear(b.dataset.y, true); });
+      barHidden = years.length < 2; bar.hidden = barHidden;
+      setYear('vsetko', false);
+      route();
+    }).catch(() => { wrap.innerHTML = '<p style="color:#5c5648;">Galériu sa nepodarilo načítať.</p>'; });
+    window.addEventListener('hashchange', route);
+  })();
 </script>
 
 

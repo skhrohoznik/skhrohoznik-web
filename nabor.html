@@ -208,6 +208,21 @@
   .page-title{font-size:clamp(26px,4vw,38px); margin-bottom:12px;}
   .page-intro{color:#5c5648; font-size:15px; max-width:640px; margin-bottom:8px;}
   .block{margin-top:32px;} #nabor{padding:0;}
+  .section-head.with-link{display:flex; align-items:baseline; gap:14px; justify-content:space-between; flex-wrap:wrap;}
+  .section-all{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--red); text-decoration:underline; text-underline-offset:3px;}
+  .nz-intro{color:#5c5648; font-size:15px; max-width:680px; margin:0 0 16px;}
+  .nz-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:14px;}
+  .nz-card{display:flex; background:#fff; border:1px solid var(--line); box-shadow:0 4px 16px rgba(22,26,34,.08); color:var(--ink); text-decoration:none; --c:#C21F26; transition:transform .2s;}
+  .nz-card.g-m{--c:#0B4F9C;}
+  .nz-card:hover{transform:translateY(-2px);}
+  .nz-when{background:var(--c); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px 8px; flex:0 0 104px; text-align:center;}
+  .nz-day{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; opacity:.85;}
+  .nz-date{font-family:'Archivo Black',sans-serif; font-size:22px; line-height:1.15;}
+  .nz-time{font-size:13px; font-weight:700;}
+  .nz-body{padding:12px 14px; display:flex; flex-direction:column; gap:3px; min-width:0;}
+  .nz-cat{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--c);}
+  .nz-teams{font-size:14px; line-height:1.3;}
+  .nz-place{font-size:12px; color:#6b6455; margin-top:4px;}
 </style>
 </head>
 <body>
@@ -299,6 +314,56 @@
         <img src="nabor/nabor-chlapci.jpg" alt="Nábor chlapci — rozvrh tréningov, Malacky">
       </div>
     </section>
+
+    <section class="block" id="pozvanka" hidden>
+      <div class="section-head with-link"><h2>Príď sa pozrieť na zápas</h2><a class="section-all" href="kalendar.html">Celý kalendár →</a></div>
+      <p class="nz-intro">Najlepší spôsob, ako spoznať hádzanú, je prísť sa pozrieť na zápas a zafandiť našim. Toto sú najbližšie domáce zápasy:</p>
+      <div class="nz-grid" id="nz-grid"></div>
+    </section>
+<script>
+  // najbližšie domáce zápasy všetkých družstiev (údaje zo slovakhandball.sk cez /vysledky)
+  (function () {
+    var T = {
+      muzi_a: ["Muži Extraliga", "muzi-extraliga.html", "Šport Aréna Malacky", "g-m", "Malacky"],
+      muzi_b: ["Muži 1. liga", "muzi-1-liga.html", "Šport Aréna Malacky", "g-m", "Malacky"],
+      dorast_st_ch: ["Starší dorastenci", "starsi-dorastenci.html", "Šport Aréna Malacky", "g-m", "Malacky"],
+      dorast_ml_ch: ["Mladší dorastenci", "mladsi-dorastenci.html", "Šport Aréna Malacky", "g-m", "Malacky"],
+      ziaci_st: ["Starší žiaci", "starsi-ziaci.html", "Šport Aréna Malacky", "g-m", "Malacky"],
+      ziaci_ml: ["Mladší žiaci", "mladsi-ziaci.html", "Šport Aréna Malacky", "g-m", "Malacky"],
+      zeny: ["Ženy", "zeny.html", "Šport Aréna Malacky", "g-f", "Rohožník / Malacky"],
+      dorast_st: ["Staršie dorastenky", "starsie-dorastenky.html", "Šport Aréna Malacky", "g-f", "Rohožník / Malacky"],
+      dorast_ml: ["Mladšie dorastenky", "mladsie-dorastenky.html", "Šport Aréna Malacky", "g-f", "Rohožník / Malacky"],
+      sz: ["Staršie žiačky", "starsie-ziacky.html", "ŠH Rohožník", "g-f", "Rohožník / Malacky"],
+      mza: ["Mladšie žiačky A", "mladsie-ziacky-a.html", "ŠH Rohožník", "g-f", "Rohožník / Malacky"],
+      mzb: ["Mladšie žiačky B", "mladsie-ziacky-b.html", "ŠH Rohožník", "g-f", "Rohožník / Malacky"],
+      mzc: ["Mladšie žiačky C", "mladsie-ziacky-c.html", "ŠH Rohožník", "g-f", "Rohožník / Malacky"]
+    };
+    var WD = ["Nedeľa", "Pondelok", "Utorok", "Streda", "Štvrtok", "Piatok", "Sobota"];
+    function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+    function d(s) { var p = String(s).split(".").map(Number); return new Date(p[2], p[1] - 1, p[0]); }
+    fetch("/vysledky").then(function (r) { return r.json(); }).then(function (data) {
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var list = [];
+      Object.keys(T).forEach(function (k) {
+        ((data[k] && data[k].upcoming) || []).forEach(function (m) {
+          if (m.home && d(m.date) >= today) list.push({ k: k, m: m, dt: d(m.date) });
+        });
+      });
+      list.sort(function (a, b) { return a.dt - b.dt || String(a.m.time || "99").localeCompare(String(b.m.time || "99")); });
+      list = list.slice(0, 4);
+      if (!list.length) return;
+      document.getElementById("nz-grid").innerHTML = list.map(function (x) {
+        var t = T[x.k], m = x.m;
+        return '<a class="nz-card ' + t[3] + '" href="' + t[1] + '">' +
+          '<div class="nz-when"><span class="nz-day">' + WD[x.dt.getDay()] + '</span><span class="nz-date">' + x.dt.getDate() + "." + (x.dt.getMonth() + 1) + ".</span>" +
+          '<span class="nz-time">' + (m.time ? esc(m.time) : "čas upresníme") + "</span></div>" +
+          '<div class="nz-body"><span class="nz-cat">' + esc(t[0]) + '</span><span class="nz-teams"><b>' + esc(t[4]) + "</b> – " + esc(m.opponent) + "</span>" +
+          '<span class="nz-place">📍 ' + esc(t[2]) + "</span></div></a>";
+      }).join("");
+      document.getElementById("pozvanka").hidden = false;
+    }).catch(function () {});
+  })();
+</script>
 
   </div>
   </main>
