@@ -515,10 +515,18 @@
       toggle.addEventListener('click', function(){ menu.classList.toggle('open'); });
     }
     document.querySelectorAll('.navbar .dd-btn').forEach(function(btn){
+      var li = btn.closest('li');
       btn.addEventListener('click', function(e){
         e.preventDefault();
-        var li = btn.closest('li');
-        li.classList.toggle('open');
+        if (li.classList.toggle('open')) { li.classList.remove('shut'); }
+        else { li.classList.add('shut'); btn.blur(); }
+      });
+      li.addEventListener('mouseleave', function(){ li.classList.remove('shut'); });
+      document.addEventListener('click', function(e){
+        if (!li.contains(e.target)) li.classList.remove('open');
+      });
+      document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && li.classList.contains('open')) { li.classList.remove('open'); li.classList.add('shut'); btn.blur(); }
       });
     });
   })();

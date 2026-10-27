@@ -505,3 +505,10 @@ html.pixel-bg-on body{background:transparent;}
   .navbar.on-hero .mm .mm-h{color:#fff!important;}
   .navbar.on-hero .mm .mm-col li a{background:rgba(255,255,255,.08)!important; border-color:rgba(255,255,255,.18); color:#fff!important;}
 }
+/* druhé kliknutie na Kategórie menu zatvorí, aj keď je nad ním myš */
+@media (min-width:901px) and (hover:hover){
+  .navbar li.has-dd.shut > .dropdown-menu{visibility:hidden!important; opacity:0!important; transition:none!important;}
+}
+@media (max-width:900px){
+  .navbar li.has-dd.shut > .dropdown-menu{display:none!important;}
+}
