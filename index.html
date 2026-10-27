@@ -511,6 +511,7 @@
       if (dotsWrap.children[current]) dotsWrap.children[current].classList.remove('active');
       current = i;
       const cur = slides[current];
+      [current, (current + 1) % slides.length].forEach(k => { const el = slides[k]; if (el && el.dataset.bg && !el.style.backgroundImage) el.style.backgroundImage = el.dataset.bg; });
       cur.classList.add('active');
       if (dotsWrap.children[current]) dotsWrap.children[current].classList.add('active');
       hero.classList.toggle('anim-on', isAnim(cur));
@@ -573,7 +574,9 @@
               hero.insertBefore(d, content);
               return;
             }
-            d.style.backgroundImage = "url('" + String(f.foto).replace(/'/g, "%27") + "')";
+            // fotka sa stiahne až tesne pred zobrazením snímky (prvé dve hneď)
+            d.dataset.bg = "url('" + String(f.foto).replace(/'/g, "%27") + "')";
+            if (i < 2) d.style.backgroundImage = d.dataset.bg;
             d.style.backgroundPosition = f.pozicia || 'center 15%';
             hero.insertBefore(d, content);
           });
