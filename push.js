@@ -1,7 +1,8 @@
 // Web Push (upozornenia do mobilu) bez externých knižníc - len WebCrypto.
 //  - VAPID (RFC 8292): podpis JWT kľúčom ES256, ktorý si worker sám vygeneruje a uloží do KV
 //  - šifrovanie správy (RFC 8291, "aes128gcm")
-// Odberatelia aj stav (čo už bolo odoslané) sú v KV, každé v jednom kľúči, aby bolo čo najmenej zápisov.
+// Každý odber je v KV vo vlastnom kľúči (push-sub:<id>), aby sa dva súčasné zápisy navzájom neprepísali.
+// Stav (čo už bolo odoslané) a front správ sú v KV, každé v jednom kľúči.
 
 const enc = new TextEncoder();
 
@@ -113,10 +114,11 @@ async function safeSend(sub, message, vapid) {
 }
 
 // ======================= Odbery a rozosielanie =======================
-const SUBS_KEY = "push-subs";
+const SUBS_KEY = "push-subs";      // starý spoločný zoznam - postupne sa presúva do samostatných kľúčov
+const SUB_PREFIX = "push-sub:";
+const MIGRATE_PER_RUN = 100;
 const STATE_KEY = "push-state";
 const QUEUE_KEY = "push-queue";
-const MAX_SUBS = 5000;
 const SENDS_PER_TICK = 30; // bezplatný Cloudflare Worker má limit 50 pod-požiadaviek na jeden beh
 const TZ = "Europe/Bratislava";
 
@@ -148,6 +150,69 @@ async function readJson(env, key, fallback) {
   return v == null ? fallback : v;
 }
 
+// ---- odbery: jeden kľúč na zariadenie ----
+// prijímame len adresy skutočných push služieb (Google/Chrome, Mozilla, Apple, Microsoft)
+const PUSH_HOST_RE = /^(fcm\.googleapis\.com|android\.googleapis\.com|[a-z0-9-]+\.push\.services\.mozilla\.com|web\.push\.apple\.com|[a-z0-9-]+\.notify\.windows\.com)$/i;
+function validEndpoint(ep) {
+  if (typeof ep !== "string" || ep.length > 900) return false;
+  try { const u = new URL(ep); return u.protocol === "https:" && PUSH_HOST_RE.test(u.hostname); } catch (e) { return false; }
+}
+async function subId(endpoint) {
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(endpoint)));
+  return [...h.slice(0, 16)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+function hostOf(ep) { try { return new URL(ep).host; } catch (e) { return "?"; } }
+async function putSub(env, id, entry) {
+  await env.ARCHIV.put(SUB_PREFIX + id, JSON.stringify(entry), {
+    metadata: { ty: entry.types, tm: entry.teams, h: hostOf(entry.endpoint) },
+  });
+}
+// presunie časť starého spoločného zoznamu do samostatných kľúčov; vráti, čo v ňom ešte zostalo
+async function migrateLegacy(env) {
+  const legacy = await readJson(env, SUBS_KEY, null);
+  if (!Array.isArray(legacy)) return [];
+  const move = legacy.slice(0, MIGRATE_PER_RUN), rest = legacy.slice(MIGRATE_PER_RUN);
+  for (const s of move) if (s && validEndpoint(s.endpoint)) await putSub(env, await subId(s.endpoint), s);
+  if (rest.length) await env.ARCHIV.put(SUBS_KEY, JSON.stringify(rest));
+  else await env.ARCHIV.delete(SUBS_KEY);
+  return rest;
+}
+// zoznam odberov bez načítania ich obsahu: [{ id, types, teams, host }]
+async function listSubs(env) {
+  const out = [], seen = new Set();
+  let cursor;
+  do {
+    const r = await env.ARCHIV.list({ prefix: SUB_PREFIX, cursor });
+    for (const k of r.keys) {
+      const id = k.name.slice(SUB_PREFIX.length), m = k.metadata || {};
+      seen.add(id);
+      out.push({ id, types: m.ty || [], teams: m.tm || [], host: m.h || "?" });
+    }
+    cursor = r.list_complete ? null : r.cursor;
+  } while (cursor);
+  for (const s of await readJson(env, SUBS_KEY, [])) {   // ešte nepresunuté
+    if (!s || !s.endpoint) continue;
+    const id = await subId(s.endpoint);
+    if (!seen.has(id)) out.push({ id, types: s.types || [], teams: s.teams || [], host: hostOf(s.endpoint) });
+  }
+  return out;
+}
+async function getSub(env, id) {
+  const s = await readJson(env, SUB_PREFIX + id, null);
+  if (s) return s;
+  for (const x of await readJson(env, SUBS_KEY, [])) if (x && x.endpoint && (await subId(x.endpoint)) === id) return x;
+  return null;
+}
+async function deleteSub(env, id) {
+  await env.ARCHIV.delete(SUB_PREFIX + id);
+  const legacy = await readJson(env, SUBS_KEY, null);
+  if (Array.isArray(legacy)) {
+    const keep = [];
+    for (const x of legacy) if (!x || !x.endpoint || (await subId(x.endpoint)) !== id) keep.push(x);
+    if (keep.length !== legacy.length) await env.ARCHIV.put(SUBS_KEY, JSON.stringify(keep));
+  }
+}
+
 // /push/key, /push/subscribe, /push/unsubscribe
 export async function handlePush(request, env, url) {
   if (!env.ARCHIV) return json({ error: "no storage" }, 500);
@@ -157,9 +222,9 @@ export async function handlePush(request, env, url) {
   }
   // prehľad pre správcu webu: počet odberov, front, posledné odoslania (bez adries odberov)
   if (url.pathname === "/push/status") {
-    const subs = await readJson(env, SUBS_KEY, []);
+    const subs = await listSubs(env);
     const hosts = {};
-    for (const s of subs) { let h = "?"; try { h = new URL(s.endpoint).host; } catch (e) {} hosts[h] = (hosts[h] || 0) + 1; }
+    for (const s of subs) hosts[s.host] = (hosts[s.host] || 0) + 1;
     const state = await readJson(env, STATE_KEY, null);
     const queue = await readJson(env, QUEUE_KEY, []);
     return json({
@@ -173,26 +238,25 @@ export async function handlePush(request, env, url) {
   try { body = await request.json(); } catch (e) { return json({ error: "bad json" }, 400); }
   const sub = body && body.sub;
   const endpoint = sub && typeof sub.endpoint === "string" ? sub.endpoint : (body && body.endpoint);
-  if (typeof endpoint !== "string" || !/^https:\/\/[^\s]{10,900}$/.test(endpoint)) return json({ error: "endpoint" }, 400);
-  const subs = await readJson(env, SUBS_KEY, []);
-  const idx = subs.findIndex((s) => s.endpoint === endpoint);
+  if (!validEndpoint(endpoint)) return json({ error: "endpoint" }, 400);
+  const id = await subId(endpoint);
+  const existing = await getSub(env, id);
 
   // skúšobná správa na jedno zariadenie (tlačidlo v okne upozornení)
   if (url.pathname === "/push/test") {
-    if (idx < 0) return json({ ok: false, error: "unknown" }, 404);
-    const status = await safeSend(subs[idx], {
+    if (!existing) return json({ ok: false, error: "unknown" }, 404);
+    const status = await safeSend(existing, {
       title: "Skúšobná správa ✓", body: "Upozornenia z webu Hádzaná Záhorie fungujú.", icon: "/icon-192.png", url: "/",
     }, await getVapid(env));
     await addLog(env, [logEntry("test", endpoint, status, "Skúšobná správa")]);
     if (status === 404 || status === 410) {
-      subs.splice(idx, 1);
-      await env.ARCHIV.put(SUBS_KEY, JSON.stringify(subs));
+      await deleteSub(env, id);
       return json({ ok: false, error: "expired", status });
     }
     return json({ ok: status >= 200 && status < 300, status, error: status >= 200 && status < 300 ? undefined : lastPushError });
   }
   if (url.pathname === "/push/unsubscribe") {
-    if (idx >= 0) { subs.splice(idx, 1); await env.ARCHIV.put(SUBS_KEY, JSON.stringify(subs)); }
+    if (existing) await deleteSub(env, id);
     return json({ ok: true });
   }
   if (url.pathname !== "/push/subscribe") return json({ error: "not found" }, 404);
@@ -202,12 +266,8 @@ export async function handlePush(request, env, url) {
   const types = (Array.isArray(body.types) ? body.types : []).filter((t) => TYPES.includes(t));
   const teams = (Array.isArray(body.teams) ? body.teams : []).filter((t) => PUSH_TEAMS[t]);
   const entry = { endpoint, keys: { p256dh: keys.p256dh, auth: keys.auth }, types, teams, t: Date.now() };
-  const isNew = idx < 0;
-  if (isNew) {
-    if (subs.length >= MAX_SUBS) return json({ error: "full" }, 503);
-    subs.push(entry);
-  } else subs[idx] = entry;
-  await env.ARCHIV.put(SUBS_KEY, JSON.stringify(subs));
+  const isNew = !existing;
+  await putSub(env, id, entry);
   if (isNew) {
     const vapid = await getVapid(env);
     const status = await safeSend(entry, {
@@ -216,6 +276,11 @@ export async function handlePush(request, env, url) {
       icon: "/icon-192.png", url: "/",
     }, vapid);
     await addLog(env, [logEntry("vitanie", endpoint, status, "Upozornenia sú zapnuté")]);
+    // push služba adresu nepozná (vymyslený alebo zrušený odber) -> neukladať
+    if (status === 400 || status === 404 || status === 410) {
+      await deleteSub(env, id);
+      return json({ ok: false, error: "rejected", push: status }, 400);
+    }
     return json({ ok: true, push: status });
   }
   return json({ ok: true });
@@ -322,11 +387,13 @@ export async function pushTick(env, ctx, getResults) {
   if (!env.ARCHIV) return;
   let queue = await readJson(env, QUEUE_KEY, []);
   const now = localParts();
+  // starý spoločný zoznam odberov presúvame postupne (najviac MIGRATE_PER_RUN na beh)
+  if (!queue.length) await migrateLegacy(env).catch(() => {});
   if (!queue.length && now.min >= 30 && now.min < 40) {
     const msgs = await detect(env, ctx, getResults);
     await addLog(env, [{ t: new Date().toISOString(), kind: "kontrola", noveSpravy: msgs.length }]);
     if (msgs.length) {
-      const subs = await readJson(env, SUBS_KEY, []);
+      const subs = await listSubs(env);
       for (const s of subs) {
         const mine = msgs.filter((m) => s.types.includes(m.type) && (m.type === "oznamy" || s.teams.includes(m.team)));
         if (!mine.length) continue;
@@ -336,7 +403,7 @@ export async function pushTick(env, ctx, getResults) {
           body: mine.map((m) => m.title.replace(/ 🤾$/, "")).join(" · ").slice(0, 180),
           icon: "/icon-192.png", url: "/",
         }];
-        for (const m of msg) queue.push({ e: s.endpoint, m: { title: m.title, body: m.body, icon: m.icon, url: m.url } });
+        for (const m of msg) queue.push({ k: s.id, m: { title: m.title, body: m.body, icon: m.icon, url: m.url } });
       }
       // posielať sa začne až v ďalšom behu (o 10 minút) - tento beh už minul pod-požiadavky na výsledky
       if (queue.length) await env.ARCHIV.put(QUEUE_KEY, JSON.stringify(queue));
@@ -346,22 +413,21 @@ export async function pushTick(env, ctx, getResults) {
   if (!queue.length) return;
   const batch = queue.slice(0, SENDS_PER_TICK);
   queue = queue.slice(SENDS_PER_TICK);
-  const subs = await readJson(env, SUBS_KEY, []);
-  const byEp = new Map(subs.map((s) => [s.endpoint, s]));
   const vapid = await getVapid(env);
   const dead = new Set();
   const log = [];
   await Promise.all(batch.map(async (item) => {
-    const s = byEp.get(item.e);
+    const id = item.k || (item.e ? await subId(item.e) : "");   // item.e = starší formát frontu
+    const s = id && await getSub(env, id);
     if (!s) return;
     const status = await safeSend(s, item.m, vapid);
-    log.push(logEntry("auto", item.e, status, item.m.title));
-    if (status === 404 || status === 410) dead.add(item.e);
+    log.push(logEntry("auto", s.endpoint, status, item.m.title));
+    if (status === 404 || status === 410) dead.add(id);
   }));
   await addLog(env, log);
   if (dead.size) {
-    await env.ARCHIV.put(SUBS_KEY, JSON.stringify(subs.filter((s) => !dead.has(s.endpoint))));
-    queue = queue.filter((q) => !dead.has(q.e));
+    for (const id of dead) await deleteSub(env, id);
+    queue = queue.filter((q) => !dead.has(q.k));
   }
   await env.ARCHIV.put(QUEUE_KEY, JSON.stringify(queue));
 }

@@ -302,6 +302,7 @@
 <script src="news.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#hero">Preskočiť na obsah</a>
 
 <header class="navbar on-hero">
   <div class="navbar-inner">
@@ -346,7 +347,7 @@
   </div>
 </header>
 
-<div class="intro" id="hero">
+<div class="intro" id="hero" role="region" aria-label="Úvod" tabindex="-1">
   <div class="slide active" style="background-image:url('hero/akcia1.jpg'); background-position:center 12%;"></div>
   <div class="intro-content">
     <h1>Hádzaná Záhorie</h1>
@@ -369,7 +370,7 @@
 </div>
 
 
-<main class="page">
+<main class="page" id="obsah" tabindex="-1">
 <div class="page-content">
     <section class="block" id="druzstva">
       <div class="section-head with-link"><h2>Naše družstvá</h2><a class="section-all" href="kalendar.html">Kalendár zápasov →</a></div>
@@ -417,7 +418,7 @@
   </main>
 
 
-<div class="sponsors-band">
+<aside class="sponsors-band" aria-label="Naši partneri">
   <div class="sponsors-inner">
     <div class="sponsors-label">Naši partneri</div>
     <div class="sponsors-logos">
@@ -446,7 +447,7 @@
 </div>
     </div>
   </div>
-</div>
+</aside>
 
 <footer class="site-footer">
   <div class="footer-inner">

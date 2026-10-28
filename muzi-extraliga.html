@@ -167,7 +167,7 @@
     display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;
   }
   .recruit h2{font-size:clamp(24px,3.5vw,34px); max-width:520px;}
-  .recruit p{margin-top:12px; max-width:480px; color:#FDE3E3; font-size:15px;}
+  .recruit p{margin-top:12px; max-width:480px; color:#fff; font-size:15px;}
   .recruit .btn{background:#fff; color:var(--red); flex:0 0 auto;}
   .btn{
     display:inline-block; padding:13px 26px; font-weight:600;
@@ -286,6 +286,7 @@
 </style>
 </head>
 <body data-club="zahoraci">
+<a class="skip-link" href="#obsah">Preskočiť na obsah</a>
 <div class="lightbox-overlay" id="lightbox">
   <button type="button" class="lightbox-close" aria-label="Zavrieť">&times;</button>
   <img id="lightbox-img" src="" alt="">
@@ -334,7 +335,7 @@
   </div>
 </header>
 
-<main class="page">
+<main class="page" id="obsah" tabindex="-1">
 <div class="page-content">
     <nav class="team-switch" aria-label="Prepnúť tím"><a href="muzi-extraliga.html" class="current" aria-current="page">Muži Extraliga</a><a href="muzi-1-liga.html">Muži 1. liga</a><a href="zeny.html">Ženy</a><a href="starsi-dorastenci.html">Starší dorastenci</a><a href="starsie-dorastenky.html">Staršie dorastenky</a><a href="mladsi-dorastenci.html">Mladší dorastenci</a><a href="mladsie-dorastenky.html">Mladšie dorastenky</a><a href="starsi-ziaci.html">Starší žiaci</a><a href="starsie-ziacky.html">Staršie žiačky</a><a href="mladsi-ziaci.html">Mladší žiaci</a><a href="mladsie-ziacky-a.html">Mladšie žiačky A</a><a href="mladsie-ziacky-b.html">Mladšie žiačky B</a><a href="mladsie-ziacky-c.html">Mladšie žiačky C</a><a href="dievcata-mini.html">Dievčatá mini</a><a href="chlapci-mini.html">Chlapci mini</a></nav>
 
@@ -401,7 +402,7 @@
   </div>
   </main>
 
-<div class="sponsors-band">
+<aside class="sponsors-band" aria-label="Naši partneri">
   <div class="sponsors-inner">
     <div class="sponsors-label">Naši partneri</div>
     <div class="sponsors-logos">
@@ -430,7 +431,7 @@
 </div>
     </div>
   </div>
-</div>
+</aside>
 
 <footer class="site-footer">
   <div class="footer-inner">

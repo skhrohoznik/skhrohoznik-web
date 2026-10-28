@@ -7,7 +7,7 @@
 .news-card .news-body{padding:22px;}
 .news-date{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--red); margin-bottom:8px;}
 .news-club{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#6b6455; margin-bottom:8px;}
-.news-card h3{font-size:16px; margin-bottom:8px;}
+.news-card h3, .news-card h2{font-size:16px; margin-bottom:8px;}
 .news-card p{font-size:14px; color:#5c5648; white-space:pre-line;}
 .news-more{
   display:inline-block; margin-top:12px; font-size:12px; font-weight:700; text-transform:uppercase;
@@ -28,7 +28,7 @@
 .news-grid.compact a.news-card:hover{transform:translateY(-3px); box-shadow:0 8px 22px rgba(22,26,34,0.16);}
 .news-grid.compact .news-photo{height:150px; cursor:pointer;}
 .news-grid.compact .news-body{padding:16px;}
-.news-grid.compact h3{font-size:15px;}
+.news-grid.compact h3, .news-grid.compact h2{font-size:15px;}
 .news-grid.compact p{
   font-size:13px; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;
 }

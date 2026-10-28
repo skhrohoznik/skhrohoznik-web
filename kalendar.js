@@ -217,7 +217,7 @@
   }
 
   function render() {
-    document.querySelectorAll(".kal-views button").forEach(function (b) { b.classList.toggle("active", b.dataset.view === view); });
+    document.querySelectorAll(".kal-views button").forEach(function (b) { var on = b.dataset.view === view; b.classList.toggle("active", on); b.setAttribute("aria-pressed", on ? "true" : "false"); });
     var month = view === "mesiac";
     grid.hidden = !month;
     listBox.hidden = month;

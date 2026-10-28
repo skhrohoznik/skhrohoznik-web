@@ -1,4 +1,4 @@
-import { handlePush, pushTick, PUSH_TEAMS } from "./push.js";
+import { handlePush, pushTick, PUSH_TEAMS, getVapid } from "./push.js";
 
 // Cloudflare Worker: obsluhuje statické súbory webu (cez ASSETS) a
 // dynamickú cestu /vysledky, ktorá sťahuje zápasy zo Slovenského zväzu hádzanej.
@@ -503,6 +503,18 @@ function cachePutJson(key, data, maxAge, ctx) {
 const SZH_WEB = "https://slovakhandball.sk";
 const SZH_UA = "Mozilla/5.0 (compatible; SKHRohoznikBot/1.0)";
 let SELF_BINDING = null; // nastaví sa v fetch/scheduled (env.SELF)
+let ENV = null;          // env aktuálneho volania (kvôli tajnému kľúču pre /_szh/)
+// Tajný kľúč pre interné volanie /_szh/tim/ - odvodený zo súkromného VAPID kľúča v KV,
+// takže ho pozná len samotný worker a zvonka sa nedá uhádnuť.
+let INTERNAL_KEY = null;
+async function internalKey() {
+  if (INTERNAL_KEY) return INTERNAL_KEY;
+  if (!ENV || !ENV.ARCHIV) return null;
+  const v = await getVapid(ENV);
+  const h = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode("szh-internal|" + v.privateJwk.d)));
+  INTERNAL_KEY = [...h.slice(0, 16)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return INTERNAL_KEY;
+}
 
 // nájde v surovom HTML objekt {"id":...} (v zápise JS reťazca, úvodzovky ako \") obsahujúci daný kľúč
 function szhObjectsWith(html, key) {
@@ -649,7 +661,8 @@ function szhPlayers(html) {
 async function handleSzhTeam(request, url) {
   const id = Number((/^\/_szh\/tim\/(\d{1,7})$/.exec(url.pathname) || [])[1]);
   const season = Number(url.searchParams.get("sezona")) || 0;
-  if (!id || request.headers.get("X-Internal") !== "1") return new Response("Not found", { status: 404 });
+  const key = await internalKey();
+  if (!id || !key || request.headers.get("X-Internal") !== key) return new Response("Not found", { status: 404 });
   try {
     const data = await szhParseTeam(id, season);
     return new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
@@ -659,7 +672,7 @@ async function handleSzhTeam(request, url) {
 }
 async function szhLoadTeam(teamId, seasonId) {
   if (SELF_BINDING) {
-    const r = await SELF_BINDING.fetch(new Request(`https://skhrohoznik.sk/_szh/tim/${teamId}${seasonId ? "?sezona=" + seasonId : ""}`, { headers: { "X-Internal": "1" } }));
+    const r = await SELF_BINDING.fetch(new Request(`https://skhrohoznik.sk/_szh/tim/${teamId}${seasonId ? "?sezona=" + seasonId : ""}`, { headers: { "X-Internal": (await internalKey()) || "" } }));
     const d = await r.json();
     if (!r.ok || d.error) throw new Error(d.error || "chyba " + r.status);
     return d;
@@ -1340,6 +1353,7 @@ async function serveStatic(request, env, url) {
 export default {
   async fetch(request, env, ctx) {
     if (env.SELF) SELF_BINDING = env.SELF;
+    ENV = env;
     const url = new URL(request.url);
     // stránka Klub bola zlúčená so stránkou Kontakty (haly sú v sekcii #haly)
     if (url.pathname === "/klub.html" || url.pathname === "/klub") {
@@ -1374,6 +1388,7 @@ export default {
   },
   async scheduled(event, env, ctx) {
     if (env.SELF) SELF_BINDING = env.SELF;
+    ENV = env;
     if (event.cron === "*/10 * * * *") {
       // upozornenia do mobilu (push.js) - výsledky a zápasy berie z tej istej funkcie ako /vysledky
       const getResults = async () =>

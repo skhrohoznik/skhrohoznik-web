@@ -151,7 +151,7 @@
     display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;
   }
   .recruit h2{font-size:clamp(24px,3.5vw,34px); max-width:520px;}
-  .recruit p{margin-top:12px; max-width:480px; color:#FDE3E3; font-size:15px;}
+  .recruit p{margin-top:12px; max-width:480px; color:#fff; font-size:15px;}
   .recruit .btn{background:#fff; color:var(--red); flex:0 0 auto;}
   .btn{
     display:inline-block; padding:13px 26px; font-weight:600;
@@ -256,6 +256,7 @@
 <script src="news.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#obsah">Preskočiť na obsah</a>
 
 <header class="navbar">
   <div class="navbar-inner">
@@ -300,7 +301,7 @@
   </div>
 </header>
 
-<main class="page">
+<main class="page" id="obsah" tabindex="-1">
 <div class="page-content">
     <h1 class="page-title">Aktuality</h1>
     <p class="page-intro">Príspevky z Facebooku našich klubov — ŠKH Rohožník / TJ Strojár Malacky a HC Záhoráci.</p>
@@ -318,12 +319,12 @@
 </div>
 
 <script>
-  NewsFeed.render({url:'/aktuality.json', grid:'news-grid', moreWrap:'news-loadmore-wrap', moreBtn:'news-loadmore', clamp:5,
+  NewsFeed.render({url:'/aktuality.json', h:'h2', grid:'news-grid', moreWrap:'news-loadmore-wrap', moreBtn:'news-loadmore', clamp:5,
     pageSize:9, empty:'Zatiaľ žiadne aktuality.', error:'Aktuality sa nepodarilo načítať.'});
 </script>
 
 
-<div class="sponsors-band">
+<aside class="sponsors-band" aria-label="Naši partneri">
   <div class="sponsors-inner">
     <div class="sponsors-label">Naši partneri</div>
     <div class="sponsors-logos">
@@ -352,7 +353,7 @@
 </div>
     </div>
   </div>
-</div>
+</aside>
 
 <footer class="site-footer">
   <div class="footer-inner">

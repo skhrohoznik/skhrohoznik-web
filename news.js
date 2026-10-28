@@ -40,6 +40,7 @@
           return '<img class="news-photo" loading="lazy" src="' + esc(f) + '" alt="' + alt + '">';
         }).join('') + '</div>'
       : '';
+    var hTag = opts.h === 'h2' ? 'h2' : 'h3';   // na samostatnej stránke (pod h1) sú nadpisy kariet h2
     var linkUrl = safeUrl(item.zdroj || item.odkaz);
     var linkText = item.odkaz_text || (item.zdroj ? 'Zobraziť na Facebooku →' : 'Viac →');
     var detailUrl = opts.detail ? opts.detail + '?o=' + encodeURIComponent(item._slug) : '';
@@ -53,7 +54,7 @@
       '<div class="news-body">' +
       '<div class="news-date">' + esc(item.datum || '') + '</div>' +
       (item.klub ? '<div class="news-club">' + esc(item.klub) + '</div>' : '') +
-      (item.nadpis ? '<h3>' + esc(item.nadpis) + '</h3>' : '') +
+      (item.nadpis ? '<' + hTag + '>' + esc(item.nadpis) + '</' + hTag + '>' : '') +
       (item.text ? '<p' + (opts.clamp && !opts.compact && !detailUrl ? ' class="clamp" style="-webkit-line-clamp:' + opts.clamp + '"' : '') + '>' + esc(item.text) + '</p>' +
         (opts.clamp && !opts.compact && !detailUrl ? '<button type="button" class="news-toggle" hidden>Zobraziť celý text ▾</button>' : '') : '') +
       linkHtml + '</div>';
