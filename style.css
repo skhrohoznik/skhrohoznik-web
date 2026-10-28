@@ -518,3 +518,12 @@ html.pixel-bg-on body{background:transparent;}
 main#obsah:focus{outline:none;}
 .site-footer a.footer-cta{color:#fff;}
 #hero:focus{outline:none;}
+
+/* prepínač jazyka SK | EN v menu */
+  .navbar nav > ul > li.lang-sw{display:flex; align-items:center; margin-left:6px;}
+  .navbar nav > ul > li.lang-sw a{padding:6px 7px!important; font-size:11px; font-weight:700; border:1px solid currentColor; opacity:.55; line-height:1;}
+  .navbar nav > ul > li.lang-sw a + a{border-left:none;}
+  .navbar nav > ul > li.lang-sw a.current{opacity:1; background:var(--ink); color:#fff!important; border-color:var(--ink);}
+  @media (max-width:900px){ .navbar nav > ul > li.lang-sw{margin:8px 0 0 12px;} .navbar nav > ul > li.lang-sw a{padding:8px 12px!important;} }
+.navbar.on-hero nav > ul > li.lang-sw a.current{background:#fff; color:var(--ink)!important; border-color:#fff;}
+@media (max-width:900px){ .navbar nav > ul > li.lang-sw{margin-bottom:12px;} }
