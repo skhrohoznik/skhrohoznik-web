@@ -34,6 +34,7 @@
   function buildCard(item, opts) {
     var photos = photosOf(item);
     if (opts.compact) photos = photos.slice(0, 1);
+    else photos = photos.slice(0, 3);   // na karte najviac 3 fotky, všetky sú na podstránke oznamu
     var alt = esc(item.nadpis || '');
     var photosHtml = photos.length
       ? '<div class="news-photos">' + photos.map(function (f) {
