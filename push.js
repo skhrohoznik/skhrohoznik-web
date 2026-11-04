@@ -140,7 +140,7 @@ export const PUSH_TEAMS = {
   mzc:          { label: "Mladšie žiačky C",   href: "/mladsie-ziacky-c.html",   venue: "ŠH Rohožník", icon: "/skh.png", club: "Rohožník / Malacky" },
   dievcata_mini:{ label: "Dievčatá mini",      href: "/dievcata-mini.html",      venue: "ŠH Rohožník", icon: "/skh.png", club: "Rohožník / Malacky" },
 };
-const TYPES = ["zapas", "vysledok", "oznamy"];
+const TYPES = ["zapas", "vysledok", "oznamy", "live"];
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
@@ -389,6 +389,25 @@ export async function pushTick(env, ctx, getResults) {
   const now = localParts();
   // starý spoločný zoznam odberov presúvame postupne (najviac MIGRATE_PER_RUN na beh)
   if (!queue.length) await migrateLegacy(env).catch(() => {});
+  // živý prenos na YouTube (stav zapisuje live-yt.js) -> jedno upozornenie na každý prenos
+  try {
+    const live = await readJson(env, "yt-live", null);
+    if (live && live.live && live.id && Date.now() - (live.since || 0) < 2 * 3600 * 1000) {
+      const sent = await readJson(env, "push-live-sent", null);
+      if (sent !== live.id) {
+        await env.ARCHIV.put("push-live-sent", JSON.stringify(live.id));
+        const subs = await listSubs(env);
+        let n = 0;
+        for (const s of subs) {
+          if (!s.types.includes("live")) continue;
+          queue.push({ k: s.id, m: { title: "🔴 Práve vysielame naživo", body: live.title || "Živý prenos ŠKH Rohožník", icon: "/icon-192.png", url: "/#live" } });
+          n++;
+        }
+        await env.ARCHIV.put(QUEUE_KEY, JSON.stringify(queue));
+        await addLog(env, [{ t: new Date().toISOString(), kind: "live", video: live.id, prijemcov: n }]);
+      }
+    }
+  } catch (e) {}
   if (!queue.length && now.min >= 30 && now.min < 40) {
     const msgs = await detect(env, ctx, getResults);
     await addLog(env, [{ t: new Date().toISOString(), kind: "kontrola", noveSpravy: msgs.length }]);

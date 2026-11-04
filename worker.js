@@ -1403,11 +1403,14 @@ export default {
       // upozornenia do mobilu (push.js) - výsledky a zápasy berie z tej istej funkcie ako /vysledky
       const getResults = async () =>
         (await handleVysledky(new Request("https://skhrohoznik.sk/vysledky"), env, ctx)).json();
-      ctx.waitUntil(pushTick(env, ctx, getResults));
-      // živý prenos na YouTube - samostatné volanie, aby nezaberalo limit podžiadaviek upozornení
-      if (env.SELF) ctx.waitUntil((async () => {
-        const key = await internalKey();
-        await env.SELF.fetch(new Request("https://skhrohoznik.sk/_live/check", { headers: { "X-Internal": key || "" } })).catch(() => {});
+      // najprv živý prenos na YouTube (samostatné volanie s vlastným limitom podžiadaviek),
+      // potom upozornenia - tak sa začiatok prenosu pošle ešte v tom istom behu
+      ctx.waitUntil((async () => {
+        if (env.SELF) {
+          const key = await internalKey();
+          await env.SELF.fetch(new Request("https://skhrohoznik.sk/_live/check", { headers: { "X-Internal": key || "" } })).catch(() => {});
+        }
+        await pushTick(env, ctx, getResults);
       })());
       return;
     }
