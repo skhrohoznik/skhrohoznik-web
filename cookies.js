@@ -193,6 +193,12 @@
     renderExternal();
   }
 
+  // pre skripty, ktoré vkladajú externý obsah neskôr (napr. živý prenos z YouTube)
+  window.skhConsent = {
+    allowed: function () { return externalAllowed; },
+    allow: function () { applyChoice(true); try { document.dispatchEvent(new Event('skh-consent')); } catch (e) {} }
+  };
+
   /* ---------- odkazy v pätičke ---------- */
   function addFooterLinks() {
     var fb = document.querySelector('.footer-bottom') || document.querySelector('.site-footer');

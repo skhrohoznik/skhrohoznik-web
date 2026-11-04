@@ -1,4 +1,5 @@
 import { handlePush, pushTick, PUSH_TEAMS, getVapid } from "./push.js";
+import { checkLive, handleLiveJson } from "./live-yt.js";
 
 // Cloudflare Worker: obsluhuje statické súbory webu (cez ASSETS) a
 // dynamickú cestu /vysledky, ktorá sťahuje zápasy zo Slovenského zväzu hádzanej.
@@ -1365,6 +1366,15 @@ export default {
     if (url.pathname.startsWith("/push/")) {
       return handlePush(request, env, url);
     }
+    if (url.pathname === "/live.json") {
+      return handleLiveJson(env, url);
+    }
+    if (url.pathname === "/_live/check") {
+      // interné volanie z cronu (vlastný limit podžiadaviek); zvonka len s tajným kľúčom
+      const key = await internalKey();
+      if (!key || request.headers.get("X-Internal") !== key) return new Response("Not found", { status: 404 });
+      return new Response(JSON.stringify(await checkLive(env)), { headers: { "Content-Type": "application/json" } });
+    }
     if (url.pathname === "/vysledky") {
       return handleVysledky(request, env, ctx);
     }
@@ -1394,6 +1404,11 @@ export default {
       const getResults = async () =>
         (await handleVysledky(new Request("https://skhrohoznik.sk/vysledky"), env, ctx)).json();
       ctx.waitUntil(pushTick(env, ctx, getResults));
+      // živý prenos na YouTube - samostatné volanie, aby nezaberalo limit podžiadaviek upozornení
+      if (env.SELF) ctx.waitUntil((async () => {
+        const key = await internalKey();
+        await env.SELF.fetch(new Request("https://skhrohoznik.sk/_live/check", { headers: { "X-Internal": key || "" } })).catch(() => {});
+      })());
       return;
     }
     ctx.waitUntil(syncArchive(env));
