@@ -1,10 +1,16 @@
-// Živé prenosy z YouTube kanála ŠKH Rohožník.
+// Živé prenosy z YouTube kanálov klubov (ŠKH Rohožník, HC Záhoráci, TJ Strojár Malacky).
 // Cron (každých 10 min) cez samostatné volanie /_live/check načíta verejnú stránku
-// https://www.youtube.com/@<kanál>/live a zistí, či práve beží prenos ("isLiveNow":true).
+// https://www.youtube.com/@<kanál>/live každého kanála a zistí, či práve beží prenos ("isLiveNow":true).
 // Stav sa ukladá do KV len pri zmene; web ho číta z /live.json.
+//   KV "yt-live" = { streams: [{ ch, club, id, title, since }] }
 
-export const YT_CHANNEL = "@SKHRohoznik_StrojarMalacky";
+export const YT_CHANNELS = [
+  { ch: "@SKHRohoznik_StrojarMalacky", club: "ŠKH Rohožník" },
+  { ch: "@hczahoraci9848", club: "HC Záhoráci" },
+  { ch: "@handballmalacky1975", club: "TJ Strojár Malacky" },
+];
 const KV_KEY = "yt-live";
+const MAX_AGE = 6 * 3600 * 1000;   // prenos starší ako 6 h bez potvrdenia považujeme za skončený
 
 function htmlDecode(s) {
   return String(s || "")
@@ -21,10 +27,9 @@ export function parseLivePage(html) {
   return { live: liveNow && !!canon, id: canon, title, status: st };
 }
 
-export async function checkLive(env) {
-  let r;
+async function checkChannel(ch) {
   try {
-    r = await fetch("https://www.youtube.com/" + YT_CHANNEL + "/live", {
+    const r = await fetch("https://www.youtube.com/" + ch + "/live", {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36",
         "Accept-Language": "sk-SK,sk;q=0.9",
@@ -32,38 +37,57 @@ export async function checkLive(env) {
       },
       redirect: "follow",
     });
-  } catch (e) { return { error: "fetch" }; }
-  if (!r.ok) {
-    await env.ARCHIV.put(KV_KEY + "-diag", JSON.stringify({ status: "HTTP_" + r.status, checked: new Date().toISOString() })).catch(() => {});
-    return { error: "http " + r.status };
-  }
-  const p = parseLivePage(await r.text());
-  const prev = (await env.ARCHIV.get(KV_KEY, { type: "json" }).catch(() => null)) || {};
-  const next = p.live
-    ? { live: true, id: p.id, title: p.title, since: prev.live && prev.id === p.id ? prev.since : Date.now() }
-    : { live: false };
-  // diagnostika: stav stránky YouTube sa zapíše len keď sa zmení (šetrí zápisy do KV)
-  const diag = { status: p.status, id: p.id, live: p.live, checked: new Date().toISOString() };
+    if (!r.ok) return { error: true, status: "HTTP_" + r.status };
+    return parseLivePage(await r.text());
+  } catch (e) { return { error: true, status: "FETCH" }; }
+}
+
+// starší formát (len jeden kanál) -> nový zoznam prenosov
+function normalize(s) {
+  if (!s) return { streams: [] };
+  if (Array.isArray(s.streams)) return s;
+  return { streams: s.live && s.id ? [{ ch: YT_CHANNELS[0].ch, club: YT_CHANNELS[0].club, id: s.id, title: s.title, since: s.since }] : [] };
+}
+
+export async function checkLive(env) {
+  const prev = normalize(await env.ARCHIV.get(KV_KEY, { type: "json" }).catch(() => null));
+  const results = await Promise.all(YT_CHANNELS.map((c) => checkChannel(c.ch)));
+  const streams = [], diag = {};
+  YT_CHANNELS.forEach((c, i) => {
+    const p = results[i];
+    diag[c.ch] = { status: p.status, id: p.id || "", live: !!p.live };
+    const old = prev.streams.find((x) => x.ch === c.ch);
+    if (p.error) { if (old) streams.push(old); return; }      // pri chybe ponecháme posledný známy stav
+    if (p.live) streams.push({ ch: c.ch, club: c.club, id: p.id, title: p.title, since: old && old.id === p.id ? old.since : Date.now() });
+  });
+  const next = { streams };
+  if (JSON.stringify(next) !== JSON.stringify(prev)) await env.ARCHIV.put(KV_KEY, JSON.stringify(next));
+  // diagnostika: zapíše sa len pri zmene stavu stránok (šetrí zápisy do KV)
   const prevDiag = (await env.ARCHIV.get(KV_KEY + "-diag", { type: "json" }).catch(() => null)) || {};
-  if (prevDiag.status !== diag.status || prevDiag.id !== diag.id) await env.ARCHIV.put(KV_KEY + "-diag", JSON.stringify(diag));
-  if (prev.live !== next.live || prev.id !== next.id || prev.title !== next.title) {
-    await env.ARCHIV.put(KV_KEY, JSON.stringify(next));
+  if (JSON.stringify(prevDiag.channels || {}) !== JSON.stringify(diag)) {
+    await env.ARCHIV.put(KV_KEY + "-diag", JSON.stringify({ channels: diag, checked: new Date().toISOString() }));
   }
   return { ...next, diag };
+}
+
+// aktuálne prebiehajúce prenosy (pre web aj upozornenia)
+export async function currentStreams(env) {
+  const s = normalize(await env.ARCHIV.get(KV_KEY, { type: "json" }).catch(() => null));
+  return s.streams.filter((x) => x.id && x.since && Date.now() - x.since < MAX_AGE);
 }
 
 export async function handleLiveJson(env, url) {
   const headers = { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=60" };
   if (url.searchParams.get("nahlad") === "1") {
     // len na ukážku vzhľadu (?nahlad-live v adrese stránky)
-    return new Response(JSON.stringify({ live: true, demo: true, id: "625woUgj65U", title: "TJ Strojár Malacky/ŠKH Rohožník vs Bánovce nad Bebravou" }), { headers });
+    const demo = [{ club: "ŠKH Rohožník", id: "625woUgj65U", title: "TJ Strojár Malacky/ŠKH Rohožník vs Bánovce nad Bebravou" }];
+    return new Response(JSON.stringify({ live: true, demo: true, streams: demo, id: demo[0].id, title: demo[0].title }), { headers });
   }
   if (url.searchParams.get("diag") === "1") {
     const d = await env.ARCHIV.get(KV_KEY + "-diag", { type: "json" }).catch(() => null);
     return new Response(JSON.stringify(d || {}), { headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
   }
-  const s = (await env.ARCHIV.get(KV_KEY, { type: "json" }).catch(() => null)) || { live: false };
-  // prenos starší ako 6 hodín bez potvrdenia považujeme za skončený (ak by cron vypadol)
-  const fresh = s.live && s.since && Date.now() - s.since < 6 * 3600 * 1000;
-  return new Response(JSON.stringify(fresh ? { live: true, id: s.id, title: s.title } : { live: false }), { headers });
+  const streams = (await currentStreams(env)).map((x) => ({ club: x.club, id: x.id, title: x.title }));
+  const out = streams.length ? { live: true, streams, id: streams[0].id, title: streams[0].title } : { live: false, streams: [] };
+  return new Response(JSON.stringify(out), { headers });
 }

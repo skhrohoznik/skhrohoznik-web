@@ -1,3 +1,4 @@
+import { currentStreams } from "./live-yt.js";
 // Web Push (upozornenia do mobilu) bez externých knižníc - len WebCrypto.
 //  - VAPID (RFC 8292): podpis JWT kľúčom ES256, ktorý si worker sám vygeneruje a uloží do KV
 //  - šifrovanie správy (RFC 8291, "aes128gcm")
@@ -391,20 +392,22 @@ export async function pushTick(env, ctx, getResults) {
   if (!queue.length) await migrateLegacy(env).catch(() => {});
   // živý prenos na YouTube (stav zapisuje live-yt.js) -> jedno upozornenie na každý prenos
   try {
-    const live = await readJson(env, "yt-live", null);
-    if (live && live.live && live.id && Date.now() - (live.since || 0) < 2 * 3600 * 1000) {
-      const sent = await readJson(env, "push-live-sent", null);
-      if (sent !== live.id) {
-        await env.ARCHIV.put("push-live-sent", JSON.stringify(live.id));
-        const subs = await listSubs(env);
-        let n = 0;
-        for (const s of subs) {
-          if (!s.types.includes("live")) continue;
-          queue.push({ k: s.id, m: { title: "🔴 Práve vysielame naživo", body: live.title || "Živý prenos ŠKH Rohožník", icon: "/icon-192.png", url: "/#live" } });
-          n++;
+    const fresh = (await currentStreams(env)).filter((x) => Date.now() - x.since < 2 * 3600 * 1000);
+    if (fresh.length) {
+      let sent = await readJson(env, "push-live-sent", []);
+      if (!Array.isArray(sent)) sent = sent ? [sent] : [];      // starší formát: jedno id
+      const fresh2 = fresh.filter((x) => !sent.includes(x.id));
+      if (fresh2.length) {
+        sent = sent.concat(fresh2.map((x) => x.id)).slice(-30);
+        await env.ARCHIV.put("push-live-sent", JSON.stringify(sent));
+        const subs = (await listSubs(env)).filter((s) => s.types.includes("live"));
+        for (const x of fresh2) {
+          for (const s of subs) {
+            queue.push({ k: s.id, m: { title: "🔴 Naživo: " + (x.club || "Hádzaná Záhorie"), body: x.title || "Živý prenos na YouTube", icon: "/icon-192.png", url: "/#live" } });
+          }
+          await addLog(env, [{ t: new Date().toISOString(), kind: "live", club: x.club, video: x.id, prijemcov: subs.length }]);
         }
         await env.ARCHIV.put(QUEUE_KEY, JSON.stringify(queue));
-        await addLog(env, [{ t: new Date().toISOString(), kind: "live", video: live.id, prijemcov: n }]);
       }
     }
   } catch (e) {}

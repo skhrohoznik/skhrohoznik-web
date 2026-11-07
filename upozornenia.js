@@ -110,7 +110,7 @@
       type("zapas", "Pripomienka zápasu", "deň vopred – kedy a kde sa hrá", types) +
       type("vysledok", "Výsledok zápasu", "keď je skóre na stránke zväzu", types) +
       type("oznamy", "Nové oznamy klubu", "turnaje, nábor, zmeny tréningov", types) +
-      type("live", "Živé prenosy", "keď ŠKH Rohožník vysiela naživo na YouTube", types) +
+      type("live", "Živé prenosy", "keď niektorý z klubov vysiela naživo na YouTube", types) +
       '</div><div class="hzp-h">Pre ktoré kategórie</div>' +
       '<div class="hzp-group"><div class="hzp-gh"><strong><i style="background:#C21F26"></i>Ženy a dievčatá</strong><button type="button" class="hzp-all" data-g="g-f">Vybrať všetky</button></div>' +
       '<div class="hzp-chips">' + chips(TEAMS_F, "g-f", teams) + "</div></div>" +
